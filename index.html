@@ -221,13 +221,17 @@
         }
 
         .match-time-col {
-            display: flex; flex-direction: column; align-items: center; min-width: 48px;
+            display: flex; flex-direction: column; align-items: center; min-width: 58px;
         }
         .match-time-val {
-            font-family: 'Barlow Condensed', sans-serif; font-size: 1rem;
-            font-weight: 700; color: var(--gold); line-height: 1;
+            font-family: 'Barlow Condensed', sans-serif; font-size: 0.95rem;
+            font-weight: 700; color: var(--gold); line-height: 1.2; white-space: nowrap;
         }
-        .match-time-tz { font-size: 0.58rem; color: var(--muted); margin-top: 2px; }
+        .match-time-tz { font-size: 0.58rem; color: var(--muted); margin-top: 2px; letter-spacing: 1px; }
+        .match-score-val {
+            font-family: 'Barlow Condensed', sans-serif; font-size: 1.15rem;
+            font-weight: 900; color: var(--text); letter-spacing: 1px; line-height: 1;
+        }
 
         .match-divider { width: 1px; height: 36px; background: var(--border); flex-shrink: 0; }
 
@@ -433,10 +437,10 @@ const matches = [
     { date: "JUNE 14", t1: "Brazil",        f1: "br",    t2: "Morocco",        f2: "ma",    time: "03:30 AM", score: [1,0] },
     { date: "JUNE 14", t1: "Haiti",         f1: "ht",    t2: "Scotland",       f2: "gb-sct",time: "06:30 AM", score: [0,3] },
     { date: "JUNE 14", t1: "Australia",     f1: "au",    t2: "Turkiye",        f2: "tr",    time: "09:30 AM", score: [1,2] },
-    { date: "JUNE 14", t1: "Germany",       f1: "de",    t2: "Curacao",        f2: "cw",    time: "10:30 PM", score: null },
-    { date: "JUNE 15", t1: "Netherlands",   f1: "nl",    t2: "Japan",          f2: "jp",    time: "01:30 AM", score: null },
-    { date: "JUNE 15", t1: "Ivory Coast",   f1: "ci",    t2: "Ecuador",        f2: "ec",    time: "04:30 AM", score: null },
-    { date: "JUNE 15", t1: "Sweden",        f1: "se",    t2: "Tunisia",        f2: "tn",    time: "07:30 AM", score: null },
+    { date: "JUNE 14", t1: "Germany",       f1: "de",    t2: "Curacao",        f2: "cw",    time: "10:30 PM", score: [7,1] },
+    { date: "JUNE 15", t1: "Netherlands",   f1: "nl",    t2: "Japan",          f2: "jp",    time: "01:30 AM", score: [2,2] },
+    { date: "JUNE 15", t1: "Ivory Coast",   f1: "ci",    t2: "Ecuador",        f2: "ec",    time: "04:30 AM", score: [1,0] },
+    { date: "JUNE 15", t1: "Sweden",        f1: "se",    t2: "Tunisia",        f2: "tn",    time: "07:30 AM", score: [5,1] },
     { date: "JUNE 15", t1: "Spain",         f1: "es",    t2: "Cabo Verde",     f2: "cv",    time: "09:30 PM", score: null },
     { date: "JUNE 16", t1: "Belgium",       f1: "be",    t2: "Egypt",          f2: "eg",    time: "12:30 AM", score: null },
     { date: "JUNE 16", t1: "Saudi Arabia",  f1: "sa",    t2: "Uruguay",        f2: "uy",    time: "03:30 AM", score: null },
@@ -543,6 +547,81 @@ function toBDTime(timeStr) {
     let displayH = hh % 12;
     if (displayH === 0) displayH = 12;
     return `${String(displayH).padStart(2, '0')}:${String(mm).padStart(2, '0')} ${newAmpm}`;
+}
+
+// ── AUTO LIVE SCORE UPDATE (TheSportsDB — free, no signup needed) ──
+const TSDB_KEY = '3';            // public free test key
+const TSDB_LEAGUE_ID = 4429;     // FIFA World Cup
+
+// Some team names in our data differ from TheSportsDB's naming
+const teamAliasMap = {
+    'Korea Republic': 'South Korea',
+    'Czechia': 'Czech Republic',
+    'USA': 'United States',
+    'Cabo Verde': 'Cape Verde',
+    'Bosnia & Herz.': 'Bosnia and Herzegovina',
+    'Turkiye': 'Turkey',
+    'Congo': 'DR Congo',
+    'Curacao': 'Curaçao',
+};
+
+function normTeam(name) {
+    const mapped = teamAliasMap[name] || name;
+    return mapped.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z]/g, '');
+}
+
+function sameTeam(a, b) {
+    if (!a || !b) return false;
+    const na = normTeam(a), nb = normTeam(b);
+    return na === nb || na.includes(nb) || nb.includes(na);
+}
+
+// The date a match falls on in UTC (TheSportsDB stores events by UTC date)
+function utcDateStrFor(m) {
+    const d = parseMatchDate(m.date, m.time);
+    return d.toISOString().slice(0, 10); // YYYY-MM-DD
+}
+
+// Fetch & merge real scores for matches that are live or finished-but-unscored.
+async function updateLiveScores() {
+    const needed = matches.filter(m => {
+        const st = getMatchStatus(m);
+        return st === 'live' || (st === 'finished' && !m.score);
+    });
+    if (needed.length === 0) return;
+
+    const dates = [...new Set(needed.map(utcDateStrFor))];
+    let changed = false;
+
+    for (const d of dates) {
+        try {
+            const res = await fetch(`https://www.thesportsdb.com/api/v1/json/${TSDB_KEY}/eventsday.php?d=${d}&l=${TSDB_LEAGUE_ID}`);
+            const data = await res.json();
+            const events = (data && data.events) ? data.events : [];
+            needed.filter(m => utcDateStrFor(m) === d).forEach(m => {
+                const ev = events.find(e =>
+                    (sameTeam(e.strHomeTeam, m.t1) && sameTeam(e.strAwayTeam, m.t2)) ||
+                    (sameTeam(e.strHomeTeam, m.t2) && sameTeam(e.strAwayTeam, m.t1))
+                );
+                if (ev && ev.intHomeScore !== null && ev.intAwayScore !== null && ev.intHomeScore !== '' && ev.intAwayScore !== '') {
+                    const hs = parseInt(ev.intHomeScore, 10);
+                    const as = parseInt(ev.intAwayScore, 10);
+                    const newScore = sameTeam(ev.strHomeTeam, m.t1) ? [hs, as] : [as, hs];
+                    if (!m.score || m.score[0] !== newScore[0] || m.score[1] !== newScore[1]) {
+                        m.score = newScore;
+                        changed = true;
+                    }
+                }
+            });
+        } catch (e) {
+            // network/CORS hiccup — keep last known data, try again next cycle
+        }
+    }
+
+    if (changed) {
+        renderMatches();
+        renderTodayUpcoming();
+    }
 }
 
 // ── TAB SWITCHING ──
@@ -660,7 +739,15 @@ function matchCardHTML(m) {
     if (status === 'live') {
         badge = `<div class="match-live-badge"><span class="match-live-dot"></span>LIVE</div>`;
         cardClass = 'live-match';
-        centerBlock = `<span class="vs-badge">VS</span>`;
+        if (m.score) {
+            centerBlock = `
+                <div style="display:flex; flex-direction:column; align-items:center; gap:2px;">
+                    <span class="match-score-val">${m.score[0]} - ${m.score[1]}</span>
+                    <span class="vs-badge" style="font-size:0.6rem; color:var(--red);">LIVE</span>
+                </div>`;
+        } else {
+            centerBlock = `<span class="vs-badge">VS</span>`;
+        }
     } else if (status === 'upcoming') {
         badge = `<div class="match-upcoming-badge">UPCOMING</div>`;
         cardClass = 'upcoming-match';
@@ -668,15 +755,23 @@ function matchCardHTML(m) {
     } else {
         // finished
         cardClass = 'finished-match';
-        centerBlock = `<span class="vs-badge">FT</span>`;
+        if (m.score) {
+            centerBlock = `
+                <div style="display:flex; flex-direction:column; align-items:center; gap:2px;">
+                    <span class="match-score-val">${m.score[0]} - ${m.score[1]}</span>
+                    <span class="vs-badge" style="font-size:0.6rem;">FT</span>
+                </div>`;
+        } else {
+            centerBlock = `<span class="vs-badge">FT</span>`;
+        }
     }
 
     return `
         <div class="match-card ${cardClass}">
             ${badge}
             <div class="match-time-col">
-                <span class="match-time-val">${toBDTime(m.time).split(' ')[0]}</span>
-                <span class="match-time-tz">${toBDTime(m.time).split(' ').slice(1).join(' ')} BD</span>
+                <span class="match-time-val">${toBDTime(m.time)}</span>
+                <span class="match-time-tz">BD TIME</span>
             </div>
             <div class="match-divider"></div>
             <div class="match-body">
@@ -858,6 +953,7 @@ function dismissBanner() { document.getElementById('installBanner').style.displa
 buildDateFilter();
 renderMatches();
 renderTodayUpcoming();
+updateLiveScores();
 
 // Restore notification preference
 (function initNotif() {
@@ -875,6 +971,7 @@ renderTodayUpcoming();
 setInterval(() => {
     renderMatches();
     renderTodayUpcoming();
+    updateLiveScores();
     if (notifEnabled) scheduleMatchNotifications();
 }, 60000);
 </script>
