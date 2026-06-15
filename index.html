@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>XEN SPORTS</title>
+    <link rel="manifest" href="./manifest.json">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="XEN SPORTS">
+    <meta name="theme-color" content="#050d18">
+    <link rel="apple-touch-icon" href="https://i.ibb.co.com/rGHtys1G/file-000000009fb87208b7d1ca320d4b478c.png">
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #050d18;
+            --surface: #0b1828;
+            --surface2: #0f2035;
+            --accent: #00e5ff;
+            --red: #ff2d2d;
+            --gold: #ffc93c;
+            --green: #00e676;
+            --text: #f0f4f8;
+            --muted: #6b7c93;
+            --border: rgba(255,255,255,0.06);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html, body {
+            height: 100%;
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* TOPBAR */
+        .topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 16px;
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .topbar-left { display: flex; align-items: center; gap: 10px; }
+        .topbar .logo { width: 36px; height: 36px; object-fit: contain; }
+        .topbar-title {
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: 1.25rem; font-weight: 900;
+            letter-spacing: 2px; text-transform: uppercase;
+            background: linear-gradient(90deg, #fff 0%, var(--accent) 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .live-pill {
+            display: flex; align-items: center; gap: 6px;
+            background: rgba(255,45,45,0.15); border: 1px solid rgba(255,45,45,0.4);
+            padding: 4px 10px; border-radius: 20px;
+            font-size: 0.7rem; font-weight: 700; color: var(--red); letter-spacing: 1.5px;
+        }
+        .live-dot {
+            width: 6px; height: 6px; background: var(--red);
+            border-radius: 50%; animation: pulse 1.4s ease-in-out infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.3; transform: scale(0.8); }
+        }
+
+        /* NOTIFICATION BELL */
+        .topbar-right { display: flex; align-items: center; gap: 10px; }
+        .notif-btn {
+            background: var(--surface2); border: 1px solid var(--border);
+            color: var(--muted); border-radius: 8px; padding: 7px;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; transition: all 0.2s;
+        }
+        .notif-btn.active {
+            background: rgba(0,229,255,0.15); border-color: var(--accent); color: var(--accent);
+        }
+        .notif-btn:active { transform: scale(0.92); }
+
+        /* TAB NAV */
+        .tab-nav { display: flex; background: var(--surface); border-bottom: 1px solid var(--border); }
+        .tab-btn {
+            flex: 1; padding: 11px 6px; background: transparent; border: none;
+            color: var(--muted); font-family: 'Barlow Condensed', sans-serif;
+            font-size: 0.85rem; font-weight: 700; letter-spacing: 1.5px;
+            text-transform: uppercase; cursor: pointer; position: relative; transition: color 0.2s;
+        }
+        .tab-btn.active { color: var(--accent); }
+        .tab-btn.active::after {
+            content: ''; position: absolute; bottom: 0; left: 10%; width: 80%; height: 2px;
+            background: var(--accent); border-radius: 2px 2px 0 0;
+        }
+
+        /* PAGES */
+        .page { display: none; }
+        .page.active { display: block; }
+
+        /* PLAYER */
+        .player-section { position: relative; background: #000; }
+        .video-container { position: relative; width: 100%; padding-bottom: 56.25%; background: #000; }
+        .video-container iframe {
+            position: absolute; inset: 0; width: 100%; height: 100%; border: none; display: none;
+        }
+        .video-container iframe.active { display: block; }
+
+        /* STREAM CONTROLS OVERLAY */
+        .stream-controls {
+            position: absolute; inset: 0; z-index: 5; pointer-events: none;
+        }
+        .stream-controls-inner {
+            position: absolute; bottom: 0; left: 0; right: 0;
+            padding: 10px 12px; display: flex; align-items: center; gap: 8px; justify-content: flex-end;
+            background: linear-gradient(to top, rgba(0,0,0,0.75) 0%, transparent 100%);
+            opacity: 0; transition: opacity 0.25s ease; pointer-events: all;
+        }
+        .stream-controls-inner.show { opacity: 1; }
+        .ctrl-btn {
+            background: rgba(0,0,0,0.65); border: 1px solid rgba(255,255,255,0.2); color: #fff;
+            border-radius: 8px; padding: 7px 10px; cursor: pointer;
+            font-size: 0.75rem; font-family: 'Barlow Condensed', sans-serif;
+            font-weight: 700; letter-spacing: 1px; display: flex; align-items: center; gap: 5px;
+            backdrop-filter: blur(4px); transition: background 0.2s;
+        }
+        .ctrl-btn:active { background: rgba(0,200,255,0.3); border-color: var(--accent); }
+
+        /* CHANNEL BAR */
+        .channel-bar {
+            display: flex; gap: 8px; padding: 12px 12px 8px;
+            background: var(--surface); border-bottom: 1px solid var(--border);
+        }
+        .ch-btn {
+            flex: 1; background: var(--surface2); border: 1px solid var(--border);
+            color: var(--muted); padding: 9px 6px;
+            font-family: 'Barlow Condensed', sans-serif; font-size: 0.85rem;
+            font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
+            border-radius: 8px; cursor: pointer; transition: all 0.2s;
+        }
+        .ch-btn.active {
+            background: var(--red); color: #fff; border-color: var(--red);
+            box-shadow: 0 0 16px rgba(255,45,45,0.35);
+        }
+
+        /* NOW PLAYING */
+        .now-playing {
+            display: flex; align-items: center; gap: 10px;
+            padding: 10px 14px; background: var(--surface); border-bottom: 1px solid var(--border);
+        }
+        .now-playing-label {
+            font-family: 'Barlow Condensed', sans-serif; font-size: 0.75rem;
+            font-weight: 700; letter-spacing: 2px; color: var(--muted); text-transform: uppercase;
+        }
+        .now-playing-name {
+            font-family: 'Barlow Condensed', sans-serif; font-size: 1.1rem;
+            font-weight: 900; letter-spacing: 1px; color: var(--text);
+        }
+
+        /* SCHEDULE HEADER */
+        .section-header { display: flex; align-items: center; gap: 8px; padding: 16px 14px 10px; }
+        .section-header-line { width: 3px; height: 18px; background: var(--accent); border-radius: 2px; }
+        .section-header h2 {
+            font-family: 'Barlow Condensed', sans-serif; font-size: 0.85rem;
+            font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; color: var(--muted);
+        }
+
+        /* DATE FILTER */
+        .date-filter {
+            display: flex; gap: 8px; overflow-x: auto; padding: 0 14px 12px; scrollbar-width: none;
+        }
+        .date-filter::-webkit-scrollbar { display: none; }
+        .date-chip {
+            flex: 0 0 auto; padding: 6px 14px; border-radius: 20px;
+            font-family: 'Barlow Condensed', sans-serif; font-size: 0.8rem;
+            font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
+            background: var(--surface2); border: 1px solid var(--border);
+            color: var(--muted); cursor: pointer; white-space: nowrap; transition: all 0.2s;
+        }
+        .date-chip.active { background: rgba(0,229,255,0.15); border-color: var(--accent); color: var(--accent); }
+
+        /* MATCH CARDS */
+        .matches-list { padding: 0 10px 20px; display: flex; flex-direction: column; gap: 8px; }
+        .match-card {
+            background: var(--surface); border: 1px solid var(--border);
+            border-radius: 12px; padding: 12px 14px;
+            display: flex; align-items: center; gap: 10px;
+            transition: border-color 0.2s; position: relative; overflow: hidden;
+        }
+        .match-card.live-match {
+            border-color: rgba(255,45,45,0.45);
+            background: linear-gradient(135deg, var(--surface) 0%, rgba(255,45,45,0.06) 100%);
+        }
+        .match-card.upcoming-match { border-color: rgba(0,229,255,0.12); }
+        .match-card.finished-match { opacity: 0.7; }
+
+        /* LIVE badge on card */
+        .match-live-badge {
+            position: absolute; top: 7px; right: 9px;
+            display: flex; align-items: center; gap: 4px;
+            background: var(--red); padding: 2px 7px; border-radius: 8px;
+            font-family: 'Barlow Condensed', sans-serif; font-size: 0.62rem;
+            font-weight: 700; letter-spacing: 1.5px; color: #fff;
+        }
+        .match-live-dot {
+            width: 5px; height: 5px; background: #fff;
+            border-radius: 50%; animation: pulse 1.2s ease-in-out infinite;
+        }
+        /* UPCOMING badge */
+        .match-upcoming-badge {
+            position: absolute; top: 7px; right: 9px;
+            background: rgba(0,229,255,0.12); border: 1px solid rgba(0,229,255,0.3);
+            padding: 2px 8px; border-radius: 8px;
+            font-family: 'Barlow Condensed', sans-serif; font-size: 0.58rem;
+            font-weight: 700; letter-spacing: 1px; color: var(--accent);
+        }
+
+        .match-time-col {
+            display: flex; flex-direction: column; align-items: center; min-width: 48px;
+        }
+        .match-time-val {
+            font-family: 'Barlow Condensed', sans-serif; font-size: 1rem;
+            font-weight: 700; color: var(--gold); line-height: 1;
+        }
+        .match-time-tz { font-size: 0.58rem; color: var(--muted); margin-top: 2px; }
+
+        .match-divider { width: 1px; height: 36px; background: var(--border); flex-shrink: 0; }
+
+        /* MATCH TEAMS + SCORE */
+        .match-body { flex: 1; display: flex; align-items: center; gap: 6px; min-width: 0; }
+        .team { display: flex; flex-direction: column; align-items: center; gap: 3px; flex: 1; min-width: 0; }
+        .team img { width: 30px; height: 21px; object-fit: cover; border-radius: 3px; box-shadow: 0 2px 6px rgba(0,0,0,0.5); }
+        .team-name {
+            font-size: 0.65rem; font-weight: 600; color: var(--text);
+            text-align: center; white-space: nowrap; overflow: hidden;
+            text-overflow: ellipsis; max-width: 65px;
+        }
+
+        .vs-badge {
+            font-family: 'Barlow Condensed', sans-serif; font-size: 0.68rem;
+            font-weight: 700; color: var(--muted); letter-spacing: 1px;
+        }
+
+        /* DATE LABEL */
+        .match-date-label {
+            font-family: 'Barlow Condensed', sans-serif; font-size: 0.7rem;
+            font-weight: 700; letter-spacing: 2px; color: var(--muted);
+            text-transform: uppercase; padding: 12px 14px 4px;
+        }
+
+        /* TODAY SECTION TITLE */
+        .today-section-title {
+            font-family: 'Barlow Condensed', sans-serif; font-size: 0.75rem;
+            font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase;
+            color: var(--accent); padding: 10px 14px 4px;
+            display: flex; align-items: center; gap: 6px;
+        }
+        .today-section-title::before {
+            content: ''; width: 3px; height: 14px;
+            background: var(--accent); border-radius: 2px; display: inline-block;
+        }
+
+        /* FULLSCREEN OVERLAY */
+        .fs-overlay { display: none; position: fixed; inset: 0; background: #000; z-index: 9999; }
+        .fs-overlay.open { display: block; }
+        .fs-overlay iframe { width: 100%; height: 100%; border: none; }
+        .fs-close {
+            position: absolute; top: env(safe-area-inset-top, 12px); right: 14px;
+            background: rgba(0,0,0,0.7); border: 1px solid rgba(255,255,255,0.2);
+            color: #fff; padding: 8px 14px; border-radius: 8px;
+            font-family: 'Barlow Condensed', sans-serif; font-size: 0.8rem;
+            font-weight: 700; cursor: pointer; z-index: 10; letter-spacing: 1px;
+        }
+
+        /* Fallback: rotate the overlay itself into landscape when the
+           Screen Orientation Lock API isn't available (e.g. iOS Safari) */
+        @media (orientation: portrait) {
+            .fs-overlay.force-landscape {
+                width: 100vh; height: 100vw;
+                top: 50%; left: 50%;
+                transform: translate(-50%, -50%) rotate(90deg);
+            }
+        }
+
+        @media (orientation: landscape) {
+            .video-container { padding-bottom: 0; height: calc(100vw * 0.5625); max-height: 75vh; }
+        }
+
+        footer {
+            text-align: center; padding: 14px 16px 10px;
+            color: var(--muted); font-size: 0.68rem;
+            border-top: 1px solid var(--border); letter-spacing: 0.5px;
+        }
+        footer .dev-credit {
+            margin-top: 4px; font-family: 'Barlow Condensed', sans-serif;
+            font-size: 0.75rem; font-weight: 700; letter-spacing: 2px;
+            color: rgba(0,229,255,0.5); text-transform: uppercase;
+        }
+    </style>
+</head>
+<body>
+
+<!-- INSTALL BANNER -->
+<div id="installBanner" style="display:none; align-items:center; justify-content:space-between; gap:10px; background:#0f2035; border-bottom:1px solid rgba(0,229,255,0.2); padding:10px 14px;">
+  <div style="display:flex; align-items:center; gap:10px;">
+    <img src="https://i.ibb.co.com/rGHtys1G/file-000000009fb87208b7d1ca320d4b478c.png" style="width:32px;height:32px;object-fit:contain;">
+    <div>
+      <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.95rem;color:#fff;">XEN SPORTS</div>
+      <div style="font-size:0.7rem;color:#6b7c93;">Home screen-এ install করুন</div>
+    </div>
+  </div>
+  <div style="display:flex;gap:8px;">
+    <button onclick="dismissBanner()" style="background:transparent;border:1px solid rgba(255,255,255,0.15);color:#6b7c93;padding:6px 10px;border-radius:6px;font-size:0.75rem;cursor:pointer;">না</button>
+    <button onclick="installApp()" style="background:#00e5ff;border:none;color:#000;padding:6px 14px;border-radius:6px;font-size:0.75rem;font-weight:700;cursor:pointer;">Install</button>
+  </div>
+</div>
+
+<!-- TOP BAR -->
+<div class="topbar">
+    <div class="topbar-left">
+        <img class="logo" src="https://i.ibb.co.com/rGHtys1G/file-000000009fb87208b7d1ca320d4b478c.png" alt="Logo">
+        <span class="topbar-title">XEN SPORTS</span>
+    </div>
+    <div class="topbar-right">
+        <button class="notif-btn" id="notifBtn" onclick="toggleNotifBtn()" title="Match alerts on/off">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+        </button>
+        <div class="live-pill">
+            <span class="live-dot"></span>
+            LIVE
+        </div>
+    </div>
+</div>
+
+<!-- TAB NAV -->
+<div class="tab-nav">
+    <button class="tab-btn active" id="tabLive" onclick="showTab('live',this)">LIVE</button>
+    <button class="tab-btn" id="tabSchedule" onclick="showTab('schedule',this)">SCHEDULE</button>
+</div>
+
+<!-- LIVE PAGE -->
+<div class="page active" id="page-live">
+    <div class="player-section">
+        <div class="video-container" id="videoWrap">
+            <iframe id="ch0" class="active" src="https://fifa-world-cup-live.pages.dev/tsn" allowfullscreen allow="autoplay; encrypted-media"></iframe>
+            <iframe id="ch1" src="" allowfullscreen allow="autoplay; encrypted-media"></iframe>
+            <iframe id="ch2" src="" allowfullscreen allow="autoplay; encrypted-media"></iframe>
+
+            <!-- Controls overlay -->
+            <div class="stream-controls" id="streamControlsArea" onclick="showStreamControls()">
+                <div class="stream-controls-inner" id="streamControlsInner">
+                    <button class="ctrl-btn" onclick="rotateFullscreen(event)">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 2v6h-6M3 12a9 9 0 0 1 15-6.7L21 8M3 22v-6h6M21 12a9 9 0 0 1-15 6.7L3 16"/></svg>
+                        ROTATE
+                    </button>
+                    <button class="ctrl-btn" onclick="openFullscreen(event)">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
+                        FULLSCREEN
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CHANNEL TABS -->
+    <div class="channel-bar">
+        <button class="ch-btn active" onclick="switchChannel(0)">FIFA Live 1</button>
+        <button class="ch-btn" onclick="switchChannel(1)">FIFA Live 2</button>
+        <button class="ch-btn" onclick="switchChannel(2)">FIFA Live 3</button>
+    </div>
+
+    <!-- NOW PLAYING -->
+    <div class="now-playing">
+        <span class="now-playing-label">Now Playing</span>
+        <span style="color:var(--muted)">·</span>
+        <span class="now-playing-name" id="ch-name">FIFA LIVE 1</span>
+    </div>
+
+    <!-- TODAY MATCHES ON LIVE TAB -->
+    <div id="todayUpcomingSection">
+        <div class="today-section-title">Today's Matches</div>
+        <div class="matches-list" id="todayMatchList" style="padding-top:4px;"></div>
+    </div>
+
+    <footer>
+        FIFA World Cup 2026 · All times BD (Bangladesh Time)
+        <div class="dev-credit">DEVELOPER S1Y4M X XEN3X</div>
+    </footer>
+</div>
+
+<!-- SCHEDULE PAGE -->
+<div class="page" id="page-schedule">
+    <div class="section-header">
+        <div class="section-header-line"></div>
+        <h2>World Cup 2026 — Full Schedule</h2>
+    </div>
+    <div class="date-filter" id="dateFilter"></div>
+    <div class="matches-list" id="matchList"></div>
+    <footer>
+        FIFA World Cup 2026 · All times BD (Bangladesh Time)
+        <div class="dev-credit">DEVELOPER S1Y4M X XEN3X</div>
+    </footer>
+</div>
+
+<!-- FULLSCREEN OVERLAY -->
+<div class="fs-overlay" id="fsOverlay">
+    <button class="fs-close" onclick="closeFullscreen()">X  Close</button>
+    <iframe id="fsFrame" src="" allowfullscreen allow="autoplay; encrypted-media"></iframe>
+</div>
+
+<script>
+// ── CHANNEL SOURCES ──
+const chSrcs = [
+    "https://fifa-world-cup-live.pages.dev/tsn",
+    "https://fifa-world-cup-live.pages.dev/dsports.html",
+    "https://fifa-world-cup-live.pages.dev/sportv"
+];
+const chNames = ["FIFA LIVE 1", "FIFA LIVE 2", "FIFA LIVE 3"];
+let currentCh = 0;
+
+// ── MATCH DATA  (date, teams, time IST, score: null = not played yet, [g1,g2] = finished/live) ──
+const matches = [
+    { date: "JUNE 12", t1: "Mexico",       f1: "mx",     t2: "South Africa",  f2: "za",    time: "12:30 AM", score: [0,0] },
+    { date: "JUNE 12", t1: "Korea Republic",f1: "kr",    t2: "Czechia",        f2: "cz",    time: "07:30 AM", score: [1,1] },
+    { date: "JUNE 13", t1: "Canada",        f1: "ca",    t2: "Bosnia & Herz.", f2: "ba",    time: "12:30 AM", score: [2,0] },
+    { date: "JUNE 13", t1: "USA",           f1: "us",    t2: "Paraguay",       f2: "py",    time: "06:30 AM", score: [3,1] },
+    { date: "JUNE 14", t1: "Qatar",         f1: "qa",    t2: "Switzerland",    f2: "ch",    time: "12:30 AM", score: [0,2] },
+    { date: "JUNE 14", t1: "Brazil",        f1: "br",    t2: "Morocco",        f2: "ma",    time: "03:30 AM", score: [1,0] },
+    { date: "JUNE 14", t1: "Haiti",         f1: "ht",    t2: "Scotland",       f2: "gb-sct",time: "06:30 AM", score: [0,3] },
+    { date: "JUNE 14", t1: "Australia",     f1: "au",    t2: "Turkiye",        f2: "tr",    time: "09:30 AM", score: [1,2] },
+    { date: "JUNE 14", t1: "Germany",       f1: "de",    t2: "Curacao",        f2: "cw",    time: "10:30 PM", score: null },
+    { date: "JUNE 15", t1: "Netherlands",   f1: "nl",    t2: "Japan",          f2: "jp",    time: "01:30 AM", score: null },
+    { date: "JUNE 15", t1: "Ivory Coast",   f1: "ci",    t2: "Ecuador",        f2: "ec",    time: "04:30 AM", score: null },
+    { date: "JUNE 15", t1: "Sweden",        f1: "se",    t2: "Tunisia",        f2: "tn",    time: "07:30 AM", score: null },
+    { date: "JUNE 15", t1: "Spain",         f1: "es",    t2: "Cabo Verde",     f2: "cv",    time: "09:30 PM", score: null },
+    { date: "JUNE 16", t1: "Belgium",       f1: "be",    t2: "Egypt",          f2: "eg",    time: "12:30 AM", score: null },
+    { date: "JUNE 16", t1: "Saudi Arabia",  f1: "sa",    t2: "Uruguay",        f2: "uy",    time: "03:30 AM", score: null },
+    { date: "JUNE 16", t1: "Iran",          f1: "ir",    t2: "New Zealand",    f2: "nz",    time: "06:30 AM", score: null },
+    { date: "JUNE 17", t1: "France",        f1: "fr",    t2: "Senegal",        f2: "sn",    time: "12:30 AM", score: null },
+    { date: "JUNE 17", t1: "Iraq",          f1: "iq",    t2: "Norway",         f2: "no",    time: "03:30 AM", score: null },
+    { date: "JUNE 17", t1: "Argentina",     f1: "ar",    t2: "Algeria",        f2: "dz",    time: "06:30 AM", score: null },
+    { date: "JUNE 17", t1: "Austria",       f1: "at",    t2: "Jordan",         f2: "jo",    time: "09:30 AM", score: null },
+    { date: "JUNE 17", t1: "Portugal",      f1: "pt",    t2: "Congo",          f2: "cd",    time: "10:30 PM", score: null },
+    { date: "JUNE 18", t1: "Croatia",       f1: "hr",    t2: "England",        f2: "gb-eng",time: "01:30 AM", score: null },
+    { date: "JUNE 18", t1: "Ghana",         f1: "gh",    t2: "Panama",         f2: "pa",    time: "04:30 AM", score: null },
+    { date: "JUNE 18", t1: "Uzbekistan",    f1: "uz",    t2: "Colombia",       f2: "co",    time: "07:30 AM", score: null },
+    { date: "JUNE 18", t1: "Czechia",       f1: "cz",    t2: "Saudi Arabia",   f2: "sa",    time: "09:30 PM", score: null },
+    { date: "JUNE 19", t1: "Switzerland",   f1: "ch",    t2: "Bosnia & Herz.", f2: "ba",    time: "12:30 AM", score: null },
+    { date: "JUNE 19", t1: "Canada",        f1: "ca",    t2: "Qatar",          f2: "qa",    time: "03:30 AM", score: null },
+    { date: "JUNE 19", t1: "Mexico",        f1: "mx",    t2: "Korea Republic", f2: "kr",    time: "08:30 AM", score: null },
+    { date: "JUNE 20", t1: "USA",           f1: "us",    t2: "Australia",      f2: "au",    time: "12:30 AM", score: null },
+    { date: "JUNE 20", t1: "Scotland",      f1: "gb-sct",t2: "Morocco",        f2: "ma",    time: "03:30 AM", score: null },
+    { date: "JUNE 20", t1: "Brazil",        f1: "br",    t2: "Haiti",          f2: "ht",    time: "06:00 AM", score: null },
+    { date: "JUNE 20", t1: "Turkiye",       f1: "tr",    t2: "Paraguay",       f2: "py",    time: "08:30 AM", score: null },
+    { date: "JUNE 20", t1: "Netherlands",   f1: "nl",    t2: "Sweden",         f2: "se",    time: "10:30 PM", score: null },
+    { date: "JUNE 21", t1: "Germany",       f1: "de",    t2: "Ivory Coast",    f2: "ci",    time: "01:30 AM", score: null },
+    { date: "JUNE 21", t1: "Ecuador",       f1: "ec",    t2: "Curacao",        f2: "cw",    time: "05:30 AM", score: null },
+    { date: "JUNE 21", t1: "Tunisia",       f1: "tn",    t2: "Japan",          f2: "jp",    time: "09:30 AM", score: null },
+    { date: "JUNE 21", t1: "Spain",         f1: "es",    t2: "Saudi Arabia",   f2: "sa",    time: "09:30 PM", score: null },
+    { date: "JUNE 22", t1: "Belgium",       f1: "be",    t2: "Iran",           f2: "ir",    time: "12:30 AM", score: null },
+    { date: "JUNE 22", t1: "Uruguay",       f1: "uy",    t2: "Cabo Verde",     f2: "cv",    time: "03:30 AM", score: null },
+    { date: "JUNE 22", t1: "New Zealand",   f1: "nz",    t2: "Egypt",          f2: "eg",    time: "06:30 AM", score: null },
+    { date: "JUNE 22", t1: "Argentina",     f1: "ar",    t2: "Austria",        f2: "at",    time: "10:30 PM", score: null },
+    { date: "JUNE 23", t1: "France",        f1: "fr",    t2: "Iraq",           f2: "iq",    time: "02:30 AM", score: null },
+    { date: "JUNE 23", t1: "Norway",        f1: "no",    t2: "Senegal",        f2: "sn",    time: "05:30 AM", score: null },
+    { date: "JUNE 23", t1: "Jordan",        f1: "jo",    t2: "Algeria",        f2: "dz",    time: "08:30 AM", score: null },
+    { date: "JUNE 23", t1: "Portugal",      f1: "pt",    t2: "Uzbekistan",     f2: "uz",    time: "10:30 PM", score: null },
+    { date: "JUNE 24", t1: "England",       f1: "gb-eng",t2: "Ghana",          f2: "gh",    time: "01:30 AM", score: null },
+    { date: "JUNE 24", t1: "Panama",        f1: "pa",    t2: "Croatia",        f2: "hr",    time: "04:30 AM", score: null },
+    { date: "JUNE 24", t1: "Colombia",      f1: "co",    t2: "Congo",          f2: "cd",    time: "07:30 AM", score: null },
+    { date: "JUNE 25", t1: "Switzerland",   f1: "ch",    t2: "Canada",         f2: "ca",    time: "12:30 AM", score: null },
+    { date: "JUNE 25", t1: "Bosnia & Herz.",f1: "ba",    t2: "Qatar",          f2: "qa",    time: "12:30 AM", score: null },
+    { date: "JUNE 25", t1: "Scotland",      f1: "gb-sct",t2: "Brazil",         f2: "br",    time: "03:30 AM", score: null },
+    { date: "JUNE 25", t1: "Morocco",       f1: "ma",    t2: "Haiti",          f2: "ht",    time: "03:30 AM", score: null },
+    { date: "JUNE 25", t1: "Czechia",       f1: "cz",    t2: "Mexico",         f2: "mx",    time: "06:30 AM", score: null },
+    { date: "JUNE 25", t1: "South Africa",  f1: "za",    t2: "Korea Republic", f2: "kr",    time: "06:30 AM", score: null },
+    { date: "JUNE 26", t1: "Curacao",       f1: "cw",    t2: "Ivory Coast",    f2: "ci",    time: "01:30 AM", score: null },
+    { date: "JUNE 26", t1: "Ecuador",       f1: "ec",    t2: "Germany",        f2: "de",    time: "01:30 AM", score: null },
+    { date: "JUNE 26", t1: "Japan",         f1: "jp",    t2: "Sweden",         f2: "se",    time: "04:30 AM", score: null },
+    { date: "JUNE 26", t1: "Tunisia",       f1: "tn",    t2: "Netherlands",    f2: "nl",    time: "04:30 AM", score: null },
+    { date: "JUNE 26", t1: "Turkiye",       f1: "tr",    t2: "USA",            f2: "us",    time: "07:30 AM", score: null },
+    { date: "JUNE 26", t1: "Paraguay",      f1: "py",    t2: "Australia",      f2: "au",    time: "07:30 AM", score: null },
+    { date: "JUNE 27", t1: "Norway",        f1: "no",    t2: "France",         f2: "fr",    time: "12:30 AM", score: null },
+    { date: "JUNE 27", t1: "Senegal",       f1: "sn",    t2: "Iraq",           f2: "iq",    time: "12:30 AM", score: null },
+    { date: "JUNE 27", t1: "Cabo Verde",    f1: "cv",    t2: "Saudi Arabia",   f2: "sa",    time: "05:30 AM", score: null },
+    { date: "JUNE 27", t1: "Uruguay",       f1: "uy",    t2: "Spain",          f2: "es",    time: "05:30 AM", score: null },
+    { date: "JUNE 27", t1: "Egypt",         f1: "eg",    t2: "Iran",           f2: "ir",    time: "08:30 AM", score: null },
+    { date: "JUNE 27", t1: "New Zealand",   f1: "nz",    t2: "Belgium",        f2: "be",    time: "08:30 AM", score: null },
+    { date: "JUNE 28", t1: "Panama",        f1: "pa",    t2: "England",        f2: "gb-eng",time: "02:30 AM", score: null },
+    { date: "JUNE 28", t1: "Croatia",       f1: "hr",    t2: "Ghana",          f2: "gh",    time: "02:30 AM", score: null },
+    { date: "JUNE 28", t1: "Colombia",      f1: "co",    t2: "Portugal",       f2: "pt",    time: "05:00 AM", score: null },
+    { date: "JUNE 28", t1: "Congo",         f1: "cd",    t2: "Uzbekistan",     f2: "uz",    time: "05:00 AM", score: null },
+    { date: "JUNE 28", t1: "Algeria",       f1: "dz",    t2: "Austria",        f2: "at",    time: "07:30 AM", score: null },
+    { date: "JUNE 28", t1: "Jordan",        f1: "jo",    t2: "Argentina",      f2: "ar",    time: "07:30 AM", score: null },
+];
+
+// ── HELPERS ──
+function parseMatchDate(dateStr, timeStr) {
+    const monthMap = { JUNE: 5 };
+    const parts = dateStr.split(' ');
+    const month = monthMap[parts[0]];
+    const day = parseInt(parts[1]);
+    const [timePart, ampm] = timeStr.split(' ');
+    let [hours, minutes] = timePart.split(':').map(Number);
+    if (ampm === 'PM' && hours !== 12) hours += 12;
+    if (ampm === 'AM' && hours === 12) hours = 0;
+    const utcMs = Date.UTC(2026, month, day, hours, minutes) - (5 * 60 + 30) * 60 * 1000;
+    return new Date(utcMs);
+}
+
+function getMatchStatus(m) {
+    const start = parseMatchDate(m.date, m.time);
+    const end = new Date(start.getTime() + 115 * 60 * 1000);
+    const now = new Date();
+    if (now >= start && now <= end) return 'live';
+    if (now < start) return 'upcoming';
+    return 'finished';
+}
+
+function getTodayDateStr() {
+    // Bangladesh Standard Time = UTC+6
+    const bd = new Date(Date.now() + 6 * 3600000);
+    const months = ['JANUARY','FEBRUARY','MARCH','APRIL','MAY','JUNE','JULY','AUGUST','SEPTEMBER','OCTOBER','NOVEMBER','DECEMBER'];
+    return months[bd.getUTCMonth()] + ' ' + bd.getUTCDate();
+}
+
+// ── IST -> BD TIME (BD = IST + 30 min) ──
+// All match times in the data above are stored as IST clock times.
+// This converts them to Bangladesh time for display purposes only.
+function toBDTime(timeStr) {
+    const [timePart, ampm] = timeStr.split(' ');
+    let [h, m] = timePart.split(':').map(Number);
+    let total = (h % 12) * 60 + m + (ampm === 'PM' ? 12 * 60 : 0); // minutes since 12:00 AM
+    total = (total + 30) % 1440; // BD = IST + 30 minutes
+    let hh = Math.floor(total / 60);
+    const mm = total % 60;
+    const newAmpm = hh < 12 ? 'AM' : 'PM';
+    let displayH = hh % 12;
+    if (displayH === 0) displayH = 12;
+    return `${String(displayH).padStart(2, '0')}:${String(mm).padStart(2, '0')} ${newAmpm}`;
+}
+
+// ── TAB SWITCHING ──
+function showTab(tab, btn) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('page-' + tab).classList.add('active');
+    btn.classList.add('active');
+}
+
+// ── CHANNEL SWITCH — stop other streams when switching ──
+function switchChannel(i) {
+    // Pause all iframes by blanking src first, then set active only
+    document.querySelectorAll('#videoWrap iframe').forEach((f, idx) => {
+        if (idx !== i) {
+            f.src = '';
+            f.classList.remove('active');
+        }
+    });
+    currentCh = i;
+    const activeFrame = document.getElementById('ch' + i);
+    if (!activeFrame.src || activeFrame.src === window.location.href) {
+        activeFrame.src = chSrcs[i];
+    }
+    activeFrame.classList.add('active');
+    document.querySelectorAll('.ch-btn').forEach((b, idx) => b.classList.toggle('active', idx === i));
+    document.getElementById('ch-name').textContent = chNames[i];
+    requestWakeLock();
+}
+
+// ── STREAM CONTROLS AUTO-HIDE ──
+let controlsTimer = null;
+function showStreamControls() {
+    const inner = document.getElementById('streamControlsInner');
+    inner.classList.add('show');
+    clearTimeout(controlsTimer);
+    controlsTimer = setTimeout(() => inner.classList.remove('show'), 3000);
+}
+
+// ── FULLSCREEN & ROTATE ──
+function enterFullscreen(el) {
+    if (el.requestFullscreen) return el.requestFullscreen();
+    if (el.webkitRequestFullscreen) return el.webkitRequestFullscreen();
+    if (el.webkitEnterFullscreen) return el.webkitEnterFullscreen(); // iOS video fallback
+    return Promise.reject(new Error('Fullscreen not supported'));
+}
+
+function rotateFullscreen(e) {
+    if (e) e.stopPropagation();
+    const src = document.getElementById('ch' + currentCh).src || chSrcs[currentCh];
+    const overlay = document.getElementById('fsOverlay');
+    document.getElementById('fsFrame').src = src;
+    overlay.classList.add('open');
+    requestWakeLock();
+
+    const goLandscape = () => {
+        if (screen.orientation && screen.orientation.lock) {
+            screen.orientation.lock('landscape').catch(() => overlay.classList.add('force-landscape'));
+        } else {
+            // Orientation Lock API not available (e.g. iOS Safari) — rotate via CSS instead
+            overlay.classList.add('force-landscape');
+        }
+    };
+
+    // Fullscreen must be entered first — most browsers reject orientation
+    // lock requests made outside of an active fullscreen context.
+    Promise.resolve(enterFullscreen(overlay)).then(goLandscape).catch(goLandscape);
+}
+
+function openFullscreen(e) {
+    if (e) e.stopPropagation();
+    const src = document.getElementById('ch' + currentCh).src || chSrcs[currentCh];
+    const overlay = document.getElementById('fsOverlay');
+    document.getElementById('fsFrame').src = src;
+    overlay.classList.add('open');
+    Promise.resolve(enterFullscreen(overlay)).catch(() => {});
+    requestWakeLock();
+}
+
+function closeFullscreen() {
+    const overlay = document.getElementById('fsOverlay');
+    overlay.classList.remove('open');
+    overlay.classList.remove('force-landscape');
+    document.getElementById('fsFrame').src = '';
+    if (screen.orientation && screen.orientation.unlock) screen.orientation.unlock();
+    if (document.exitFullscreen) document.exitFullscreen().catch(() => {});
+    else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
+}
+
+document.addEventListener('fullscreenchange', () => {
+    if (!document.fullscreenElement) {
+        const overlay = document.getElementById('fsOverlay');
+        overlay.classList.remove('open');
+        overlay.classList.remove('force-landscape');
+        document.getElementById('fsFrame').src = '';
+        if (screen.orientation && screen.orientation.unlock) screen.orientation.unlock();
+    }
+});
+document.addEventListener('webkitfullscreenchange', () => {
+    if (!document.webkitFullscreenElement) {
+        const overlay = document.getElementById('fsOverlay');
+        overlay.classList.remove('open');
+        overlay.classList.remove('force-landscape');
+        document.getElementById('fsFrame').src = '';
+    }
+});
+
+// ── MATCH CARD HTML ──
+function matchCardHTML(m) {
+    const status = getMatchStatus(m);
+    let badge = '';
+    let cardClass = '';
+    let centerBlock = '';
+
+    if (status === 'live') {
+        badge = `<div class="match-live-badge"><span class="match-live-dot"></span>LIVE</div>`;
+        cardClass = 'live-match';
+        centerBlock = `<span class="vs-badge">VS</span>`;
+    } else if (status === 'upcoming') {
+        badge = `<div class="match-upcoming-badge">UPCOMING</div>`;
+        cardClass = 'upcoming-match';
+        centerBlock = `<span class="vs-badge">VS</span>`;
+    } else {
+        // finished
+        cardClass = 'finished-match';
+        centerBlock = `<span class="vs-badge">FT</span>`;
+    }
+
+    return `
+        <div class="match-card ${cardClass}">
+            ${badge}
+            <div class="match-time-col">
+                <span class="match-time-val">${toBDTime(m.time).split(' ')[0]}</span>
+                <span class="match-time-tz">${toBDTime(m.time).split(' ').slice(1).join(' ')} BD</span>
+            </div>
+            <div class="match-divider"></div>
+            <div class="match-body">
+                <div class="team">
+                    <img src="https://flagcdn.com/w80/${m.f1}.png" alt="${m.t1}" loading="lazy">
+                    <span class="team-name">${m.t1}</span>
+                </div>
+                ${centerBlock}
+                <div class="team">
+                    <img src="https://flagcdn.com/w80/${m.f2}.png" alt="${m.t2}" loading="lazy">
+                    <span class="team-name">${m.t2}</span>
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+// ── DATE FILTER ──
+const dates = [...new Set(matches.map(m => m.date))];
+let activeDate = 'ALL';
+
+function buildDateFilter() {
+    const el = document.getElementById('dateFilter');
+    const todayStr = getTodayDateStr();
+    const allChip = `<div class="date-chip" onclick="filterDate('ALL',this)">All Dates</div>`;
+    const chips = dates.map(d => {
+        const short = d.replace('JUNE ', 'Jun ');
+        const isToday = d === todayStr;
+        return `<div class="date-chip${isToday?' active':''}" onclick="filterDate('${d}',this)">${short}${isToday?' TODAY':''}</div>`;
+    }).join('');
+    el.innerHTML = allChip + chips;
+    activeDate = dates.find(d => d === todayStr) || 'ALL';
+    if (activeDate === 'ALL') el.querySelector('.date-chip').classList.add('active');
+}
+
+function filterDate(date, el) {
+    activeDate = date;
+    document.querySelectorAll('.date-chip').forEach(c => c.classList.remove('active'));
+    el.classList.add('active');
+    renderMatches();
+}
+
+function renderMatches() {
+    const list = document.getElementById('matchList');
+    const filtered = activeDate === 'ALL' ? matches : matches.filter(m => m.date === activeDate);
+    if (activeDate === 'ALL') {
+        const grouped = {};
+        filtered.forEach(m => { if (!grouped[m.date]) grouped[m.date] = []; grouped[m.date].push(m); });
+        list.innerHTML = Object.entries(grouped).map(([date, ms]) =>
+            `<div class="match-date-label">${date}</div>` + ms.map(matchCardHTML).join('')
+        ).join('');
+    } else {
+        list.innerHTML = filtered.map(matchCardHTML).join('');
+    }
+}
+
+// ── TODAY (Live tab) ──
+function renderTodayUpcoming() {
+    const todayStr = getTodayDateStr();
+    const todayMatches = matches.filter(m => m.date === todayStr);
+    // Show live first, then upcoming — skip finished
+    const live = todayMatches.filter(m => getMatchStatus(m) === 'live');
+    const upcoming = todayMatches.filter(m => getMatchStatus(m) === 'upcoming');
+    const showList = [...live, ...upcoming];
+
+    const section = document.getElementById('todayUpcomingSection');
+    const list = document.getElementById('todayMatchList');
+    if (showList.length === 0) {
+        section.style.display = 'none';
+    } else {
+        section.style.display = 'block';
+        list.innerHTML = showList.map(matchCardHTML).join('');
+    }
+}
+
+// ── NOTIFICATIONS ──
+let notifEnabled = false;
+let scheduledNotifs = [];
+
+function toggleNotifBtn() {
+    const btn = document.getElementById('notifBtn');
+    if (notifEnabled) {
+        disableNotifications(btn);
+    } else {
+        enableNotifications(btn);
+    }
+}
+
+async function enableNotifications(btn) {
+    if (!('Notification' in window)) {
+        showToast('Eyi browser e push notification support nai.');
+        return;
+    }
+    let perm = Notification.permission;
+    if (perm === 'default') perm = await Notification.requestPermission();
+    if (perm !== 'granted') {
+        showToast('Notification permission deyni — settings theke allow korte hobe.');
+        return;
+    }
+    notifEnabled = true;
+    try { localStorage.setItem('xenNotif', '1'); } catch(e) {}
+    btn.classList.add('active');
+    scheduleMatchNotifications();
+    showToast('Notifications ON — match shuru hobar 5 min age alert paben.');
+}
+
+function disableNotifications(btn) {
+    notifEnabled = false;
+    try { localStorage.setItem('xenNotif', '0'); } catch(e) {}
+    btn.classList.remove('active');
+    scheduledNotifs.forEach(id => clearTimeout(id));
+    scheduledNotifs = [];
+    showToast('Notifications off kora hoyeche.');
+}
+
+function scheduleMatchNotifications() {
+    scheduledNotifs.forEach(id => clearTimeout(id));
+    scheduledNotifs = [];
+    const now = new Date();
+    matches.forEach(m => {
+        const start = parseMatchDate(m.date, m.time);
+        const delay = start - 5 * 60000 - now;
+        if (delay > 0) {
+            const tid = setTimeout(() => {
+                if (notifEnabled && Notification.permission === 'granted') {
+                    new Notification('XEN SPORTS — Match Starting Soon!', {
+                        body: `${m.t1} vs ${m.t2} — ${toBDTime(m.time)} BD`,
+                        icon: 'https://i.ibb.co.com/rGHtys1G/file-000000009fb87208b7d1ca320d4b478c.png',
+                        tag: `xen-${m.date}-${m.t1}`,
+                        vibrate: [200, 100, 200],
+                    });
+                }
+            }, delay);
+            scheduledNotifs.push(tid);
+        }
+    });
+}
+
+function showToast(msg) {
+    let t = document.getElementById('xen-toast');
+    if (!t) {
+        t = document.createElement('div');
+        t.id = 'xen-toast';
+        t.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#0f2035;border:1px solid rgba(0,229,255,0.3);color:#fff;padding:10px 18px;border-radius:10px;font-size:0.78rem;font-family:Inter,sans-serif;z-index:9998;text-align:center;max-width:85vw;box-shadow:0 4px 20px rgba(0,0,0,0.5);opacity:0;transition:opacity 0.3s;';
+        document.body.appendChild(t);
+    }
+    t.textContent = msg;
+    t.style.opacity = '1';
+    setTimeout(() => { t.style.opacity = '0'; }, 3000);
+}
+
+// ── WAKE LOCK ──
+let wakeLock = null;
+async function requestWakeLock() {
+    try { if ('wakeLock' in navigator) wakeLock = await navigator.wakeLock.request('screen'); } catch(e){}
+}
+document.addEventListener('click', requestWakeLock, { once: true });
+document.addEventListener('visibilitychange', () => {
+    if (wakeLock !== null && document.visibilityState === 'visible') requestWakeLock();
+});
+
+// ── SERVICE WORKER ──
+if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js').catch(()=>{});
+
+// ── INSTALL BANNER ──
+let deferredPrompt;
+window.addEventListener('beforeinstallprompt', e => {
+    e.preventDefault(); deferredPrompt = e;
+    document.getElementById('installBanner').style.display = 'flex';
+});
+function installApp() {
+    if (!deferredPrompt) return;
+    deferredPrompt.prompt();
+    deferredPrompt.userChoice.then(() => { deferredPrompt = null; document.getElementById('installBanner').style.display = 'none'; });
+}
+function dismissBanner() { document.getElementById('installBanner').style.display = 'none'; }
+
+// ── INIT ──
+buildDateFilter();
+renderMatches();
+renderTodayUpcoming();
+
+// Restore notification preference
+(function initNotif() {
+    try {
+        const saved = localStorage.getItem('xenNotif');
+        if (saved === '1' && 'Notification' in window && Notification.permission === 'granted') {
+            notifEnabled = true;
+            document.getElementById('notifBtn').classList.add('active');
+            scheduleMatchNotifications();
+        }
+    } catch(e) {}
+})();
+
+// Auto-refresh every 60s
+setInterval(() => {
+    renderMatches();
+    renderTodayUpcoming();
+    if (notifEnabled) scheduleMatchNotifications();
+}, 60000);
+</script>
+</body>
+</html>
