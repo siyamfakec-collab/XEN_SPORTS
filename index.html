@@ -304,6 +304,68 @@
             margin-top: 4px; font-family: 'Barlow Condensed', sans-serif;
             font-size: 0.75rem; font-weight: 700; letter-spacing: 2px;
             color: rgba(0,229,255,0.5); text-transform: uppercase;
+            display: flex; align-items: center; justify-content: center; gap: 6px;
+            cursor: pointer; transition: color 0.2s ease;
+        }
+        footer .dev-credit:hover { color: var(--accent); }
+        footer .dev-credit .dev-info-icon {
+            width: 14px; height: 14px; flex-shrink: 0;
+            border: 1.4px solid currentColor; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.6rem; font-family: 'Inter', sans-serif; font-weight: 700;
+            letter-spacing: 0;
+        }
+
+        /* DEVELOPER INFO MODAL */
+        .dev-modal-overlay {
+            position: fixed; inset: 0; z-index: 9998;
+            background: rgba(0,0,0,0.7); backdrop-filter: blur(6px);
+            display: flex; align-items: center; justify-content: center;
+            opacity: 0; visibility: hidden; padding: 20px;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        .dev-modal-overlay.active { opacity: 1; visibility: visible; }
+        .dev-modal {
+            background: var(--surface); border: 1px solid rgba(0,229,255,0.25);
+            border-radius: 16px; box-shadow: 0 0 40px rgba(0,229,255,0.18);
+            max-width: 360px; width: 100%; padding: 28px; position: relative;
+            transform: translateY(16px) scale(0.97);
+            transition: transform 0.3s ease;
+        }
+        .dev-modal-overlay.active .dev-modal { transform: translateY(0) scale(1); }
+        .dev-modal-close {
+            position: absolute; top: 12px; right: 12px;
+            width: 30px; height: 30px; display: flex; align-items: center; justify-content: center;
+            border-radius: 8px; border: 1px solid rgba(0,229,255,0.25);
+            background: transparent; color: var(--accent); font-size: 16px; cursor: pointer;
+            transition: background 0.2s ease;
+        }
+        .dev-modal-close:hover { background: rgba(0,229,255,0.12); }
+        .dev-modal-header { display: flex; align-items: center; gap: 14px; margin-bottom: 18px; }
+        .dev-modal-header img {
+            width: 56px; height: 56px; border-radius: 12px; object-fit: cover;
+            border: 2px solid rgba(0,229,255,0.3);
+        }
+        .dev-modal-header h2 {
+            font-family: 'Barlow Condensed', sans-serif; font-size: 1.4rem;
+            font-weight: 900; letter-spacing: 1px; color: var(--text); text-transform: uppercase;
+        }
+        .dev-modal-header p {
+            font-size: 0.78rem; color: var(--accent); font-weight: 600; margin-top: 3px;
+        }
+        .dev-modal-line { width: 50px; height: 2px; background: var(--accent); border-radius: 10px; margin-bottom: 16px; }
+        .dev-modal-info { display: flex; flex-direction: column; gap: 10px; }
+        .dev-info-row {
+            display: flex; justify-content: space-between; align-items: center;
+            font-size: 0.82rem; border-bottom: 1px solid var(--border); padding-bottom: 9px;
+        }
+        .dev-info-row span:first-child {
+            color: var(--muted); font-family: 'Barlow Condensed', sans-serif;
+            letter-spacing: 1.5px; text-transform: uppercase; font-size: 0.72rem;
+        }
+        .dev-info-row span:last-child { color: var(--text); font-weight: 600; text-align: right; }
+        .dev-modal-about {
+            margin-top: 16px; font-size: 0.78rem; line-height: 1.7; color: var(--muted);
         }
     </style>
 </head>
@@ -393,7 +455,7 @@
 
     <footer>
         FIFA World Cup 2026 · All times BD (Bangladesh Time)
-        <div class="dev-credit">DEVELOPER S1Y4M X XEN3X</div>
+        <div class="dev-credit" onclick="document.getElementById('devModal').classList.add('active')"><span class="dev-info-icon">i</span> DEVELOPER S1Y4M X XEN3X</div>
     </footer>
 </div>
 
@@ -407,8 +469,40 @@
     <div class="matches-list" id="matchList"></div>
     <footer>
         FIFA World Cup 2026 · All times BD (Bangladesh Time)
-        <div class="dev-credit">DEVELOPER S1Y4M X XEN3X</div>
+        <div class="dev-credit" onclick="document.getElementById('devModal').classList.add('active')"><span class="dev-info-icon">i</span> DEVELOPER S1Y4M X XEN3X</div>
     </footer>
+</div>
+
+<!-- DEVELOPER INFO MODAL -->
+<div class="dev-modal-overlay" id="devModal" onclick="if(event.target===this) this.classList.remove('active')">
+    <div class="dev-modal">
+        <button class="dev-modal-close" onclick="document.getElementById('devModal').classList.remove('active')">✕</button>
+        <div class="dev-modal-header">
+            <img src="https://i.ibb.co.com/kVpmTQqY/1781559593783.jpg" alt="Developer">
+            <div>
+                <h2>S1Y4M</h2>
+                <p>Founder & Developer</p>
+            </div>
+        </div>
+        <div class="dev-modal-line"></div>
+        <div class="dev-modal-info">
+            <div class="dev-info-row">
+                <span>Project</span>
+                <span>XEN SPORTS</span>
+            </div>
+            <div class="dev-info-row">
+                <span>Role</span>
+                <span>Founder & Developer</span>
+            </div>
+            <div class="dev-info-row" style="border-bottom:none; padding-bottom:0;">
+                <span>Status</span>
+                <span style="color:var(--accent);">● Available</span>
+            </div>
+        </div>
+        <p class="dev-modal-about">
+            Building premium sports platforms, modern websites and digital experiences with a focus on clean design, performance and innovation.
+        </p>
+    </div>
 </div>
 
 <!-- FULLSCREEN OVERLAY -->
@@ -976,4 +1070,4 @@ setInterval(() => {
 }, 60000);
 </script>
 </body>
-</html>
+            </html>
