@@ -295,7 +295,7 @@
             .video-container { padding-bottom: 0; height: calc(100vw * 0.5625); max-height: 75vh; }
         }
 
-        footer {
+footer {
             text-align: center; padding: 14px 16px 10px;
             color: var(--muted); font-size: 0.68rem;
             border-top: 1px solid var(--border); letter-spacing: 0.5px;
@@ -367,6 +367,91 @@
         .dev-modal-about {
             margin-top: 16px; font-size: 0.78rem; line-height: 1.7; color: var(--muted);
         }
+
+        /* GROUPS */
+        .group-card {
+            background: var(--surface); border: 1px solid var(--border);
+            border-radius: 12px; overflow: hidden;
+        }
+        .group-header {
+            display: flex; align-items: center; gap: 8px;
+            padding: 10px 14px; background: var(--surface2);
+            border-bottom: 1px solid var(--border);
+        }
+        .group-letter {
+            font-family: 'Barlow Condensed', sans-serif; font-size: 1.1rem;
+            font-weight: 900; letter-spacing: 2px; color: var(--accent);
+        }
+        .group-match-count {
+            font-size: 0.65rem; color: var(--muted); letter-spacing: 1px;
+            margin-left: auto;
+        }
+        .group-teams {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 0;
+        }
+        .group-team-row {
+            display: flex; align-items: center; gap: 10px;
+            padding: 10px 14px; cursor: pointer; transition: background 0.15s;
+            border-bottom: 1px solid var(--border);
+            border-right: 1px solid var(--border);
+        }
+        .group-team-row:nth-child(even) { border-right: none; }
+        .group-team-row:nth-last-child(-n+2) { border-bottom: none; }
+        .group-team-row:active { background: rgba(0,229,255,0.07); }
+        .group-team-flag {
+            width: 34px; height: 23px; object-fit: cover;
+            border-radius: 3px; box-shadow: 0 2px 6px rgba(0,0,0,0.5);
+            flex-shrink: 0;
+        }
+        .group-team-name {
+            font-size: 0.72rem; font-weight: 600; color: var(--text);
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        }
+        .group-team-tap {
+            margin-left: auto; font-size: 0.55rem; color: var(--muted);
+            letter-spacing: 0.5px; flex-shrink: 0;
+        }
+
+        /* SQUAD MODAL */
+        .squad-position-header {
+            font-family: 'Barlow Condensed', sans-serif; font-size: 0.7rem;
+            font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase;
+            color: var(--accent); padding: 10px 0 6px;
+            border-bottom: 1px solid var(--border); margin-bottom: 8px;
+        }
+        .squad-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px;
+        }
+        .squad-player-card {
+            background: var(--surface2); border: 1px solid var(--border);
+            border-radius: 10px; overflow: hidden; display: flex; flex-direction: column;
+        }
+        .squad-player-img {
+            width: 100%; aspect-ratio: 3/4; object-fit: cover; object-position: top;
+            background: var(--surface);
+        }
+        .squad-player-img-placeholder {
+            width: 100%; aspect-ratio: 3/4; background: var(--surface);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 2.5rem;
+        }
+        .squad-player-info {
+            padding: 6px 8px 8px;
+        }
+        .squad-player-name {
+            font-family: 'Barlow Condensed', sans-serif; font-size: 0.85rem;
+            font-weight: 700; letter-spacing: 0.5px; color: var(--text); line-height: 1.2;
+        }
+        .squad-player-pos {
+            font-size: 0.6rem; color: var(--muted); letter-spacing: 1px; margin-top: 2px;
+        }
+        .squad-loading {
+            text-align: center; padding: 40px 0; color: var(--muted);
+            font-family: 'Barlow Condensed', sans-serif; font-size: 0.9rem; letter-spacing: 2px;
+        }
+        .squad-error {
+            text-align: center; padding: 30px 14px; color: var(--muted); font-size: 0.8rem;
+        }
     </style>
 </head>
 <body>
@@ -407,6 +492,7 @@
 <div class="tab-nav">
     <button class="tab-btn active" id="tabLive" onclick="showTab('live',this)">LIVE</button>
     <button class="tab-btn" id="tabSchedule" onclick="showTab('schedule',this)">SCHEDULE</button>
+    <button class="tab-btn" id="tabGroups" onclick="showTab('groups',this)">GROUPS</button>
 </div>
 
 <!-- LIVE PAGE -->
@@ -471,6 +557,36 @@
         FIFA World Cup 2026 · All times BD (Bangladesh Time)
         <div class="dev-credit" onclick="document.getElementById('devModal').classList.add('active')"><span class="dev-info-icon">i</span> DEVELOPER S1Y4M X XEN3X</div>
     </footer>
+</div>
+
+<!-- GROUPS PAGE -->
+<div class="page" id="page-groups">
+    <div class="section-header">
+        <div class="section-header-line"></div>
+        <h2>World Cup 2026 — Group Stage</h2>
+    </div>
+    <div id="groupsContainer" style="padding:0 10px 20px; display:flex; flex-direction:column; gap:14px;"></div>
+    <footer>
+        FIFA World Cup 2026 · Tap a flag to see squad
+        <div class="dev-credit" onclick="document.getElementById('devModal').classList.add('active')"><span class="dev-info-icon">i</span> DEVELOPER S1Y4M X XEN3X</div>
+    </footer>
+</div>
+
+<!-- SQUAD MODAL -->
+<div id="squadModal" style="display:none; position:fixed; inset:0; z-index:9990; background:rgba(0,0,0,0.85); backdrop-filter:blur(6px); overflow-y:auto;">
+    <div style="max-width:480px; margin:0 auto; padding:16px 12px 40px;">
+        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:14px;">
+            <div style="display:flex; align-items:center; gap:10px;">
+                <img id="modalFlag" src="" style="width:40px; height:28px; object-fit:cover; border-radius:4px; box-shadow:0 2px 8px rgba(0,0,0,0.6);">
+                <div>
+                    <div id="modalTeamName" style="font-family:'Barlow Condensed',sans-serif; font-size:1.3rem; font-weight:900; letter-spacing:1px; color:#fff;"></div>
+                    <div id="modalGroupLabel" style="font-size:0.65rem; color:var(--accent); letter-spacing:2px; font-weight:700;"></div>
+                </div>
+            </div>
+            <button onclick="closeSquadModal()" style="background:var(--surface2); border:1px solid var(--border); color:var(--muted); padding:8px 14px; border-radius:8px; font-family:'Barlow Condensed',sans-serif; font-size:0.8rem; font-weight:700; letter-spacing:1px; cursor:pointer;">✕ CLOSE</button>
+        </div>
+        <div id="modalContent"></div>
+    </div>
 </div>
 
 <!-- DEVELOPER INFO MODAL -->
@@ -1068,6 +1184,638 @@ setInterval(() => {
     updateLiveScores();
     if (notifEnabled) scheduleMatchNotifications();
 }, 60000);
+
+// ── GROUPS DATA (FIFA World Cup 2026) ──
+const groups = {
+    'A': [
+        { name: 'Mexico',        flag: 'mx', tsdb: 'Mexico' },
+        { name: 'South Africa',  flag: 'za', tsdb: 'South Africa' },
+        { name: 'Korea Republic',flag: 'kr', tsdb: 'South Korea' },
+        { name: 'Czechia',       flag: 'cz', tsdb: 'Czech Republic' },
+    ],
+    'B': [
+        { name: 'Canada',        flag: 'ca', tsdb: 'Canada' },
+        { name: 'Bosnia & Herz.',flag: 'ba', tsdb: 'Bosnia and Herzegovina' },
+        { name: 'Qatar',         flag: 'qa', tsdb: 'Qatar' },
+        { name: 'Switzerland',   flag: 'ch', tsdb: 'Switzerland' },
+    ],
+    'C': [
+        { name: 'USA',           flag: 'us', tsdb: 'United States' },
+        { name: 'Paraguay',      flag: 'py', tsdb: 'Paraguay' },
+        { name: 'Australia',     flag: 'au', tsdb: 'Australia' },
+        { name: 'Turkiye',       flag: 'tr', tsdb: 'Turkey' },
+    ],
+    'D': [
+        { name: 'Brazil',        flag: 'br', tsdb: 'Brazil' },
+        { name: 'Morocco',       flag: 'ma', tsdb: 'Morocco' },
+        { name: 'Scotland',      flag: 'gb-sct', tsdb: 'Scotland' },
+        { name: 'Haiti',         flag: 'ht', tsdb: 'Haiti' },
+    ],
+    'E': [
+        { name: 'Germany',       flag: 'de', tsdb: 'Germany' },
+        { name: 'Curacao',       flag: 'cw', tsdb: 'Curaçao' },
+        { name: 'Ivory Coast',   flag: 'ci', tsdb: 'Ivory Coast' },
+        { name: 'Ecuador',       flag: 'ec', tsdb: 'Ecuador' },
+    ],
+    'F': [
+        { name: 'Netherlands',   flag: 'nl', tsdb: 'Netherlands' },
+        { name: 'Japan',         flag: 'jp', tsdb: 'Japan' },
+        { name: 'Sweden',        flag: 'se', tsdb: 'Sweden' },
+        { name: 'Tunisia',       flag: 'tn', tsdb: 'Tunisia' },
+    ],
+    'G': [
+        { name: 'Spain',         flag: 'es', tsdb: 'Spain' },
+        { name: 'Cabo Verde',    flag: 'cv', tsdb: 'Cape Verde' },
+        { name: 'Saudi Arabia',  flag: 'sa', tsdb: 'Saudi Arabia' },
+        { name: 'Uruguay',       flag: 'uy', tsdb: 'Uruguay' },
+    ],
+    'H': [
+        { name: 'Belgium',       flag: 'be', tsdb: 'Belgium' },
+        { name: 'Egypt',         flag: 'eg', tsdb: 'Egypt' },
+        { name: 'Iran',          flag: 'ir', tsdb: 'Iran' },
+        { name: 'New Zealand',   flag: 'nz', tsdb: 'New Zealand' },
+    ],
+    'I': [
+        { name: 'France',        flag: 'fr', tsdb: 'France' },
+        { name: 'Senegal',       flag: 'sn', tsdb: 'Senegal' },
+        { name: 'Iraq',          flag: 'iq', tsdb: 'Iraq' },
+        { name: 'Norway',        flag: 'no', tsdb: 'Norway' },
+    ],
+    'J': [
+        { name: 'Argentina',     flag: 'ar', tsdb: 'Argentina' },
+        { name: 'Algeria',       flag: 'dz', tsdb: 'Algeria' },
+        { name: 'Austria',       flag: 'at', tsdb: 'Austria' },
+        { name: 'Jordan',        flag: 'jo', tsdb: 'Jordan' },
+    ],
+    'K': [
+        { name: 'Portugal',      flag: 'pt', tsdb: 'Portugal' },
+        { name: 'Congo',         flag: 'cd', tsdb: 'DR Congo' },
+        { name: 'Croatia',       flag: 'hr', tsdb: 'Croatia' },
+        { name: 'Ghana',         flag: 'gh', tsdb: 'Ghana' },
+    ],
+    'L': [
+        { name: 'Uzbekistan',    flag: 'uz', tsdb: 'Uzbekistan' },
+        { name: 'Colombia',      flag: 'co', tsdb: 'Colombia' },
+        { name: 'England',       flag: 'gb-eng', tsdb: 'England' },
+        { name: 'Panama',        flag: 'pa', tsdb: 'Panama' },
+    ],
+};
+
+// Map team → group letter
+const teamGroupMap = {};
+Object.entries(groups).forEach(([g, teams]) => {
+    teams.forEach(t => { teamGroupMap[t.name] = g; });
+});
+
+// Count group matches per team
+function getGroupMatches(groupLetter) {
+    const teamNames = groups[groupLetter].map(t => t.name);
+    const norm = n => n.toLowerCase().replace(/[^a-z]/g,'');
+    return matches.filter(m => {
+        const nt1 = norm(m.t1), nt2 = norm(m.t2);
+        return teamNames.some(n => norm(n) === nt1) && teamNames.some(n => norm(n) === nt2);
+    }).length;
+}
+
+function renderGroups() {
+    const container = document.getElementById('groupsContainer');
+    container.innerHTML = Object.entries(groups).map(([letter, teams]) => {
+        const matchCount = getGroupMatches(letter);
+        const teamsHTML = teams.map(t => `
+            <div class="group-team-row" onclick="openSquad('${t.name}','${t.flag}','${t.tsdb}','${letter}')">
+                <img class="group-team-flag" src="https://flagcdn.com/w80/${t.flag}.png" alt="${t.name}" loading="lazy">
+                <span class="group-team-name">${t.name}</span>
+                <span class="group-team-tap"></span>
+            </div>
+        `).join('');
+        return `
+            <div class="group-card">
+                <div class="group-header">
+                    <span class="group-letter">GROUP ${letter}</span>
+                    <span class="group-match-count">${matchCount} MATCHES</span>
+                </div>
+                <div class="group-teams">${teamsHTML}</div>
+            </div>
+        `;
+    }).join('');
+}
+
+// ── WC 2026 SQUAD DATA (hardcoded, photo via Wikipedia API) ──
+const squadData = {
+'Brazil': [
+    {pos:'GK', name:'Alisson Becker', wiki:'Alisson_Becker'},
+    {pos:'GK', name:'Ederson', wiki:'Ederson_(footballer,_born_1993)'},
+    {pos:'GK', name:'Weverton', wiki:'Weverton'},
+    {pos:'DEF', name:'Danilo', wiki:'Danilo_(footballer,_born_1991)'},
+    {pos:'DEF', name:'Éder Militão', wiki:'Éder_Militão'},
+    {pos:'DEF', name:'Gabriel Magalhães', wiki:'Gabriel_Magalhães'},
+    {pos:'DEF', name:'Marquinhos', wiki:'Marquinhos_(footballer)'},
+    {pos:'DEF', name:'Alex Sandro', wiki:'Alex_Sandro'},
+    {pos:'DEF', name:'Wendell', wiki:'Wendell_(footballer,_born_1993)'},
+    {pos:'DEF', name:'Guilherme Arana', wiki:'Guilherme_Arana'},
+    {pos:'MID', name:'Casemiro', wiki:'Casemiro'},
+    {pos:'MID', name:'Bruno Guimarães', wiki:'Bruno_Guimarães'},
+    {pos:'MID', name:'Lucas Paquetá', wiki:'Lucas_Paquetá'},
+    {pos:'MID', name:'Fred', wiki:'Fred_(footballer,_born_1993)'},
+    {pos:'MID', name:'Gerson', wiki:'Gerson_(footballer,_born_1997)'},
+    {pos:'FWD', name:'Neymar', wiki:'Neymar'},
+    {pos:'FWD', name:'Vinicius Jr.', wiki:'Vinícius_Júnior'},
+    {pos:'FWD', name:'Rodrygo', wiki:'Rodrygo'},
+    {pos:'FWD', name:'Raphinha', wiki:'Raphinha'},
+    {pos:'FWD', name:'Gabriel Jesus', wiki:'Gabriel_Jesus'},
+    {pos:'FWD', name:'Richarlison', wiki:'Richarlison'},
+    {pos:'FWD', name:'Endrick', wiki:'Endrick_(footballer)'},
+],
+'Argentina': [
+    {pos:'GK', name:'Emiliano Martínez', wiki:'Emiliano_Martínez'},
+    {pos:'GK', name:'Gerónimo Rulli', wiki:'Gerónimo_Rulli'},
+    {pos:'DEF', name:'Nahuel Molina', wiki:'Nahuel_Molina'},
+    {pos:'DEF', name:'Cristian Romero', wiki:'Cristian_Romero'},
+    {pos:'DEF', name:'Lisandro Martínez', wiki:'Lisandro_Martínez'},
+    {pos:'DEF', name:'Nicolás Otamendi', wiki:'Nicolás_Otamendi'},
+    {pos:'DEF', name:'Nicolás Tagliafico', wiki:'Nicolás_Tagliafico'},
+    {pos:'DEF', name:'Marcos Acuña', wiki:'Marcos_Acuña'},
+    {pos:'MID', name:'Rodrigo De Paul', wiki:'Rodrigo_De_Paul'},
+    {pos:'MID', name:'Leandro Paredes', wiki:'Leandro_Paredes'},
+    {pos:'MID', name:'Alexis Mac Allister', wiki:'Alexis_Mac_Allister'},
+    {pos:'MID', name:'Enzo Fernández', wiki:'Enzo_Fernández'},
+    {pos:'MID', name:'Giovani Lo Celso', wiki:'Giovani_Lo_Celso'},
+    {pos:'FWD', name:'Lionel Messi', wiki:'Lionel_Messi'},
+    {pos:'FWD', name:'Julián Álvarez', wiki:'Julián_Álvarez'},
+    {pos:'FWD', name:'Ángel Di María', wiki:'Ángel_Di_María'},
+    {pos:'FWD', name:'Lautaro Martínez', wiki:'Lautaro_Martínez'},
+    {pos:'FWD', name:'Paulo Dybala', wiki:'Paulo_Dybala'},
+],
+'France': [
+    {pos:'GK', name:'Mike Maignan', wiki:'Mike_Maignan'},
+    {pos:'GK', name:'Alphonse Areola', wiki:'Alphonse_Areola'},
+    {pos:'DEF', name:'Jules Koundé', wiki:'Jules_Koundé'},
+    {pos:'DEF', name:'Raphaël Varane', wiki:'Raphaël_Varane'},
+    {pos:'DEF', name:'Ibrahima Konaté', wiki:'Ibrahima_Konaté'},
+    {pos:'DEF', name:'Dayot Upamecano', wiki:'Dayot_Upamecano'},
+    {pos:'DEF', name:'Theo Hernandez', wiki:'Theo_Hernández'},
+    {pos:'DEF', name:'Lucas Hernandez', wiki:'Lucas_Hernández'},
+    {pos:'MID', name:"N'Golo Kanté", wiki:"N'Golo_Kanté"},
+    {pos:'MID', name:'Aurélien Tchouaméni', wiki:'Aurélien_Tchouaméni'},
+    {pos:'MID', name:'Adrien Rabiot', wiki:'Adrien_Rabiot'},
+    {pos:'MID', name:'Eduardo Camavinga', wiki:'Eduardo_Camavinga'},
+    {pos:'FWD', name:'Kylian Mbappé', wiki:'Kylian_Mbappé'},
+    {pos:'FWD', name:'Antoine Griezmann', wiki:'Antoine_Griezmann'},
+    {pos:'FWD', name:'Ousmane Dembélé', wiki:'Ousmane_Dembélé'},
+    {pos:'FWD', name:'Kingsley Coman', wiki:'Kingsley_Coman'},
+    {pos:'FWD', name:'Marcus Thuram', wiki:'Marcus_Thuram'},
+    {pos:'FWD', name:'Randal Kolo Muani', wiki:'Randal_Kolo_Muani'},
+],
+'Germany': [
+    {pos:'GK', name:'Manuel Neuer', wiki:'Manuel_Neuer'},
+    {pos:'GK', name:'Marc-André ter Stegen', wiki:'Marc-André_ter_Stegen'},
+    {pos:'DEF', name:'Joshua Kimmich', wiki:'Joshua_Kimmich'},
+    {pos:'DEF', name:'Antonio Rüdiger', wiki:'Antonio_Rüdiger'},
+    {pos:'DEF', name:'Nico Schlotterbeck', wiki:'Nico_Schlotterbeck'},
+    {pos:'DEF', name:'Matthias Ginter', wiki:'Matthias_Ginter'},
+    {pos:'DEF', name:'David Raum', wiki:'David_Raum'},
+    {pos:'DEF', name:'Thilo Kehrer', wiki:'Thilo_Kehrer'},
+    {pos:'MID', name:'İlkay Gündoğan', wiki:'İlkay_Gündoğan'},
+    {pos:'MID', name:'Leon Goretzka', wiki:'Leon_Goretzka'},
+    {pos:'MID', name:'Florian Wirtz', wiki:'Florian_Wirtz'},
+    {pos:'MID', name:'Jamal Musiala', wiki:'Jamal_Musiala'},
+    {pos:'MID', name:'Toni Kroos', wiki:'Toni_Kroos'},
+    {pos:'FWD', name:'Leroy Sané', wiki:'Leroy_Sané'},
+    {pos:'FWD', name:'Thomas Müller', wiki:'Thomas_Müller'},
+    {pos:'FWD', name:'Serge Gnabry', wiki:'Serge_Gnabry'},
+    {pos:'FWD', name:'Niclas Füllkrug', wiki:'Niclas_Füllkrug'},
+    {pos:'FWD', name:'Kai Havertz', wiki:'Kai_Havertz'},
+],
+'Spain': [
+    {pos:'GK', name:'Unai Simón', wiki:'Unai_Simón'},
+    {pos:'GK', name:'David Raya', wiki:'David_Raya'},
+    {pos:'DEF', name:'Dani Carvajal', wiki:'Dani_Carvajal'},
+    {pos:'DEF', name:'Pau Cubarsí', wiki:'Pau_Cubarsí'},
+    {pos:'DEF', name:'Aymeric Laporte', wiki:'Aymeric_Laporte'},
+    {pos:'DEF', name:'Robin Le Normand', wiki:'Robin_Le_Normand'},
+    {pos:'DEF', name:'Alejandro Balde', wiki:'Alejandro_Balde'},
+    {pos:'DEF', name:'Marc Cucurella', wiki:'Marc_Cucurella'},
+    {pos:'MID', name:'Pedri', wiki:'Pedri'},
+    {pos:'MID', name:'Rodri', wiki:'Rodri_(footballer)'},
+    {pos:'MID', name:'Fabian Ruiz', wiki:'Fabián_Ruiz'},
+    {pos:'MID', name:'Dani Olmo', wiki:'Dani_Olmo'},
+    {pos:'MID', name:'Mikel Merino', wiki:'Mikel_Merino'},
+    {pos:'FWD', name:'Lamine Yamal', wiki:'Lamine_Yamal'},
+    {pos:'FWD', name:'Nico Williams', wiki:'Nico_Williams'},
+    {pos:'FWD', name:'Álvaro Morata', wiki:'Álvaro_Morata'},
+    {pos:'FWD', name:'Ferran Torres', wiki:'Ferran_Torres'},
+    {pos:'FWD', name:'Mikel Oyarzabal', wiki:'Mikel_Oyarzabal'},
+],
+'England': [
+    {pos:'GK', name:'Jordan Pickford', wiki:'Jordan_Pickford'},
+    {pos:'GK', name:'Aaron Ramsdale', wiki:'Aaron_Ramsdale'},
+    {pos:'DEF', name:'Kyle Walker', wiki:'Kyle_Walker'},
+    {pos:'DEF', name:'John Stones', wiki:'John_Stones'},
+    {pos:'DEF', name:'Harry Maguire', wiki:'Harry_Maguire'},
+    {pos:'DEF', name:'Marc Guéhi', wiki:'Marc_Guéhi'},
+    {pos:'DEF', name:'Luke Shaw', wiki:'Luke_Shaw'},
+    {pos:'DEF', name:'Kieran Trippier', wiki:'Kieran_Trippier'},
+    {pos:'MID', name:'Declan Rice', wiki:'Declan_Rice'},
+    {pos:'MID', name:'Jude Bellingham', wiki:'Jude_Bellingham'},
+    {pos:'MID', name:'Kobbie Mainoo', wiki:'Kobbie_Mainoo'},
+    {pos:'MID', name:'Conor Gallagher', wiki:'Conor_Gallagher'},
+    {pos:'FWD', name:'Harry Kane', wiki:'Harry_Kane'},
+    {pos:'FWD', name:'Bukayo Saka', wiki:'Bukayo_Saka'},
+    {pos:'FWD', name:'Phil Foden', wiki:'Phil_Foden'},
+    {pos:'FWD', name:'Raheem Sterling', wiki:'Raheem_Sterling'},
+    {pos:'FWD', name:'Cole Palmer', wiki:'Cole_Palmer'},
+    {pos:'FWD', name:'Marcus Rashford', wiki:'Marcus_Rashford'},
+],
+'Portugal': [
+    {pos:'GK', name:'Diogo Costa', wiki:'Diogo_Costa_(goalkeeper)'},
+    {pos:'GK', name:'Rui Patrício', wiki:'Rui_Patrício'},
+    {pos:'DEF', name:'João Cancelo', wiki:'João_Cancelo'},
+    {pos:'DEF', name:'Rúben Dias', wiki:'Rúben_Dias'},
+    {pos:'DEF', name:'Pepe', wiki:'Pepe_(footballer,_born_1983)'},
+    {pos:'DEF', name:'Nuno Mendes', wiki:'Nuno_Mendes'},
+    {pos:'DEF', name:'Raphaël Guerreiro', wiki:'Raphaël_Guerreiro'},
+    {pos:'MID', name:'Rúben Neves', wiki:'Rúben_Neves'},
+    {pos:'MID', name:'João Palhinha', wiki:'João_Palhinha'},
+    {pos:'MID', name:'Bernardo Silva', wiki:'Bernardo_Silva'},
+    {pos:'MID', name:'Bruno Fernandes', wiki:'Bruno_Fernandes_(footballer,_born_1994)'},
+    {pos:'MID', name:'Vitinha', wiki:'Vitinha_(midfielder)'},
+    {pos:'FWD', name:'Cristiano Ronaldo', wiki:'Cristiano_Ronaldo'},
+    {pos:'FWD', name:'Rafael Leão', wiki:'Rafael_Leão'},
+    {pos:'FWD', name:'Gonçalo Ramos', wiki:'Gonçalo_Ramos'},
+    {pos:'FWD', name:'João Félix', wiki:'João_Félix'},
+    {pos:'FWD', name:'Diogo Jota', wiki:'Diogo_Jota'},
+    {pos:'FWD', name:'Pedro Neto', wiki:'Pedro_Neto'},
+],
+'Netherlands': [
+    {pos:'GK', name:'Bart Verbruggen', wiki:'Bart_Verbruggen'},
+    {pos:'GK', name:'Mark Flekken', wiki:'Mark_Flekken'},
+    {pos:'DEF', name:'Denzel Dumfries', wiki:'Denzel_Dumfries'},
+    {pos:'DEF', name:'Virgil van Dijk', wiki:'Virgil_van_Dijk'},
+    {pos:'DEF', name:'Stefan de Vrij', wiki:'Stefan_de_Vrij'},
+    {pos:'DEF', name:'Nathan Aké', wiki:'Nathan_Aké'},
+    {pos:'DEF', name:'Matthijs de Ligt', wiki:'Matthijs_de_Ligt'},
+    {pos:'MID', name:'Frenkie de Jong', wiki:'Frenkie_de_Jong'},
+    {pos:'MID', name:'Ryan Gravenberch', wiki:'Ryan_Gravenberch'},
+    {pos:'MID', name:'Teun Koopmeiners', wiki:'Teun_Koopmeiners'},
+    {pos:'MID', name:'Tijjani Reijnders', wiki:'Tijjani_Reijnders'},
+    {pos:'FWD', name:'Memphis Depay', wiki:'Memphis_Depay'},
+    {pos:'FWD', name:'Cody Gakpo', wiki:'Cody_Gakpo'},
+    {pos:'FWD', name:'Donyell Malen', wiki:'Donyell_Malen'},
+    {pos:'FWD', name:'Xavi Simons', wiki:'Xavi_Simons'},
+    {pos:'FWD', name:'Wout Weghorst', wiki:'Wout_Weghorst'},
+],
+'Belgium': [
+    {pos:'GK', name:'Thibaut Courtois', wiki:'Thibaut_Courtois'},
+    {pos:'GK', name:'Koen Casteels', wiki:'Koen_Casteels'},
+    {pos:'DEF', name:'Thomas Meunier', wiki:'Thomas_Meunier'},
+    {pos:'DEF', name:'Jan Vertonghen', wiki:'Jan_Vertonghen'},
+    {pos:'DEF', name:'Toby Alderweireld', wiki:'Toby_Alderweireld'},
+    {pos:'DEF', name:'Arthur Theate', wiki:'Arthur_Theate'},
+    {pos:'DEF', name:'Timothy Castagne', wiki:'Timothy_Castagne'},
+    {pos:'MID', name:'Kevin De Bruyne', wiki:'Kevin_De_Bruyne'},
+    {pos:'MID', name:'Axel Witsel', wiki:'Axel_Witsel'},
+    {pos:'MID', name:'Youri Tielemans', wiki:'Youri_Tielemans'},
+    {pos:'MID', name:'Leander Dendoncker', wiki:'Leander_Dendoncker'},
+    {pos:'FWD', name:'Romelu Lukaku', wiki:'Romelu_Lukaku'},
+    {pos:'FWD', name:'Dries Mertens', wiki:'Dries_Mertens'},
+    {pos:'FWD', name:'Lois Openda', wiki:'Lois_Openda'},
+    {pos:'FWD', name:'Leandro Trossard', wiki:'Leandro_Trossard'},
+],
+'USA': [
+    {pos:'GK', name:'Matt Turner', wiki:'Matt_Turner_(soccer)'},
+    {pos:'GK', name:'Zack Steffen', wiki:'Zack_Steffen'},
+    {pos:'DEF', name:'Sergino Dest', wiki:'Sergiño_Dest'},
+    {pos:'DEF', name:'Miles Robinson', wiki:'Miles_Robinson_(soccer)'},
+    {pos:'DEF', name:'Chris Richards', wiki:'Chris_Richards_(soccer)'},
+    {pos:'DEF', name:'Antonee Robinson', wiki:'Antonee_Robinson'},
+    {pos:'DEF', name:'Joe Scally', wiki:'Joe_Scally'},
+    {pos:'MID', name:'Tyler Adams', wiki:'Tyler_Adams_(soccer)'},
+    {pos:'MID', name:'Weston McKennie', wiki:'Weston_McKennie'},
+    {pos:'MID', name:'Yunus Musah', wiki:'Yunus_Musah'},
+    {pos:'MID', name:'Brenden Aaronson', wiki:'Brenden_Aaronson'},
+    {pos:'FWD', name:'Christian Pulisic', wiki:'Christian_Pulisic'},
+    {pos:'FWD', name:'Timothy Weah', wiki:'Timothy_Weah'},
+    {pos:'FWD', name:'Folarin Balogun', wiki:'Folarin_Balogun'},
+    {pos:'FWD', name:'Josh Sargent', wiki:'Josh_Sargent'},
+    {pos:'FWD', name:'Ricardo Pepi', wiki:'Ricardo_Pepi'},
+],
+'Mexico': [
+    {pos:'GK', name:'Guillermo Ochoa', wiki:'Guillermo_Ochoa'},
+    {pos:'GK', name:'Luis Malagón', wiki:'Luis_Malagón'},
+    {pos:'DEF', name:'Néstor Araujo', wiki:'Néstor_Araujo'},
+    {pos:'DEF', name:'César Montes', wiki:'César_Montes'},
+    {pos:'DEF', name:'Jorge Sánchez', wiki:'Jorge_Sánchez_(footballer,_born_1998)'},
+    {pos:'DEF', name:'Jesús Gallardo', wiki:'Jesús_Gallardo'},
+    {pos:'MID', name:'Edson Álvarez', wiki:'Edson_Álvarez'},
+    {pos:'MID', name:'Héctor Herrera', wiki:'Héctor_Herrera'},
+    {pos:'MID', name:'Orbelin Pineda', wiki:'Orbelín_Pineda'},
+    {pos:'MID', name:'Carlos Rodríguez', wiki:'Carlos_Rodríguez_(footballer,_born_1997)'},
+    {pos:'FWD', name:'Hirving Lozano', wiki:'Hirving_Lozano'},
+    {pos:'FWD', name:'Raúl Jiménez', wiki:'Raúl_Jiménez'},
+    {pos:'FWD', name:'Henry Martín', wiki:'Henry_Martín'},
+    {pos:'FWD', name:'Alexis Vega', wiki:'Alexis_Vega'},
+],
+'Canada': [
+    {pos:'GK', name:'Milan Borjan', wiki:'Milan_Borjan'},
+    {pos:'GK', name:'Maxime Crépeau', wiki:'Maxime_Crépeau'},
+    {pos:'DEF', name:'Alistair Johnston', wiki:'Alistair_Johnston'},
+    {pos:'DEF', name:'Kamal Miller', wiki:'Kamal_Miller'},
+    {pos:'DEF', name:'Sam Adekugbe', wiki:'Sam_Adekugbe'},
+    {pos:'MID', name:'Atiba Hutchinson', wiki:'Atiba_Hutchinson'},
+    {pos:'MID', name:'Stephen Eustaquio', wiki:'Stephen_Eustáquio'},
+    {pos:'MID', name:'Jonathan Osorio', wiki:'Jonathan_Osorio'},
+    {pos:'FWD', name:'Alphonso Davies', wiki:'Alphonso_Davies'},
+    {pos:'FWD', name:'Jonathan David', wiki:'Jonathan_David_(footballer)'},
+    {pos:'FWD', name:'Tajon Buchanan', wiki:'Tajon_Buchanan'},
+    {pos:'FWD', name:'Cyle Larin', wiki:'Cyle_Larin'},
+    {pos:'FWD', name:'Richie Laryea', wiki:'Richie_Laryea'},
+],
+'Morocco': [
+    {pos:'GK', name:'Yassine Bounou', wiki:'Yassine_Bounou'},
+    {pos:'GK', name:'Munir Mohamedi', wiki:'Munir_Mohamedi'},
+    {pos:'DEF', name:'Achraf Hakimi', wiki:'Achraf_Hakimi'},
+    {pos:'DEF', name:'Romain Saïss', wiki:'Romain_Saïss'},
+    {pos:'DEF', name:'Nayef Aguerd', wiki:'Nayef_Aguerd'},
+    {pos:'DEF', name:'Noussair Mazraoui', wiki:'Noussair_Mazraoui'},
+    {pos:'MID', name:'Sofyan Amrabat', wiki:'Sofyan_Amrabat'},
+    {pos:'MID', name:'Azzedine Ounahi', wiki:'Azzedine_Ounahi'},
+    {pos:'FWD', name:'Hakim Ziyech', wiki:'Hakim_Ziyech'},
+    {pos:'FWD', name:'Youssef En-Nesyri', wiki:'Youssef_En-Nesyri'},
+    {pos:'FWD', name:'Sofiane Boufal', wiki:'Sofiane_Boufal'},
+    {pos:'FWD', name:'Abdessamad Ezzalzouli', wiki:'Abdessamad_Ezzalzouli'},
+],
+'Japan': [
+    {pos:'GK', name:'Shuichi Gonda', wiki:'Shuichi_Gonda'},
+    {pos:'GK', name:'Zion Suzuki', wiki:'Zion_Suzuki'},
+    {pos:'DEF', name:'Hiroki Sakai', wiki:'Hiroki_Sakai'},
+    {pos:'DEF', name:'Ko Itakura', wiki:'Ko_Itakura'},
+    {pos:'DEF', name:'Maya Yoshida', wiki:'Maya_Yoshida'},
+    {pos:'DEF', name:'Miki Yamane', wiki:'Miki_Yamane'},
+    {pos:'MID', name:'Wataru Endo', wiki:'Wataru_Endō'},
+    {pos:'MID', name:'Hidemasa Morita', wiki:'Hidemasa_Morita'},
+    {pos:'MID', name:'Ao Tanaka', wiki:'Ao_Tanaka'},
+    {pos:'FWD', name:'Takumi Minamino', wiki:'Takumi_Minamino'},
+    {pos:'FWD', name:'Ritsu Doan', wiki:'Ritsu_Dōan'},
+    {pos:'FWD', name:'Daichi Kamada', wiki:'Daichi_Kamada'},
+    {pos:'FWD', name:'Kaoru Mitoma', wiki:'Kaoru_Mitoma'},
+    {pos:'FWD', name:'Ayase Ueda', wiki:'Ayase_Ueda'},
+],
+'Croatia': [
+    {pos:'GK', name:'Dominik Livaković', wiki:'Dominik_Livaković'},
+    {pos:'DEF', name:'Josip Juranović', wiki:'Josip_Juranović'},
+    {pos:'DEF', name:'Joško Gvardiol', wiki:'Joško_Gvardiol'},
+    {pos:'DEF', name:'Dejan Lovren', wiki:'Dejan_Lovren'},
+    {pos:'DEF', name:'Borna Sosa', wiki:'Borna_Sosa'},
+    {pos:'MID', name:'Luka Modrić', wiki:'Luka_Modrić'},
+    {pos:'MID', name:'Mateo Kovačić', wiki:'Mateo_Kovačić'},
+    {pos:'MID', name:'Marcelo Brozović', wiki:'Marcelo_Brozović'},
+    {pos:'MID', name:'Mario Pašalić', wiki:'Mario_Pašalić'},
+    {pos:'FWD', name:'Ivan Perišić', wiki:'Ivan_Perišić'},
+    {pos:'FWD', name:'Andrej Kramarić', wiki:'Andrej_Kramarić'},
+    {pos:'FWD', name:'Bruno Petković', wiki:'Bruno_Petković'},
+    {pos:'FWD', name:'Ante Budimir', wiki:'Ante_Budimir'},
+],
+'Uruguay': [
+    {pos:'GK', name:'Sergio Rochet', wiki:'Sergio_Rochet'},
+    {pos:'GK', name:'Fernando Muslera', wiki:'Fernando_Muslera'},
+    {pos:'DEF', name:'Nahitan Nández', wiki:'Nahitan_Nández'},
+    {pos:'DEF', name:'Diego Godín', wiki:'Diego_Godín'},
+    {pos:'DEF', name:'Ronald Araújo', wiki:'Ronald_Araújo'},
+    {pos:'DEF', name:'Matías Viña', wiki:'Matías_Viña'},
+    {pos:'MID', name:'Rodrigo Bentancur', wiki:'Rodrigo_Bentancur'},
+    {pos:'MID', name:'Federico Valverde', wiki:'Federico_Valverde'},
+    {pos:'MID', name:'Manuel Ugarte', wiki:'Manuel_Ugarte_(footballer)'},
+    {pos:'FWD', name:'Luis Suárez', wiki:'Luis_Suárez'},
+    {pos:'FWD', name:'Darwin Núñez', wiki:'Darwin_Núñez'},
+    {pos:'FWD', name:'Facundo Torres', wiki:'Facundo_Torres_(footballer)'},
+    {pos:'FWD', name:'Maxi Gómez', wiki:'Maxi_Gómez'},
+],
+'Colombia': [
+    {pos:'GK', name:'Camilo Vargas', wiki:'Camilo_Vargas'},
+    {pos:'DEF', name:'Santiago Arias', wiki:'Santiago_Arias'},
+    {pos:'DEF', name:'Yerry Mina', wiki:'Yerry_Mina'},
+    {pos:'DEF', name:'Davinson Sánchez', wiki:'Davinson_Sánchez'},
+    {pos:'DEF', name:'Johan Mojica', wiki:'Johan_Mojica'},
+    {pos:'MID', name:'Wilmar Barrios', wiki:'Wilmar_Barrios'},
+    {pos:'MID', name:'Mateus Uribe', wiki:'Mateus_Uribe'},
+    {pos:'MID', name:'James Rodríguez', wiki:'James_Rodríguez'},
+    {pos:'MID', name:'Juan Cuadrado', wiki:'Juan_Cuadrado'},
+    {pos:'FWD', name:'Luis Díaz', wiki:'Luis_Díaz_(footballer,_born_1997)'},
+    {pos:'FWD', name:'Rafael Santos Borré', wiki:'Rafael_Santos_Borré'},
+    {pos:'FWD', name:'Falcao', wiki:'Radamel_Falcao'},
+    {pos:'FWD', name:'Jhon Durán', wiki:'Jhon_Durán'},
+],
+'Senegal': [
+    {pos:'GK', name:'Edouard Mendy', wiki:'Édouard_Mendy'},
+    {pos:'GK', name:'Alfred Gomis', wiki:'Alfred_Gomis'},
+    {pos:'DEF', name:'Kalidou Koulibaly', wiki:'Kalidou_Koulibaly'},
+    {pos:'DEF', name:'Abdou Diallo', wiki:'Abdou_Diallo'},
+    {pos:'DEF', name:'Youssouf Sabaly', wiki:'Youssouf_Sabaly'},
+    {pos:'MID', name:'Idrissa Gueye', wiki:'Idrissa_Gana_Gueye'},
+    {pos:'MID', name:'Cheikhou Kouyaté', wiki:'Cheikhou_Kouyaté'},
+    {pos:'MID', name:'Nampalys Mendy', wiki:'Nampalys_Mendy'},
+    {pos:'FWD', name:'Sadio Mané', wiki:'Sadio_Mané'},
+    {pos:'FWD', name:'Ismaila Sarr', wiki:'Ismaila_Sarr'},
+    {pos:'FWD', name:'Boulaye Dia', wiki:'Boulaye_Dia'},
+    {pos:'FWD', name:'Nicolas Jackson', wiki:'Nicolas_Jackson_(footballer)'},
+],
+'Switzerland': [
+    {pos:'GK', name:'Yann Sommer', wiki:'Yann_Sommer'},
+    {pos:'GK', name:'Gregor Kobel', wiki:'Gregor_Kobel'},
+    {pos:'DEF', name:'Silvan Widmer', wiki:'Silvan_Widmer'},
+    {pos:'DEF', name:'Manuel Akanji', wiki:'Manuel_Akanji'},
+    {pos:'DEF', name:'Nico Elvedi', wiki:'Nico_Elvedi'},
+    {pos:'DEF', name:'Ricardo Rodriguez', wiki:'Ricardo_Rodríguez_(footballer)'},
+    {pos:'MID', name:'Granit Xhaka', wiki:'Granit_Xhaka'},
+    {pos:'MID', name:'Remo Freuler', wiki:'Remo_Freuler'},
+    {pos:'MID', name:'Denis Zakaria', wiki:'Denis_Zakaria'},
+    {pos:'FWD', name:'Xherdan Shaqiri', wiki:'Xherdan_Shaqiri'},
+    {pos:'FWD', name:'Ruben Vargas', wiki:'Rubén_Vargas'},
+    {pos:'FWD', name:'Zeki Amdouni', wiki:'Zeki_Amdouni'},
+],
+'Australia': [
+    {pos:'GK', name:'Mat Ryan', wiki:'Mat_Ryan'},
+    {pos:'GK', name:'Joe Gauci', wiki:'Joe_Gauci'},
+    {pos:'DEF', name:'Nathaniel Atkinson', wiki:'Nathaniel_Atkinson'},
+    {pos:'DEF', name:'Harry Souttar', wiki:'Harry_Souttar'},
+    {pos:'DEF', name:'Kye Rowles', wiki:'Kye_Rowles'},
+    {pos:'DEF', name:'Aziz Behich', wiki:'Aziz_Behich'},
+    {pos:'MID', name:'Aaron Mooy', wiki:'Aaron_Mooy'},
+    {pos:'MID', name:'Riley McGree', wiki:'Riley_McGree'},
+    {pos:'MID', name:'Jackson Irvine', wiki:'Jackson_Irvine'},
+    {pos:'FWD', name:'Mathew Leckie', wiki:'Mathew_Leckie'},
+    {pos:'FWD', name:'Mitchell Duke', wiki:'Mitchell_Duke'},
+    {pos:'FWD', name:'Martin Boyle', wiki:'Martin_Boyle'},
+    {pos:'FWD', name:'Craig Goodwin', wiki:'Craig_Goodwin'},
+],
+'Iran': [
+    {pos:'GK', name:'Alireza Beiranvand', wiki:'Alireza_Beiranvand'},
+    {pos:'DEF', name:'Sadegh Moharrami', wiki:'Sadegh_Moharrami'},
+    {pos:'DEF', name:'Majid Hosseini', wiki:'Majid_Hosseini_(footballer)'},
+    {pos:'DEF', name:'Ehsan Hajsafi', wiki:'Ehsan_Hajsafi'},
+    {pos:'MID', name:'Saeid Ezatolahi', wiki:'Saeid_Ezatolahi'},
+    {pos:'MID', name:'Ahmad Nourollahi', wiki:'Ahmad_Nourollahi'},
+    {pos:'MID', name:'Ali Gholizadeh', wiki:'Ali_Gholizadeh'},
+    {pos:'FWD', name:'Sardar Azmoun', wiki:'Sardar_Azmoun'},
+    {pos:'FWD', name:'Mehdi Taremi', wiki:'Mehdi_Taremi'},
+    {pos:'FWD', name:'Allahyar Sayyadmanesh', wiki:'Allahyar_Sayyadmanesh'},
+],
+'Saudi Arabia': [
+    {pos:'GK', name:'Mohammed Al-Owais', wiki:'Mohammed_Al-Owais'},
+    {pos:'DEF', name:'Sultan Al-Ghannam', wiki:'Sultan_Al-Ghannam'},
+    {pos:'DEF', name:'Ali Al-Bulayhi', wiki:'Ali_Al-Bulayhi'},
+    {pos:'DEF', name:'Yasser Al-Shahrani', wiki:'Yasser_Al-Shahrani'},
+    {pos:'MID', name:'Abdullah Otayf', wiki:'Abdullah_Otayf'},
+    {pos:'MID', name:'Mohamed Kanno', wiki:'Mohamed_Kanno'},
+    {pos:'FWD', name:'Salem Al-Dawsari', wiki:'Salem_Al-Dawsari'},
+    {pos:'FWD', name:'Firas Al-Buraikan', wiki:'Firas_Al-Buraikan'},
+    {pos:'FWD', name:'Saleh Al-Shehri', wiki:'Saleh_Al-Shehri'},
+],
+'Ecuador': [
+    {pos:'GK', name:'Hernán Galíndez', wiki:'Hernán_Galíndez'},
+    {pos:'DEF', name:'Ángelo Preciado', wiki:'Ángelo_Preciado'},
+    {pos:'DEF', name:'Piero Hincapié', wiki:'Piero_Hincapié'},
+    {pos:'DEF', name:'Robert Arboleda', wiki:'Robert_Arboleda'},
+    {pos:'DEF', name:'Pervis Estupiñán', wiki:'Pervis_Estupiñán'},
+    {pos:'MID', name:'Carlos Gruezo', wiki:'Carlos_Gruezo'},
+    {pos:'MID', name:'Moisés Caicedo', wiki:'Moisés_Caicedo'},
+    {pos:'FWD', name:'Enner Valencia', wiki:'Enner_Valencia'},
+    {pos:'FWD', name:'Michael Estrada', wiki:'Michael_Estrada'},
+    {pos:'FWD', name:'Gonzalo Plata', wiki:'Gonzalo_Plata'},
+    {pos:'FWD', name:'Jeremy Sarmiento', wiki:'Jeremy_Sarmiento'},
+],
+'Sweden': [
+    {pos:'GK', name:'Robin Olsen', wiki:'Robin_Olsen'},
+    {pos:'DEF', name:'Victor Lindelöf', wiki:'Victor_Lindelöf'},
+    {pos:'DEF', name:'Pontus Jansson', wiki:'Pontus_Jansson'},
+    {pos:'DEF', name:'Ludwig Augustinsson', wiki:'Ludwig_Augustinsson'},
+    {pos:'MID', name:'Albin Ekdal', wiki:'Albin_Ekdal'},
+    {pos:'MID', name:'Jens Cajuste', wiki:'Jens_Cajuste'},
+    {pos:'FWD', name:'Alexander Isak', wiki:'Alexander_Isak'},
+    {pos:'FWD', name:'Dejan Kulusevski', wiki:'Dejan_Kulusevski'},
+    {pos:'FWD', name:'Viktor Gyökeres', wiki:'Viktor_Gyökeres'},
+],
+'Norway': [
+    {pos:'GK', name:'Ørjan Nyland', wiki:'Ørjan_Nyland'},
+    {pos:'DEF', name:'Omar Elabdellaoui', wiki:'Omar_Elabdellaoui'},
+    {pos:'DEF', name:'Andreas Hanche-Olsen', wiki:'Andreas_Hanche-Olsen'},
+    {pos:'DEF', name:'Leo Ostigard', wiki:'Leo_Østigård'},
+    {pos:'MID', name:'Sander Berge', wiki:'Sander_Berge'},
+    {pos:'MID', name:'Martin Ødegaard', wiki:'Martin_Ødegaard'},
+    {pos:'FWD', name:'Erling Haaland', wiki:'Erling_Haaland'},
+    {pos:'FWD', name:'Alexander Sørloth', wiki:'Alexander_Sørloth'},
+    {pos:'FWD', name:'Mohamed Elyounoussi', wiki:'Mohamed_Elyounoussi'},
+],
+'Ghana': [
+    {pos:'GK', name:'Richard Ofori', wiki:'Richard_Ofori'},
+    {pos:'DEF', name:'Andy Yiadom', wiki:'Andy_Yiadom'},
+    {pos:'DEF', name:'Daniel Amartey', wiki:'Daniel_Amartey'},
+    {pos:'DEF', name:'Alexander Djiku', wiki:'Alexander_Djiku'},
+    {pos:'DEF', name:'Abdul Rahman Baba', wiki:'Baba_Rahman'},
+    {pos:'MID', name:'Thomas Partey', wiki:'Thomas_Partey'},
+    {pos:'MID', name:'André Ayew', wiki:'André_Ayew'},
+    {pos:'FWD', name:'Jordan Ayew', wiki:'Jordan_Ayew'},
+    {pos:'FWD', name:'Inaki Williams', wiki:'Iñaki_Williams'},
+    {pos:'FWD', name:'Antoine Semenyo', wiki:'Antoine_Semenyo'},
+],
+'Korea Republic': [
+    {pos:'GK', name:'Kim Seung-gyu', wiki:'Kim_Seung-gyu'},
+    {pos:'GK', name:'Jo Hyeon-woo', wiki:'Jo_Hyeon-woo'},
+    {pos:'DEF', name:'Kim Minjae', wiki:'Kim_Min-jae'},
+    {pos:'DEF', name:'Kim Young-gwon', wiki:'Kim_Young-gwon'},
+    {pos:'MID', name:'Jung Woo-young', wiki:'Jung_Woo-young'},
+    {pos:'MID', name:'Lee Jae-sung', wiki:'Lee_Jae-sung'},
+    {pos:'MID', name:'Hwang In-beom', wiki:'Hwang_In-beom'},
+    {pos:'FWD', name:'Son Heung-min', wiki:'Son_Heung-min'},
+    {pos:'FWD', name:'Hwang Hee-chan', wiki:'Hwang_Hee-chan'},
+    {pos:'FWD', name:'Lee Kang-in', wiki:'Lee_Kang-in'},
+    {pos:'FWD', name:'Cho Gue-sung', wiki:'Cho_Gue-sung'},
+],
+};
+
+// ── SQUAD MODAL ──
+const wikiPhotoCache = {};
+
+function openSquad(teamName, flag, tsdbName, groupLetter) {
+    const modal = document.getElementById('squadModal');
+    const content = document.getElementById('modalContent');
+    document.getElementById('modalFlag').src = `https://flagcdn.com/w80/${flag}.png`;
+    document.getElementById('modalTeamName').textContent = teamName;
+    document.getElementById('modalGroupLabel').textContent = `GROUP ${groupLetter} · FIFA WORLD CUP 2026`;
+    modal.style.display = 'block';
+    document.body.style.overflow = 'hidden';
+
+    const players = squadData[teamName] || squadData[tsdbName] || null;
+    if (players) {
+        content.innerHTML = '<div class="squad-loading"> LOADING PHOTOS...</div>';
+        renderSquadWithPhotos(players, teamName, content);
+    } else {
+        content.innerHTML = '<div class="squad-error"><div style="font-size:2rem;margin-bottom:8px;"></div><div style="color:var(--text);font-weight:600;margin-bottom:6px;">Squad list coming soon</div><div style="font-size:0.75rem;">Confirmed WC 2026 squad not yet available for ' + teamName + '.</div></div>';
+    }
+}
+
+async function renderSquadWithPhotos(players, teamName, container) {
+    const posOrder = ['GK','DEF','MID','FWD'];
+    const posLabel = {GK:'Goalkeepers', DEF:'Defenders', MID:'Midfielders', FWD:'Forwards'};
+    const grouped = {GK:[], DEF:[], MID:[], FWD:[]};
+    players.forEach(p => { if(grouped[p.pos]) grouped[p.pos].push(p); });
+
+    // Batch fetch Wikipedia thumbnails
+    const needWiki = players.filter(p => p.wiki && !wikiPhotoCache[p.wiki]);
+    if (needWiki.length > 0) {
+        const chunks = [];
+        for (let i = 0; i < needWiki.length; i += 20) chunks.push(needWiki.slice(i, i+20));
+        for (const chunk of chunks) {
+            const titles = chunk.map(p => p.wiki.replace(/_/g,' ')).join('|');
+            try {
+                const res = await fetch(`https://en.wikipedia.org/w/api.php?action=query&titles=${encodeURIComponent(titles)}&prop=pageimages&pithumbsize=200&format=json&origin=*`);
+                const data = await res.json();
+                const pages = data.query?.pages || {};
+                Object.values(pages).forEach(page => {
+                    if (page.thumbnail?.source) {
+                        chunk.forEach(p => {
+                            if (p.wiki.replace(/_/g,' ') === page.title) {
+                                wikiPhotoCache[p.wiki] = page.thumbnail.source;
+                            }
+                        });
+                    }
+                });
+            } catch(e) {}
+        }
+    }
+
+    let html = '';
+    posOrder.forEach(pos => {
+        const list = grouped[pos];
+        if (!list.length) return;
+        html += `<div class="squad-position-header">${posLabel[pos]} (${list.length})</div><div class="squad-grid">`;
+        list.forEach(p => {
+            const photo = p.wiki ? wikiPhotoCache[p.wiki] : null;
+            html += `<div class="squad-player-card">
+                ${photo ? `<img class="squad-player-img" src="${photo}" alt="${p.name}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">` : ''}
+                <div class="squad-player-img-placeholder" style="${photo ? 'display:none' : 'display:flex'}"></div>
+                <div class="squad-player-info">
+                    <div class="squad-player-name">${p.name}</div>
+                    <div class="squad-player-pos">${posLabel[pos]}</div>
+                </div>
+            </div>`;
+        });
+        html += '</div>';
+    });
+    container.innerHTML = html;
+}
+
+function closeSquadModal() {
+    document.getElementById('squadModal').style.display = 'none';
+    document.body.style.overflow = '';
+}
+
+// Close modal on backdrop click
+document.getElementById('squadModal').addEventListener('click', function(e) {
+    if (e.target === this) closeSquadModal();
+});
+
+renderGroups();
 </script>
 </body>
-    </html>
+</html>
