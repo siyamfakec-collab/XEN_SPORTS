@@ -412,6 +412,53 @@ footer {
             letter-spacing: 0.5px; flex-shrink: 0;
         }
 
+        /* POINT TABLE TOGGLE */
+        .group-view-toggle {
+            display: flex; gap: 0; margin-left: auto;
+        }
+        .gvt-btn {
+            background: var(--surface); border: 1px solid var(--border);
+            color: var(--muted); padding: 4px 10px;
+            font-family: 'Barlow Condensed', sans-serif; font-size: 0.65rem;
+            font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
+            cursor: pointer; transition: all 0.2s;
+        }
+        .gvt-btn:first-child { border-radius: 6px 0 0 6px; }
+        .gvt-btn:last-child { border-radius: 0 6px 6px 0; border-left: none; }
+        .gvt-btn.active { background: rgba(0,229,255,0.15); border-color: var(--accent); color: var(--accent); }
+
+        /* POINT TABLE */
+        .point-table { width: 100%; border-collapse: collapse; display: none; }
+        .point-table.show { display: table; }
+        .group-teams.hide { display: none; }
+        .pt-head th {
+            font-family: 'Barlow Condensed', sans-serif; font-size: 0.6rem;
+            font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase;
+            color: var(--muted); padding: 6px 6px 6px 0; text-align: center;
+            border-bottom: 1px solid var(--border);
+        }
+        .pt-head th:first-child { text-align: left; padding-left: 12px; width: 45%; }
+        .pt-row td {
+            font-size: 0.72rem; font-weight: 600; color: var(--text);
+            padding: 7px 6px; text-align: center;
+            border-bottom: 1px solid var(--border);
+        }
+        .pt-row:last-child td { border-bottom: none; }
+        .pt-row td:first-child { text-align: left; padding-left: 10px; }
+        .pt-team-cell { display: flex; align-items: center; gap: 7px; }
+        .pt-flag { width: 22px; height: 15px; object-fit: cover; border-radius: 2px; flex-shrink:0; }
+        .pt-pos {
+            font-family: 'Barlow Condensed', sans-serif; font-size: 0.65rem;
+            font-weight: 900; color: var(--muted); width: 14px; text-align: center; flex-shrink:0;
+        }
+        .pt-pos.qualify { color: var(--green); }
+        .pt-pts {
+            font-family: 'Barlow Condensed', sans-serif; font-size: 0.9rem;
+            font-weight: 900; color: var(--accent);
+        }
+        .pt-row.qualify-row { background: rgba(0,230,118,0.04); }
+        .pt-row.qualify-row td:last-child { color: var(--accent); }
+
         /* SQUAD MODAL */
         .squad-position-header {
             font-family: 'Barlow Condensed', sans-serif; font-size: 0.7rem;
@@ -639,18 +686,18 @@ let currentCh = 0;
 
 // ── MATCH DATA  (date, teams, time IST, score: null = not played yet, [g1,g2] = finished/live) ──
 const matches = [
-    { date: "JUNE 12", t1: "Mexico",       f1: "mx",     t2: "South Africa",  f2: "za",    time: "12:30 AM", score: [0,0] },
-    { date: "JUNE 12", t1: "Korea Republic",f1: "kr",    t2: "Czechia",        f2: "cz",    time: "07:30 AM", score: [1,1] },
-    { date: "JUNE 13", t1: "Canada",        f1: "ca",    t2: "Bosnia & Herz.", f2: "ba",    time: "12:30 AM", score: [2,0] },
-    { date: "JUNE 13", t1: "USA",           f1: "us",    t2: "Paraguay",       f2: "py",    time: "06:30 AM", score: [3,1] },
-    { date: "JUNE 14", t1: "Qatar",         f1: "qa",    t2: "Switzerland",    f2: "ch",    time: "12:30 AM", score: [0,2] },
-    { date: "JUNE 14", t1: "Brazil",        f1: "br",    t2: "Morocco",        f2: "ma",    time: "03:30 AM", score: [1,0] },
-    { date: "JUNE 14", t1: "Haiti",         f1: "ht",    t2: "Scotland",       f2: "gb-sct",time: "06:30 AM", score: [0,3] },
-    { date: "JUNE 14", t1: "Australia",     f1: "au",    t2: "Turkiye",        f2: "tr",    time: "09:30 AM", score: [1,2] },
-    { date: "JUNE 14", t1: "Germany",       f1: "de",    t2: "Curacao",        f2: "cw",    time: "10:30 PM", score: [7,1] },
-    { date: "JUNE 15", t1: "Netherlands",   f1: "nl",    t2: "Japan",          f2: "jp",    time: "01:30 AM", score: [2,2] },
-    { date: "JUNE 15", t1: "Ivory Coast",   f1: "ci",    t2: "Ecuador",        f2: "ec",    time: "04:30 AM", score: [1,0] },
-    { date: "JUNE 15", t1: "Sweden",        f1: "se",    t2: "Tunisia",        f2: "tn",    time: "07:30 AM", score: [5,1] },
+    { date: "JUNE 12", t1: "Mexico",       f1: "mx",     t2: "South Africa",  f2: "za",    time: "12:30 AM", score: null },
+    { date: "JUNE 12", t1: "Korea Republic",f1: "kr",    t2: "Czechia",        f2: "cz",    time: "07:30 AM", score: null },
+    { date: "JUNE 13", t1: "Canada",        f1: "ca",    t2: "Bosnia & Herz.", f2: "ba",    time: "12:30 AM", score: null },
+    { date: "JUNE 13", t1: "USA",           f1: "us",    t2: "Paraguay",       f2: "py",    time: "06:30 AM", score: null },
+    { date: "JUNE 14", t1: "Qatar",         f1: "qa",    t2: "Switzerland",    f2: "ch",    time: "12:30 AM", score: null },
+    { date: "JUNE 14", t1: "Brazil",        f1: "br",    t2: "Morocco",        f2: "ma",    time: "03:30 AM", score: null },
+    { date: "JUNE 14", t1: "Haiti",         f1: "ht",    t2: "Scotland",       f2: "gb-sct",time: "06:30 AM", score: null },
+    { date: "JUNE 14", t1: "Australia",     f1: "au",    t2: "Turkiye",        f2: "tr",    time: "09:30 AM", score: null },
+    { date: "JUNE 14", t1: "Germany",       f1: "de",    t2: "Curacao",        f2: "cw",    time: "10:30 PM", score: null },
+    { date: "JUNE 15", t1: "Netherlands",   f1: "nl",    t2: "Japan",          f2: "jp",    time: "01:30 AM", score: null },
+    { date: "JUNE 15", t1: "Ivory Coast",   f1: "ci",    t2: "Ecuador",        f2: "ec",    time: "04:30 AM", score: null },
+    { date: "JUNE 15", t1: "Sweden",        f1: "se",    t2: "Tunisia",        f2: "tn",    time: "07:30 AM", score: null },
     { date: "JUNE 15", t1: "Spain",         f1: "es",    t2: "Cabo Verde",     f2: "cv",    time: "09:30 PM", score: null },
     { date: "JUNE 16", t1: "Belgium",       f1: "be",    t2: "Egypt",          f2: "eg",    time: "12:30 AM", score: null },
     { date: "JUNE 16", t1: "Saudi Arabia",  f1: "sa",    t2: "Uruguay",        f2: "uy",    time: "03:30 AM", score: null },
@@ -792,11 +839,12 @@ function utcDateStrFor(m) {
     return d.toISOString().slice(0, 10); // YYYY-MM-DD
 }
 
-// Fetch & merge real scores for matches that are live or finished-but-unscored.
+// Fetch & merge real scores for ALL finished or live matches from API.
 async function updateLiveScores() {
+    // fetch all matches that are finished or live (no manual score needed)
     const needed = matches.filter(m => {
         const st = getMatchStatus(m);
-        return st === 'live' || (st === 'finished' && !m.score);
+        return st === 'live' || st === 'finished';
     });
     if (needed.length === 0) return;
 
@@ -831,6 +879,7 @@ async function updateLiveScores() {
     if (changed) {
         renderMatches();
         renderTodayUpcoming();
+        renderGroups();
     }
 }
 
@@ -1277,24 +1326,125 @@ function getGroupMatches(groupLetter) {
     }).length;
 }
 
+// ── POINT TABLE CALCULATION ──
+function calcStandings(groupLetter) {
+    const groupTeams = groups[groupLetter];
+    const teamNames = groupTeams.map(t => t.name);
+    const norm = n => n.toLowerCase().replace(/[^a-z]/g,'');
+
+    // init stats
+    const stats = {};
+    groupTeams.forEach(t => {
+        stats[t.name] = { mp:0, w:0, d:0, l:0, gf:0, ga:0, pts:0, flag: t.flag, tsdb: t.tsdb };
+    });
+
+    // find group matches from match data
+    matches.forEach(m => {
+        if (!m.score) return; // not played yet
+        const nt1 = norm(m.t1), nt2 = norm(m.t2);
+        const team1 = groupTeams.find(t => norm(t.name) === nt1 || nt1.includes(norm(t.name)) || norm(t.name).includes(nt1));
+        const team2 = groupTeams.find(t => norm(t.name) === nt2 || nt2.includes(norm(t.name)) || norm(t.name).includes(nt2));
+        if (!team1 || !team2) return;
+
+        const [g1, g2] = m.score;
+        const s1 = stats[team1.name], s2 = stats[team2.name];
+        s1.mp++; s2.mp++;
+        s1.gf += g1; s1.ga += g2;
+        s2.gf += g2; s2.ga += g1;
+        if (g1 > g2) { s1.w++; s1.pts+=3; s2.l++; }
+        else if (g1 < g2) { s2.w++; s2.pts+=3; s1.l++; }
+        else { s1.d++; s2.d++; s1.pts++; s2.pts++; }
+    });
+
+    // sort: pts → gd → gf → name
+    return groupTeams
+        .map(t => ({ ...stats[t.name], name: t.name }))
+        .sort((a,b) => {
+            if (b.pts !== a.pts) return b.pts - a.pts;
+            const gdA = a.gf - a.ga, gdB = b.gf - b.ga;
+            if (gdB !== gdA) return gdB - gdA;
+            if (b.gf !== a.gf) return b.gf - a.gf;
+            return a.name.localeCompare(b.name);
+        });
+}
+
+function toggleGroupView(letter, mode) {
+    const card = document.getElementById(`gc-${letter}`);
+    const teamsDiv = card.querySelector('.group-teams');
+    const tableEl = card.querySelector('.point-table');
+    const btns = card.querySelectorAll('.gvt-btn');
+    if (mode === 'table') {
+        teamsDiv.classList.add('hide');
+        tableEl.classList.add('show');
+        btns[0].classList.remove('active'); btns[1].classList.add('active');
+    } else {
+        teamsDiv.classList.remove('hide');
+        tableEl.classList.remove('show');
+        btns[0].classList.add('active'); btns[1].classList.remove('active');
+    }
+}
+
 function renderGroups() {
     const container = document.getElementById('groupsContainer');
     container.innerHTML = Object.entries(groups).map(([letter, teams]) => {
         const matchCount = getGroupMatches(letter);
+        const standings = calcStandings(letter);
+
         const teamsHTML = teams.map(t => `
             <div class="group-team-row" onclick="openSquad('${t.name}','${t.flag}','${t.tsdb}','${letter}')">
                 <img class="group-team-flag" src="https://flagcdn.com/w80/${t.flag}.png" alt="${t.name}" loading="lazy">
                 <span class="group-team-name">${t.name}</span>
-                <span class="group-team-tap"></span>
+                <span class="group-team-tap">TAP FOR SQUAD</span>
             </div>
         `).join('');
+
+        const tableRows = standings.map((s, i) => {
+            const gd = s.gf - s.ga;
+            const gdStr = gd > 0 ? `+${gd}` : `${gd}`;
+            const qualify = i < 2;
+            return `
+            <tr class="pt-row${qualify ? ' qualify-row' : ''}">
+                <td>
+                    <div class="pt-team-cell">
+                        <span class="pt-pos${qualify ? ' qualify' : ''}">${i+1}</span>
+                        <img class="pt-flag" src="https://flagcdn.com/w80/${s.flag}.png" alt="${s.name}" loading="lazy">
+                        <span style="font-size:0.7rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:72px;">${s.name}</span>
+                    </div>
+                </td>
+                <td>${s.mp}</td>
+                <td>${s.w}</td>
+                <td>${s.d}</td>
+                <td>${s.l}</td>
+                <td>${gdStr}</td>
+                <td class="pt-pts">${s.pts}</td>
+            </tr>`;
+        }).join('');
+
         return `
-            <div class="group-card">
+            <div class="group-card" id="gc-${letter}">
                 <div class="group-header">
                     <span class="group-letter">GROUP ${letter}</span>
                     <span class="group-match-count">${matchCount} MATCHES</span>
+                    <div class="group-view-toggle">
+                        <button class="gvt-btn active" onclick="toggleGroupView('${letter}','teams')">TEAMS</button>
+                        <button class="gvt-btn" onclick="toggleGroupView('${letter}','table')">TABLE</button>
+                    </div>
                 </div>
                 <div class="group-teams">${teamsHTML}</div>
+                <table class="point-table">
+                    <thead>
+                        <tr class="pt-head">
+                            <th>TEAM</th>
+                            <th>MP</th>
+                            <th>W</th>
+                            <th>D</th>
+                            <th>L</th>
+                            <th>GD</th>
+                            <th>PTS</th>
+                        </tr>
+                    </thead>
+                    <tbody>${tableRows}</tbody>
+                </table>
             </div>
         `;
     }).join('');
