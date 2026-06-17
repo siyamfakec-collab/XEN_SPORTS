@@ -1,1984 +1,378 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>XEN SPORTS</title>
-    <link rel="manifest" href="./manifest.json">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="XEN SPORTS">
-    <meta name="theme-color" content="#050d18">
-    <link rel="apple-touch-icon" href="https://i.ibb.co.com/rGHtys1G/file-000000009fb87208b7d1ca320d4b478c.png">
-    <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
-<script>
-  window.OneSignalDeferred = window.OneSignalDeferred || [];
-  OneSignalDeferred.push(async function(OneSignal) {
-    await OneSignal.init({
-      appId: "8d2f50d4-cba0-4751-ad8c-a75c509418a3",
-      safari_web_id: "web.onesignal.auto.5f83a190-684a-4c4c-a875-2ee8aa7bf929",
-      notifyButton: {
-        enable: true,
-      },
-    });
-  });
-</script>
-    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --bg: #050d18;
-            --surface: #0b1828;
-            --surface2: #0f2035;
-            --accent: #00e5ff;
-            --red: #ff2d2d;
-            --gold: #ffc93c;
-            --green: #00e676;
-            --text: #f0f4f8;
-            --muted: #6b7c93;
-            --border: rgba(255,255,255,0.06);
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>XEN SPORTS – Maintenance</title>
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="XEN SPORTS">
+  <meta name="theme-color" content="#050d18">
+  <link rel="apple-touch-icon" href="https://i.ibb.co.com/rGHtys1G/file-000000009fb87208b7d1ca320d4b478c.png">
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg:      #050d18;
+      --surface: #0b1828;
+      --surface2:#0f2035;
+      --accent:  #00e5ff;
+      --red:     #ff2d2d;
+      --gold:    #ffc93c;
+      --green:   #00e676;
+      --text:    #f0f4f8;
+      --muted:   #6b7c93;
+      --border:  rgba(255,255,255,0.06);
+    }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
-        html, body {
-            height: 100%;
-            background: var(--bg);
-            color: var(--text);
-            font-family: 'Inter', sans-serif;
-            overflow-x: hidden;
-        }
+    html, body {
+      min-height: 100%;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      overflow-x: hidden;
+    }
 
-        /* TOPBAR */
-        .topbar {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 12px 16px;
-            background: var(--surface);
-            border-bottom: 1px solid var(--border);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-        .topbar-left { display: flex; align-items: center; gap: 10px; }
-        .topbar .logo { width: 36px; height: 36px; object-fit: contain; }
-        .topbar-title {
-            font-family: 'Barlow Condensed', sans-serif;
-            font-size: 1.25rem; font-weight: 900;
-            letter-spacing: 2px; text-transform: uppercase;
-            background: linear-gradient(90deg, #fff 0%, var(--accent) 100%);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-        }
-        .live-pill {
-            display: flex; align-items: center; gap: 6px;
-            background: rgba(255,45,45,0.15); border: 1px solid rgba(255,45,45,0.4);
-            padding: 4px 10px; border-radius: 20px;
-            font-size: 0.7rem; font-weight: 700; color: var(--red); letter-spacing: 1.5px;
-        }
-        .live-dot {
-            width: 6px; height: 6px; background: var(--red);
-            border-radius: 50%; animation: pulse 1.4s ease-in-out infinite;
-        }
-        @keyframes pulse {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.3; transform: scale(0.8); }
-        }
+    /* subtle grid bg */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: radial-gradient(circle, rgba(255,255,255,0.04) 1px, transparent 1px);
+      background-size: 28px 28px;
+      pointer-events: none; z-index: 0;
+    }
+    body::after {
+      content: '';
+      position: fixed;
+      top: -100px; left: 50%; transform: translateX(-50%);
+      width: 560px; height: 360px;
+      background: radial-gradient(ellipse, rgba(0,229,255,0.10) 0%, transparent 70%);
+      pointer-events: none; z-index: 0;
+    }
 
-        /* NOTIFICATION BELL */
-        .topbar-right { display: flex; align-items: center; gap: 10px; }
-        .notif-btn {
-            background: var(--surface2); border: 1px solid var(--border);
-            color: var(--muted); border-radius: 8px; padding: 7px;
-            display: flex; align-items: center; justify-content: center;
-            cursor: pointer; transition: all 0.2s;
-        }
-        .notif-btn.active {
-            background: rgba(0,229,255,0.15); border-color: var(--accent); color: var(--accent);
-        }
-        .notif-btn:active { transform: scale(0.92); }
+    .wrap { position: relative; z-index: 1; min-height: 100vh; display: flex; flex-direction: column; }
 
-        /* TAB NAV */
-        .tab-nav { display: flex; background: var(--surface); border-bottom: 1px solid var(--border); }
-        .tab-btn {
-            flex: 1; padding: 11px 6px; background: transparent; border: none;
-            color: var(--muted); font-family: 'Barlow Condensed', sans-serif;
-            font-size: 0.85rem; font-weight: 700; letter-spacing: 1.5px;
-            text-transform: uppercase; cursor: pointer; position: relative; transition: color 0.2s;
-        }
-        .tab-btn.active { color: var(--accent); }
-        .tab-btn.active::after {
-            content: ''; position: absolute; bottom: 0; left: 10%; width: 80%; height: 2px;
-            background: var(--accent); border-radius: 2px 2px 0 0;
-        }
+    /* ── TOPBAR (exact from site) ── */
+    .topbar {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 12px 16px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      position: sticky; top: 0; z-index: 100;
+    }
+    .topbar-left { display: flex; align-items: center; gap: 10px; }
+    .topbar .logo { width: 36px; height: 36px; object-fit: contain; }
+    .topbar-title {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 1.25rem; font-weight: 900;
+      letter-spacing: 2px; text-transform: uppercase;
+      background: linear-gradient(90deg, #fff 0%, var(--accent) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .live-pill {
+      display: flex; align-items: center; gap: 6px;
+      background: rgba(255,45,45,0.15); border: 1px solid rgba(255,45,45,0.4);
+      padding: 4px 10px; border-radius: 20px;
+      font-size: 0.7rem; font-weight: 700; color: var(--red); letter-spacing: 1.5px;
+      opacity: 0.4;
+    }
+    .live-dot {
+      width: 6px; height: 6px; background: var(--red); border-radius: 50%;
+    }
 
-        /* PAGES */
-        .page { display: none; }
-        .page.active { display: block; }
+    /* ── TAB NAV (exact from site) ── */
+    .tab-nav { display: flex; background: var(--surface); border-bottom: 1px solid var(--border); }
+    .tab-btn {
+      flex: 1; padding: 11px 6px; background: transparent; border: none;
+      color: var(--muted); font-family: 'Barlow Condensed', sans-serif;
+      font-size: 0.85rem; font-weight: 700; letter-spacing: 1.5px;
+      text-transform: uppercase; cursor: default; position: relative;
+    }
+    .tab-btn.active { color: var(--accent); }
+    .tab-btn.active::after {
+      content: ''; position: absolute; bottom: 0; left: 10%; width: 80%; height: 2px;
+      background: var(--accent); border-radius: 2px 2px 0 0;
+    }
 
-        /* PLAYER */
-        .player-section { position: relative; background: #000; }
-        .video-container { position: relative; width: 100%; padding-bottom: 56.25%; background: #000; }
-        .video-container iframe {
-            position: absolute; inset: 0; width: 100%; height: 100%; border: none; display: none;
-        }
-        .video-container iframe.active { display: block; }
+    /* ── MAIN CONTENT ── */
+    main {
+      flex: 1; display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      padding: 44px 20px 52px;
+      gap: 0;
+    }
 
-        /* STREAM CONTROLS OVERLAY */
-        .stream-controls {
-            position: absolute; inset: 0; z-index: 5; pointer-events: none;
-        }
-        .stream-controls-inner {
-            position: absolute; bottom: 0; left: 0; right: 0;
-            padding: 10px 12px; display: flex; align-items: center; gap: 8px; justify-content: flex-end;
-            background: linear-gradient(to top, rgba(0,0,0,0.75) 0%, transparent 100%);
-            opacity: 0; transition: opacity 0.25s ease; pointer-events: all;
-        }
-        .stream-controls-inner.show { opacity: 1; }
-        .ctrl-btn {
-            background: rgba(0,0,0,0.65); border: 1px solid rgba(255,255,255,0.2); color: #fff;
-            border-radius: 8px; padding: 7px 10px; cursor: pointer;
-            font-size: 0.75rem; font-family: 'Barlow Condensed', sans-serif;
-            font-weight: 700; letter-spacing: 1px; display: flex; align-items: center; gap: 5px;
-            backdrop-filter: blur(4px); transition: background 0.2s;
-        }
-        .ctrl-btn:active { background: rgba(0,200,255,0.3); border-color: var(--accent); }
+    /* Wrench icon */
+    .icon-wrap {
+      position: relative;
+      width: 110px; height: 110px;
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 30px;
+    }
+    .icon-ring {
+      position: absolute; inset: 0; border-radius: 50%;
+      border: 1.5px solid var(--accent);
+      opacity: 0.2; animation: rpulse 2.6s ease-in-out infinite;
+    }
+    .icon-ring:nth-child(2) { inset: 14px; opacity: 0.12; animation-delay: 0.5s; }
+    @keyframes rpulse {
+      0%,100% { transform: scale(1); opacity: 0.2; }
+      50%      { transform: scale(1.08); opacity: 0.06; }
+    }
+    .icon-bg {
+      width: 72px; height: 72px; border-radius: 50%;
+      background: var(--surface2); border: 1px solid rgba(0,229,255,0.2);
+      display: flex; align-items: center; justify-content: center;
+      position: relative; z-index: 1;
+      box-shadow: 0 0 24px rgba(0,229,255,0.12);
+    }
+    .icon-svg {
+      width: 36px; height: 36px; color: var(--accent);
+      animation: wiggle 3s ease-in-out infinite;
+    }
+    @keyframes wiggle {
+      0%,100% { transform: rotate(-8deg); }
+      50%      { transform: rotate(8deg); }
+    }
 
-        /* CHANNEL BAR */
-        .channel-bar {
-            display: flex; gap: 8px; padding: 12px 12px 8px;
-            background: var(--surface); border-bottom: 1px solid var(--border);
-        }
-        .ch-btn {
-            flex: 1; background: var(--surface2); border: 1px solid var(--border);
-            color: var(--muted); padding: 9px 6px;
-            font-family: 'Barlow Condensed', sans-serif; font-size: 0.85rem;
-            font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
-            border-radius: 8px; cursor: pointer; transition: all 0.2s;
-        }
-        .ch-btn.active {
-            background: var(--red); color: #fff; border-color: var(--red);
-            box-shadow: 0 0 16px rgba(255,45,45,0.35);
-        }
+    /* Eyebrow */
+    .eyebrow {
+      font-size: 0.68rem; font-weight: 700; letter-spacing: 0.22em;
+      text-transform: uppercase; color: var(--accent);
+      margin-bottom: 10px;
+    }
 
-        /* NOW PLAYING */
-        .now-playing {
-            display: flex; align-items: center; gap: 10px;
-            padding: 10px 14px; background: var(--surface); border-bottom: 1px solid var(--border);
-        }
-        .now-playing-label {
-            font-family: 'Barlow Condensed', sans-serif; font-size: 0.75rem;
-            font-weight: 700; letter-spacing: 2px; color: var(--muted); text-transform: uppercase;
-        }
-        .now-playing-name {
-            font-family: 'Barlow Condensed', sans-serif; font-size: 1.1rem;
-            font-weight: 900; letter-spacing: 1px; color: var(--text);
-        }
+    /* Heading */
+    h1 {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: clamp(2.4rem, 9vw, 3.6rem);
+      font-weight: 900; letter-spacing: 2px;
+      text-align: center; line-height: 1.0;
+      text-transform: uppercase;
+      margin-bottom: 14px;
+    }
 
-        /* SCHEDULE HEADER */
-        .section-header { display: flex; align-items: center; gap: 8px; padding: 16px 14px 10px; }
-        .section-header-line { width: 3px; height: 18px; background: var(--accent); border-radius: 2px; }
-        .section-header h2 {
-            font-family: 'Barlow Condensed', sans-serif; font-size: 0.85rem;
-            font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; color: var(--muted);
-        }
+    .sub {
+      font-size: 0.9rem; color: var(--muted);
+      text-align: center; max-width: 300px;
+      line-height: 1.7; margin-bottom: 38px;
+    }
 
-        /* DATE FILTER */
-        .date-filter {
-            display: flex; gap: 8px; overflow-x: auto; padding: 0 14px 12px; scrollbar-width: none;
-        }
-        .date-filter::-webkit-scrollbar { display: none; }
-        .date-chip {
-            flex: 0 0 auto; padding: 6px 14px; border-radius: 20px;
-            font-family: 'Barlow Condensed', sans-serif; font-size: 0.8rem;
-            font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
-            background: var(--surface2); border: 1px solid var(--border);
-            color: var(--muted); cursor: pointer; white-space: nowrap; transition: all 0.2s;
-        }
-        .date-chip.active { background: rgba(0,229,255,0.15); border-color: var(--accent); color: var(--accent); }
+    /* ── Countdown ── */
+    .countdown {
+      display: flex; align-items: flex-start; gap: 8px;
+      margin-bottom: 34px;
+    }
+    .cd-unit { display: flex; flex-direction: column; align-items: center; gap: 5px; }
+    .cd-num {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: clamp(2.2rem, 7vw, 3rem);
+      font-weight: 900; line-height: 1;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-top: 2px solid var(--accent);
+      border-radius: 8px;
+      min-width: clamp(60px, 15vw, 78px);
+      text-align: center; padding: 10px 4px 8px;
+      color: var(--text);
+    }
+    .cd-label {
+      font-size: 0.6rem; letter-spacing: 0.18em;
+      text-transform: uppercase; color: var(--muted);
+    }
+    .cd-sep {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 2.2rem; font-weight: 700;
+      color: var(--accent); margin-top: 10px; opacity: 0.5;
+    }
 
-        /* MATCH CARDS */
-        .matches-list { padding: 0 10px 20px; display: flex; flex-direction: column; gap: 8px; }
-        .match-card {
-            background: var(--surface); border: 1px solid var(--border);
-            border-radius: 12px; padding: 12px 14px;
-            display: flex; align-items: center; gap: 10px;
-            transition: border-color 0.2s; position: relative; overflow: hidden;
-        }
-        .match-card.live-match {
-            border-color: rgba(255,45,45,0.45);
-            background: linear-gradient(135deg, var(--surface) 0%, rgba(255,45,45,0.06) 100%);
-        }
-        .match-card.upcoming-match { border-color: rgba(0,229,255,0.12); }
-        .match-card.finished-match { opacity: 0.7; }
+    /* ── Status card (matches site card style) ── */
+    .status-card {
+      width: min(360px, 100%);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      margin-bottom: 0;
+    }
+    .card-header {
+      display: flex; align-items: center; gap: 8px;
+      padding: 13px 16px;
+      border-bottom: 1px solid var(--border);
+    }
+    .card-header-bar { width: 3px; height: 16px; background: var(--accent); border-radius: 2px; }
+    .card-header-title {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 0.8rem; font-weight: 700;
+      letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted);
+    }
+    .card-header-pct {
+      margin-left: auto;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 0.85rem; font-weight: 700; color: var(--accent);
+    }
 
-        /* LIVE badge on card */
-        .match-live-badge {
-            position: absolute; top: 7px; right: 9px;
-            display: flex; align-items: center; gap: 4px;
-            background: var(--red); padding: 2px 7px; border-radius: 8px;
-            font-family: 'Barlow Condensed', sans-serif; font-size: 0.62rem;
-            font-weight: 700; letter-spacing: 1.5px; color: #fff;
-        }
-        .match-live-dot {
-            width: 5px; height: 5px; background: #fff;
-            border-radius: 50%; animation: pulse 1.2s ease-in-out infinite;
-        }
-        /* UPCOMING badge */
-        .match-upcoming-badge {
-            position: absolute; top: 7px; right: 9px;
-            background: rgba(0,229,255,0.12); border: 1px solid rgba(0,229,255,0.3);
-            padding: 2px 8px; border-radius: 8px;
-            font-family: 'Barlow Condensed', sans-serif; font-size: 0.58rem;
-            font-weight: 700; letter-spacing: 1px; color: var(--accent);
-        }
+    .progress-wrap { padding: 12px 16px 4px; }
+    .bar-bg { height: 4px; background: var(--surface2); border-radius: 2px; overflow: hidden; }
+    .bar-fill {
+      height: 100%; width: 42%;
+      background: linear-gradient(90deg, rgba(0,229,255,0.5), var(--accent));
+      border-radius: 2px;
+      animation: shimmer 2.2s ease-in-out infinite;
+    }
+    @keyframes shimmer { 0%,100%{opacity:1} 50%{opacity:0.5} }
 
-        .match-time-col {
-            display: flex; flex-direction: column; align-items: center; min-width: 58px;
-        }
-        .match-time-val {
-            font-family: 'Barlow Condensed', sans-serif; font-size: 0.95rem;
-            font-weight: 700; color: var(--gold); line-height: 1.2; white-space: nowrap;
-        }
-        .match-time-tz { font-size: 0.58rem; color: var(--muted); margin-top: 2px; letter-spacing: 1px; }
-        .match-score-val {
-            font-family: 'Barlow Condensed', sans-serif; font-size: 1.15rem;
-            font-weight: 900; color: var(--text); letter-spacing: 1px; line-height: 1;
-        }
+    .status-items { padding: 10px 16px 16px; display: flex; flex-direction: column; gap: 11px; }
+    .status-item { display: flex; align-items: center; gap: 10px; font-size: 0.84rem; }
+    .s-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+    .s-dot.done  { background: var(--green); }
+    .s-dot.going { background: var(--gold); box-shadow: 0 0 6px var(--gold); animation: blink 1.4s ease-in-out infinite; }
+    .s-dot.wait  { background: var(--muted); opacity: 0.5; }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.25} }
+    .s-text { color: var(--text); }
+    .s-text.dim { color: var(--muted); }
 
-        .match-divider { width: 1px; height: 36px; background: var(--border); flex-shrink: 0; }
+    /* ── Footer ── */
+    footer {
+      background: var(--surface); border-top: 1px solid var(--border);
+      text-align: center; padding: 16px 20px;
+      font-size: 0.75rem; color: var(--muted);
+      letter-spacing: 0.03em; line-height: 1.8;
+    }
+    footer strong { color: var(--accent); }
 
-        /* MATCH TEAMS + SCORE */
-        .match-body { flex: 1; display: flex; align-items: center; gap: 6px; min-width: 0; }
-        .team { display: flex; flex-direction: column; align-items: center; gap: 3px; flex: 1; min-width: 0; }
-        .team img { width: 30px; height: 21px; object-fit: cover; border-radius: 3px; box-shadow: 0 2px 6px rgba(0,0,0,0.5); }
-        .team-name {
-            font-size: 0.65rem; font-weight: 600; color: var(--text);
-            text-align: center; white-space: nowrap; overflow: hidden;
-            text-overflow: ellipsis; max-width: 65px;
-        }
-
-        .vs-badge {
-            font-family: 'Barlow Condensed', sans-serif; font-size: 0.68rem;
-            font-weight: 700; color: var(--muted); letter-spacing: 1px;
-        }
-
-        /* DATE LABEL */
-        .match-date-label {
-            font-family: 'Barlow Condensed', sans-serif; font-size: 0.7rem;
-            font-weight: 700; letter-spacing: 2px; color: var(--muted);
-            text-transform: uppercase; padding: 12px 14px 4px;
-        }
-
-        /* TODAY SECTION TITLE */
-        .today-section-title {
-            font-family: 'Barlow Condensed', sans-serif; font-size: 0.75rem;
-            font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase;
-            color: var(--accent); padding: 10px 14px 4px;
-            display: flex; align-items: center; gap: 6px;
-        }
-        .today-section-title::before {
-            content: ''; width: 3px; height: 14px;
-            background: var(--accent); border-radius: 2px; display: inline-block;
-        }
-
-        /* FULLSCREEN OVERLAY */
-        .fs-overlay { display: none; position: fixed; inset: 0; background: #000; z-index: 9999; }
-        .fs-overlay.open { display: block; }
-        .fs-overlay iframe { width: 100%; height: 100%; border: none; }
-        .fs-close {
-            position: absolute; top: env(safe-area-inset-top, 12px); right: 14px;
-            background: rgba(0,0,0,0.7); border: 1px solid rgba(255,255,255,0.2);
-            color: #fff; padding: 8px 14px; border-radius: 8px;
-            font-family: 'Barlow Condensed', sans-serif; font-size: 0.8rem;
-            font-weight: 700; cursor: pointer; z-index: 10; letter-spacing: 1px;
-        }
-
-        /* Fallback: rotate the overlay itself into landscape when the
-           Screen Orientation Lock API isn't available (e.g. iOS Safari) */
-        @media (orientation: portrait) {
-            .fs-overlay.force-landscape {
-                width: 100vh; height: 100vw;
-                top: 50%; left: 50%;
-                transform: translate(-50%, -50%) rotate(90deg);
-            }
-        }
-
-        @media (orientation: landscape) {
-            .video-container { padding-bottom: 0; height: calc(100vw * 0.5625); max-height: 75vh; }
-        }
-
-footer {
-            text-align: center; padding: 14px 16px 10px;
-            color: var(--muted); font-size: 0.68rem;
-            border-top: 1px solid var(--border); letter-spacing: 0.5px;
-        }
-        footer .dev-credit {
-            margin-top: 4px; font-family: 'Barlow Condensed', sans-serif;
-            font-size: 0.75rem; font-weight: 700; letter-spacing: 2px;
-            color: rgba(0,229,255,0.5); text-transform: uppercase;
-            display: flex; align-items: center; justify-content: center; gap: 6px;
-            cursor: pointer; transition: color 0.2s ease;
-        }
-        footer .dev-credit:hover { color: var(--accent); }
-        footer .dev-credit .dev-info-icon {
-            width: 14px; height: 14px; flex-shrink: 0;
-            border: 1.4px solid currentColor; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 0.6rem; font-family: 'Inter', sans-serif; font-weight: 700;
-            letter-spacing: 0;
-        }
-
-        /* DEVELOPER INFO MODAL */
-        .dev-modal-overlay {
-            position: fixed; inset: 0; z-index: 9998;
-            background: rgba(0,0,0,0.7); backdrop-filter: blur(6px);
-            display: flex; align-items: center; justify-content: center;
-            opacity: 0; visibility: hidden; padding: 20px;
-            transition: opacity 0.3s ease, visibility 0.3s ease;
-        }
-        .dev-modal-overlay.active { opacity: 1; visibility: visible; }
-        .dev-modal {
-            background: var(--surface); border: 1px solid rgba(0,229,255,0.25);
-            border-radius: 16px; box-shadow: 0 0 40px rgba(0,229,255,0.18);
-            max-width: 360px; width: 100%; padding: 28px; position: relative;
-            transform: translateY(16px) scale(0.97);
-            transition: transform 0.3s ease;
-        }
-        .dev-modal-overlay.active .dev-modal { transform: translateY(0) scale(1); }
-        .dev-modal-close {
-            position: absolute; top: 12px; right: 12px;
-            width: 30px; height: 30px; display: flex; align-items: center; justify-content: center;
-            border-radius: 8px; border: 1px solid rgba(0,229,255,0.25);
-            background: transparent; color: var(--accent); font-size: 16px; cursor: pointer;
-            transition: background 0.2s ease;
-        }
-        .dev-modal-close:hover { background: rgba(0,229,255,0.12); }
-        .dev-modal-header { display: flex; align-items: center; gap: 14px; margin-bottom: 18px; }
-        .dev-modal-header img {
-            width: 56px; height: 56px; border-radius: 12px; object-fit: cover;
-            border: 2px solid rgba(0,229,255,0.3);
-        }
-        .dev-modal-header h2 {
-            font-family: 'Barlow Condensed', sans-serif; font-size: 1.4rem;
-            font-weight: 900; letter-spacing: 1px; color: var(--text); text-transform: uppercase;
-        }
-        .dev-modal-header p {
-            font-size: 0.78rem; color: var(--accent); font-weight: 600; margin-top: 3px;
-        }
-        .dev-modal-line { width: 50px; height: 2px; background: var(--accent); border-radius: 10px; margin-bottom: 16px; }
-        .dev-modal-info { display: flex; flex-direction: column; gap: 10px; }
-        .dev-info-row {
-            display: flex; justify-content: space-between; align-items: center;
-            font-size: 0.82rem; border-bottom: 1px solid var(--border); padding-bottom: 9px;
-        }
-        .dev-info-row span:first-child {
-            color: var(--muted); font-family: 'Barlow Condensed', sans-serif;
-            letter-spacing: 1.5px; text-transform: uppercase; font-size: 0.72rem;
-        }
-        .dev-info-row span:last-child { color: var(--text); font-weight: 600; text-align: right; }
-        .dev-modal-about {
-            margin-top: 16px; font-size: 0.78rem; line-height: 1.7; color: var(--muted);
-        }
-
-        /* GROUPS */
-        .group-card {
-            background: var(--surface); border: 1px solid var(--border);
-            border-radius: 12px; overflow: hidden;
-        }
-        .group-header {
-            display: flex; align-items: center; gap: 8px;
-            padding: 10px 14px; background: var(--surface2);
-            border-bottom: 1px solid var(--border);
-        }
-        .group-letter {
-            font-family: 'Barlow Condensed', sans-serif; font-size: 1.1rem;
-            font-weight: 900; letter-spacing: 2px; color: var(--accent);
-        }
-        .group-match-count {
-            font-size: 0.65rem; color: var(--muted); letter-spacing: 1px;
-            margin-left: auto;
-        }
-        .group-teams {
-            display: grid; grid-template-columns: 1fr 1fr; gap: 0;
-        }
-        .group-team-row {
-            display: flex; align-items: center; gap: 10px;
-            padding: 10px 14px; cursor: pointer; transition: background 0.15s;
-            border-bottom: 1px solid var(--border);
-            border-right: 1px solid var(--border);
-        }
-        .group-team-row:nth-child(even) { border-right: none; }
-        .group-team-row:nth-last-child(-n+2) { border-bottom: none; }
-        .group-team-row:active { background: rgba(0,229,255,0.07); }
-        .group-team-flag {
-            width: 34px; height: 23px; object-fit: cover;
-            border-radius: 3px; box-shadow: 0 2px 6px rgba(0,0,0,0.5);
-            flex-shrink: 0;
-        }
-        .group-team-name {
-            font-size: 0.72rem; font-weight: 600; color: var(--text);
-            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-        }
-        .group-team-tap {
-            margin-left: auto; font-size: 0.55rem; color: var(--muted);
-            letter-spacing: 0.5px; flex-shrink: 0;
-        }
-
-        /* POINT TABLE TOGGLE */
-        .group-view-toggle {
-            display: flex; gap: 0; margin-left: auto;
-        }
-        .gvt-btn {
-            background: var(--surface); border: 1px solid var(--border);
-            color: var(--muted); padding: 4px 10px;
-            font-family: 'Barlow Condensed', sans-serif; font-size: 0.65rem;
-            font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
-            cursor: pointer; transition: all 0.2s;
-        }
-        .gvt-btn:first-child { border-radius: 6px 0 0 6px; }
-        .gvt-btn:last-child { border-radius: 0 6px 6px 0; border-left: none; }
-        .gvt-btn.active { background: rgba(0,229,255,0.15); border-color: var(--accent); color: var(--accent); }
-
-        /* POINT TABLE */
-        .point-table { width: 100%; border-collapse: collapse; display: none; }
-        .point-table.show { display: table; }
-        .group-teams.hide { display: none; }
-        .pt-head th {
-            font-family: 'Barlow Condensed', sans-serif; font-size: 0.6rem;
-            font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase;
-            color: var(--muted); padding: 6px 6px 6px 0; text-align: center;
-            border-bottom: 1px solid var(--border);
-        }
-        .pt-head th:first-child { text-align: left; padding-left: 12px; width: 45%; }
-        .pt-row td {
-            font-size: 0.72rem; font-weight: 600; color: var(--text);
-            padding: 7px 6px; text-align: center;
-            border-bottom: 1px solid var(--border);
-        }
-        .pt-row:last-child td { border-bottom: none; }
-        .pt-row td:first-child { text-align: left; padding-left: 10px; }
-        .pt-team-cell { display: flex; align-items: center; gap: 7px; }
-        .pt-flag { width: 22px; height: 15px; object-fit: cover; border-radius: 2px; flex-shrink:0; }
-        .pt-pos {
-            font-family: 'Barlow Condensed', sans-serif; font-size: 0.65rem;
-            font-weight: 900; color: var(--muted); width: 14px; text-align: center; flex-shrink:0;
-        }
-        .pt-pos.qualify { color: var(--green); }
-        .pt-pts {
-            font-family: 'Barlow Condensed', sans-serif; font-size: 0.9rem;
-            font-weight: 900; color: var(--accent);
-        }
-        .pt-row.qualify-row { background: rgba(0,230,118,0.04); }
-        .pt-row.qualify-row td:last-child { color: var(--accent); }
-
-        /* SQUAD MODAL */
-        .squad-position-header {
-            font-family: 'Barlow Condensed', sans-serif; font-size: 0.7rem;
-            font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase;
-            color: var(--accent); padding: 10px 0 6px;
-            border-bottom: 1px solid var(--border); margin-bottom: 8px;
-        }
-        .squad-grid {
-            display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px;
-        }
-        .squad-player-card {
-            background: var(--surface2); border: 1px solid var(--border);
-            border-radius: 10px; overflow: hidden; display: flex; flex-direction: column;
-        }
-        .squad-player-img {
-            width: 100%; aspect-ratio: 3/4; object-fit: cover; object-position: top;
-            background: var(--surface);
-        }
-        .squad-player-img-placeholder {
-            width: 100%; aspect-ratio: 3/4; background: var(--surface);
-            display: flex; align-items: center; justify-content: center;
-            font-size: 2.5rem;
-        }
-        .squad-player-info {
-            padding: 6px 8px 8px;
-        }
-        .squad-player-name {
-            font-family: 'Barlow Condensed', sans-serif; font-size: 0.85rem;
-            font-weight: 700; letter-spacing: 0.5px; color: var(--text); line-height: 1.2;
-        }
-        .squad-player-pos {
-            font-size: 0.6rem; color: var(--muted); letter-spacing: 1px; margin-top: 2px;
-        }
-        .squad-loading {
-            text-align: center; padding: 40px 0; color: var(--muted);
-            font-family: 'Barlow Condensed', sans-serif; font-size: 0.9rem; letter-spacing: 2px;
-        }
-        .squad-error {
-            text-align: center; padding: 30px 14px; color: var(--muted); font-size: 0.8rem;
-        }
-    </style>
+    @media (prefers-reduced-motion: reduce) {
+      .icon-svg, .icon-ring, .bar-fill, .s-dot.going { animation: none; }
+    }
+  </style>
 </head>
 <body>
+<div class="wrap">
 
-<!-- INSTALL BANNER -->
-<div id="installBanner" style="display:none; align-items:center; justify-content:space-between; gap:10px; background:#0f2035; border-bottom:1px solid rgba(0,229,255,0.2); padding:10px 14px;">
-  <div style="display:flex; align-items:center; gap:10px;">
-    <img src="https://i.ibb.co.com/rGHtys1G/file-000000009fb87208b7d1ca320d4b478c.png" style="width:32px;height:32px;object-fit:contain;">
-    <div>
-      <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.95rem;color:#fff;">XEN SPORTS</div>
-      <div style="font-size:0.7rem;color:#6b7c93;">Home screen-এ install করুন</div>
-    </div>
-  </div>
-  <div style="display:flex;gap:8px;">
-    <button onclick="dismissBanner()" style="background:transparent;border:1px solid rgba(255,255,255,0.15);color:#6b7c93;padding:6px 10px;border-radius:6px;font-size:0.75rem;cursor:pointer;">না</button>
-    <button onclick="installApp()" style="background:#00e5ff;border:none;color:#000;padding:6px 14px;border-radius:6px;font-size:0.75rem;font-weight:700;cursor:pointer;">Install</button>
-  </div>
-</div>
-
-<!-- TOP BAR -->
-<div class="topbar">
+  <!-- TOPBAR — exact from site -->
+  <div class="topbar">
     <div class="topbar-left">
-        <img class="logo" src="https://i.ibb.co.com/rGHtys1G/file-000000009fb87208b7d1ca320d4b478c.png" alt="Logo">
-        <span class="topbar-title">XEN SPORTS</span>
+      <img class="logo" src="https://i.ibb.co.com/rGHtys1G/file-000000009fb87208b7d1ca320d4b478c.png" alt="XEN">
+      <div class="topbar-title">XEN SPORTS</div>
     </div>
     <div class="topbar-right">
-        <button class="notif-btn" id="notifBtn" onclick="toggleNotifBtn()" title="Match alerts on/off">
-            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
-        </button>
-        <div class="live-pill">
-            <span class="live-dot"></span>
-            LIVE
+      <div class="live-pill">
+        <div class="live-dot"></div>
+        LIVE
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB NAV — exact from site -->
+  <div class="tab-nav">
+    <button class="tab-btn active">LIVE</button>
+    <button class="tab-btn">SCHEDULE</button>
+    <button class="tab-btn">GROUPS</button>
+  </div>
+
+  <!-- MAIN -->
+  <main>
+
+    <!-- Wrench / tools icon -->
+    <div class="icon-wrap">
+      <div class="icon-ring"></div>
+      <div class="icon-ring"></div>
+      <div class="icon-bg">
+        <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
+        </svg>
+      </div>
+    </div>
+
+    <div class="eyebrow">System Notice</div>
+    <h1>Under<br>Maintenance</h1>
+    <p class="sub">
+      রক্ষণাবেক্ষণ বিজ্ঞপ্তি
+
+আমাদের প্রিয় দর্শকদের জানানো যাচ্ছে যে, আমাদের ওয়েবসাইটটি বর্তমানে রক্ষণাবেক্ষণ কাজের জন্য সাময়িকভাবে বন্ধ রয়েছে।
+
+আমরা আগামী ২ দিনের মধ্যে ওয়েবসাইটটি আরও উন্নত করে পুনরায় চালু করব, যাতে আপনারা FIFA-র খেলা আরও ভালোভাবে উপভোগ করতে পারেন।
+
+অসুবিধার জন্য আন্তরিকভাবে দুঃখিত। শীঘ্রই আবার দেখা হবে!
+    </p>
+
+    <!-- Countdown -->
+    <div class="countdown">
+      <div class="cd-unit">
+        <div class="cd-num" id="cd-d">02</div>
+        <div class="cd-label">Days</div>
+      </div>
+      <div class="cd-sep">:</div>
+      <div class="cd-unit">
+        <div class="cd-num" id="cd-h">00</div>
+        <div class="cd-label">Hours</div>
+      </div>
+      <div class="cd-sep">:</div>
+      <div class="cd-unit">
+        <div class="cd-num" id="cd-m">00</div>
+        <div class="cd-label">Mins</div>
+      </div>
+      <div class="cd-sep">:</div>
+      <div class="cd-unit">
+        <div class="cd-num" id="cd-s">00</div>
+        <div class="cd-label">Secs</div>
+      </div>
+    </div>
+
+    <!-- Status card -->
+    <div class="status-card">
+      <div class="card-header">
+        <div class="card-header-bar"></div>
+        <div class="card-header-title">Maintenance Progress</div>
+        <div class="card-header-pct">42%</div>
+      </div>
+      <div class="progress-wrap">
+        <div class="bar-bg"><div class="bar-fill"></div></div>
+      </div>
+      <div class="status-items">
+        <div class="status-item">
+          <div class="s-dot done"></div>
+          <span class="s-text">Server backup complete</span>
         </div>
-    </div>
-</div>
-
-<!-- TAB NAV -->
-<div class="tab-nav">
-    <button class="tab-btn active" id="tabLive" onclick="showTab('live',this)">LIVE</button>
-    <button class="tab-btn" id="tabSchedule" onclick="showTab('schedule',this)">SCHEDULE</button>
-    <button class="tab-btn" id="tabGroups" onclick="showTab('groups',this)">GROUPS</button>
-</div>
-
-<!-- LIVE PAGE -->
-<div class="page active" id="page-live">
-    <div class="player-section">
-        <div class="video-container" id="videoWrap">
-            <iframe id="ch0" class="active" src="https://fifa-world-cup-live.pages.dev/tsn" allowfullscreen allow="autoplay; encrypted-media"></iframe>
-            <iframe id="ch1" src="" allowfullscreen allow="autoplay; encrypted-media"></iframe>
-            <iframe id="ch2" src="" allowfullscreen allow="autoplay; encrypted-media"></iframe>
-
-            <!-- Controls overlay -->
-            <div class="stream-controls" id="streamControlsArea" onclick="showStreamControls()">
-                <div class="stream-controls-inner" id="streamControlsInner">
-                    <button class="ctrl-btn" onclick="rotateFullscreen(event)">
-                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 2v6h-6M3 12a9 9 0 0 1 15-6.7L21 8M3 22v-6h6M21 12a9 9 0 0 1-15 6.7L3 16"/></svg>
-                        ROTATE
-                    </button>
-                    <button class="ctrl-btn" onclick="openFullscreen(event)">
-                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
-                        FULLSCREEN
-                    </button>
-                </div>
-            </div>
+        <div class="status-item">
+          <div class="s-dot going"></div>
+          <span class="s-text">Streaming engine upgrade</span>
         </div>
-    </div>
-
-    <!-- CHANNEL TABS -->
-    <div class="channel-bar">
-        <button class="ch-btn active" onclick="switchChannel(0)">FIFA Live 1</button>
-        <button class="ch-btn" onclick="switchChannel(1)">FIFA Live 2</button>
-        <button class="ch-btn" onclick="switchChannel(2)">FIFA Live 3</button>
-    </div>
-
-    <!-- NOW PLAYING -->
-    <div class="now-playing">
-        <span class="now-playing-label">Now Playing</span>
-        <span style="color:var(--muted)">·</span>
-        <span class="now-playing-name" id="ch-name">FIFA LIVE 1</span>
-    </div>
-
-    <!-- TODAY MATCHES ON LIVE TAB -->
-    <div id="todayUpcomingSection">
-        <div class="today-section-title">Today's Matches</div>
-        <div class="matches-list" id="todayMatchList" style="padding-top:4px;"></div>
-    </div>
-
-    <footer>
-        FIFA World Cup 2026 · All times BD (Bangladesh Time)
-        <div class="dev-credit" onclick="document.getElementById('devModal').classList.add('active')"><span class="dev-info-icon">i</span> DEVELOPER S1Y4M X XEN3X</div>
-    </footer>
-</div>
-
-<!-- SCHEDULE PAGE -->
-<div class="page" id="page-schedule">
-    <div class="section-header">
-        <div class="section-header-line"></div>
-        <h2>World Cup 2026 — Full Schedule</h2>
-    </div>
-    <div class="date-filter" id="dateFilter"></div>
-    <div class="matches-list" id="matchList"></div>
-    <footer>
-        FIFA World Cup 2026 · All times BD (Bangladesh Time)
-        <div class="dev-credit" onclick="document.getElementById('devModal').classList.add('active')"><span class="dev-info-icon">i</span> DEVELOPER S1Y4M X XEN3X</div>
-    </footer>
-</div>
-
-<!-- GROUPS PAGE -->
-<div class="page" id="page-groups">
-    <div class="section-header">
-        <div class="section-header-line"></div>
-        <h2>World Cup 2026 — Group Stage</h2>
-    </div>
-    <div id="groupsContainer" style="padding:0 10px 20px; display:flex; flex-direction:column; gap:14px;"></div>
-    <footer>
-        FIFA World Cup 2026 · Tap a flag to see squad
-        <div class="dev-credit" onclick="document.getElementById('devModal').classList.add('active')"><span class="dev-info-icon">i</span> DEVELOPER S1Y4M X XEN3X</div>
-    </footer>
-</div>
-
-<!-- SQUAD MODAL -->
-<div id="squadModal" style="display:none; position:fixed; inset:0; z-index:9990; background:rgba(0,0,0,0.85); backdrop-filter:blur(6px); overflow-y:auto;">
-    <div style="max-width:480px; margin:0 auto; padding:16px 12px 40px;">
-        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:14px;">
-            <div style="display:flex; align-items:center; gap:10px;">
-                <img id="modalFlag" src="" style="width:40px; height:28px; object-fit:cover; border-radius:4px; box-shadow:0 2px 8px rgba(0,0,0,0.6);">
-                <div>
-                    <div id="modalTeamName" style="font-family:'Barlow Condensed',sans-serif; font-size:1.3rem; font-weight:900; letter-spacing:1px; color:#fff;"></div>
-                    <div id="modalGroupLabel" style="font-size:0.65rem; color:var(--accent); letter-spacing:2px; font-weight:700;"></div>
-                </div>
-            </div>
-            <button onclick="closeSquadModal()" style="background:var(--surface2); border:1px solid var(--border); color:var(--muted); padding:8px 14px; border-radius:8px; font-family:'Barlow Condensed',sans-serif; font-size:0.8rem; font-weight:700; letter-spacing:1px; cursor:pointer;">✕ CLOSE</button>
+        <div class="status-item">
+          <div class="s-dot wait"></div>
+          <span class="s-text dim">Performance optimization</span>
         </div>
-        <div id="modalContent"></div>
-    </div>
-</div>
-
-<!-- DEVELOPER INFO MODAL -->
-<div class="dev-modal-overlay" id="devModal" onclick="if(event.target===this) this.classList.remove('active')">
-    <div class="dev-modal">
-        <button class="dev-modal-close" onclick="document.getElementById('devModal').classList.remove('active')">✕</button>
-        <div class="dev-modal-header">
-            <img src="https://i.ibb.co.com/kVpmTQqY/1781559593783.jpg" alt="Developer">
-            <div>
-                <h2>S1Y4M</h2>
-                <p>Founder & Developer</p>
-            </div>
+        <div class="status-item">
+          <div class="s-dot wait"></div>
+          <span class="s-text dim">Final testing &amp; launch</span>
         </div>
-        <div class="dev-modal-line"></div>
-        <div class="dev-modal-info">
-            <div class="dev-info-row">
-                <span>Project</span>
-                <span>XEN SPORTS</span>
-            </div>
-            <div class="dev-info-row">
-                <span>Role</span>
-                <span>Founder & Developer</span>
-            </div>
-            <div class="dev-info-row" style="border-bottom:none; padding-bottom:0;">
-                <span>Status</span>
-                <span style="color:var(--accent);">● Available</span>
-            </div>
-        </div>
-        <p class="dev-modal-about">
-            Building premium sports platforms, modern websites and digital experiences with a focus on clean design, performance and innovation.
-        </p>
+      </div>
     </div>
-</div>
 
-<!-- FULLSCREEN OVERLAY -->
-<div class="fs-overlay" id="fsOverlay">
-    <button class="fs-close" onclick="closeFullscreen()">X  Close</button>
-    <iframe id="fsFrame" src="" allowfullscreen allow="autoplay; encrypted-media"></iframe>
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    সাইটটি <strong>২ দিনের মধ্যে</strong> পুনরায় চালু হবে।<br>
+    অসুবিধার জন্য আন্তরিকভাবে দুঃখিত। ⚽
+  </footer>
+
 </div>
 
 <script>
-// ── CHANNEL SOURCES ──
-const chSrcs = [
-    "https://fifa-world-cup-live.pages.dev/tsn",
-    "https://fifa-world-cup-live.pages.dev/dsports.html",
-    "https://1nyaler.streamhostingcdn.top/stream/23/index.m3u8"
-];
-const chNames = ["FIFA LIVE 1", "FIFA LIVE 2", "FIFA LIVE 3"];
-let currentCh = 0;
-
-// ── MATCH DATA  (date, teams, time IST, score: null = not played yet, [g1,g2] = finished/live) ──
-const matches = [
-    { date: "JUNE 12", t1: "Mexico",       f1: "mx",     t2: "South Africa",  f2: "za",    time: "12:30 AM", score: null },
-    { date: "JUNE 12", t1: "Korea Republic",f1: "kr",    t2: "Czechia",        f2: "cz",    time: "07:30 AM", score: null },
-    { date: "JUNE 13", t1: "Canada",        f1: "ca",    t2: "Bosnia & Herz.", f2: "ba",    time: "12:30 AM", score: null },
-    { date: "JUNE 13", t1: "USA",           f1: "us",    t2: "Paraguay",       f2: "py",    time: "06:30 AM", score: null },
-    { date: "JUNE 14", t1: "Qatar",         f1: "qa",    t2: "Switzerland",    f2: "ch",    time: "12:30 AM", score: null },
-    { date: "JUNE 14", t1: "Brazil",        f1: "br",    t2: "Morocco",        f2: "ma",    time: "03:30 AM", score: null },
-    { date: "JUNE 14", t1: "Haiti",         f1: "ht",    t2: "Scotland",       f2: "gb-sct",time: "06:30 AM", score: null },
-    { date: "JUNE 14", t1: "Australia",     f1: "au",    t2: "Turkiye",        f2: "tr",    time: "09:30 AM", score: null },
-    { date: "JUNE 14", t1: "Germany",       f1: "de",    t2: "Curacao",        f2: "cw",    time: "10:30 PM", score: null },
-    { date: "JUNE 15", t1: "Netherlands",   f1: "nl",    t2: "Japan",          f2: "jp",    time: "01:30 AM", score: null },
-    { date: "JUNE 15", t1: "Ivory Coast",   f1: "ci",    t2: "Ecuador",        f2: "ec",    time: "04:30 AM", score: null },
-    { date: "JUNE 15", t1: "Sweden",        f1: "se",    t2: "Tunisia",        f2: "tn",    time: "07:30 AM", score: null },
-    { date: "JUNE 15", t1: "Spain",         f1: "es",    t2: "Cabo Verde",     f2: "cv",    time: "09:30 PM", score: null },
-    { date: "JUNE 16", t1: "Belgium",       f1: "be",    t2: "Egypt",          f2: "eg",    time: "12:30 AM", score: null },
-    { date: "JUNE 16", t1: "Saudi Arabia",  f1: "sa",    t2: "Uruguay",        f2: "uy",    time: "03:30 AM", score: null },
-    { date: "JUNE 16", t1: "Iran",          f1: "ir",    t2: "New Zealand",    f2: "nz",    time: "06:30 AM", score: null },
-    { date: "JUNE 17", t1: "France",        f1: "fr",    t2: "Senegal",        f2: "sn",    time: "12:30 AM", score: null },
-    { date: "JUNE 17", t1: "Iraq",          f1: "iq",    t2: "Norway",         f2: "no",    time: "03:30 AM", score: null },
-    { date: "JUNE 17", t1: "Argentina",     f1: "ar",    t2: "Algeria",        f2: "dz",    time: "06:30 AM", score: null },
-    { date: "JUNE 17", t1: "Austria",       f1: "at",    t2: "Jordan",         f2: "jo",    time: "09:30 AM", score: null },
-    { date: "JUNE 17", t1: "Portugal",      f1: "pt",    t2: "Congo",          f2: "cd",    time: "10:30 PM", score: null },
-    { date: "JUNE 18", t1: "Croatia",       f1: "hr",    t2: "England",        f2: "gb-eng",time: "01:30 AM", score: null },
-    { date: "JUNE 18", t1: "Ghana",         f1: "gh",    t2: "Panama",         f2: "pa",    time: "04:30 AM", score: null },
-    { date: "JUNE 18", t1: "Uzbekistan",    f1: "uz",    t2: "Colombia",       f2: "co",    time: "07:30 AM", score: null },
-    { date: "JUNE 18", t1: "Czechia",       f1: "cz",    t2: "Saudi Arabia",   f2: "sa",    time: "09:30 PM", score: null },
-    { date: "JUNE 19", t1: "Switzerland",   f1: "ch",    t2: "Bosnia & Herz.", f2: "ba",    time: "12:30 AM", score: null },
-    { date: "JUNE 19", t1: "Canada",        f1: "ca",    t2: "Qatar",          f2: "qa",    time: "03:30 AM", score: null },
-    { date: "JUNE 19", t1: "Mexico",        f1: "mx",    t2: "Korea Republic", f2: "kr",    time: "08:30 AM", score: null },
-    { date: "JUNE 20", t1: "USA",           f1: "us",    t2: "Australia",      f2: "au",    time: "12:30 AM", score: null },
-    { date: "JUNE 20", t1: "Scotland",      f1: "gb-sct",t2: "Morocco",        f2: "ma",    time: "03:30 AM", score: null },
-    { date: "JUNE 20", t1: "Brazil",        f1: "br",    t2: "Haiti",          f2: "ht",    time: "06:00 AM", score: null },
-    { date: "JUNE 20", t1: "Turkiye",       f1: "tr",    t2: "Paraguay",       f2: "py",    time: "08:30 AM", score: null },
-    { date: "JUNE 20", t1: "Netherlands",   f1: "nl",    t2: "Sweden",         f2: "se",    time: "10:30 PM", score: null },
-    { date: "JUNE 21", t1: "Germany",       f1: "de",    t2: "Ivory Coast",    f2: "ci",    time: "01:30 AM", score: null },
-    { date: "JUNE 21", t1: "Ecuador",       f1: "ec",    t2: "Curacao",        f2: "cw",    time: "05:30 AM", score: null },
-    { date: "JUNE 21", t1: "Tunisia",       f1: "tn",    t2: "Japan",          f2: "jp",    time: "09:30 AM", score: null },
-    { date: "JUNE 21", t1: "Spain",         f1: "es",    t2: "Saudi Arabia",   f2: "sa",    time: "09:30 PM", score: null },
-    { date: "JUNE 22", t1: "Belgium",       f1: "be",    t2: "Iran",           f2: "ir",    time: "12:30 AM", score: null },
-    { date: "JUNE 22", t1: "Uruguay",       f1: "uy",    t2: "Cabo Verde",     f2: "cv",    time: "03:30 AM", score: null },
-    { date: "JUNE 22", t1: "New Zealand",   f1: "nz",    t2: "Egypt",          f2: "eg",    time: "06:30 AM", score: null },
-    { date: "JUNE 22", t1: "Argentina",     f1: "ar",    t2: "Austria",        f2: "at",    time: "10:30 PM", score: null },
-    { date: "JUNE 23", t1: "France",        f1: "fr",    t2: "Iraq",           f2: "iq",    time: "02:30 AM", score: null },
-    { date: "JUNE 23", t1: "Norway",        f1: "no",    t2: "Senegal",        f2: "sn",    time: "05:30 AM", score: null },
-    { date: "JUNE 23", t1: "Jordan",        f1: "jo",    t2: "Algeria",        f2: "dz",    time: "08:30 AM", score: null },
-    { date: "JUNE 23", t1: "Portugal",      f1: "pt",    t2: "Uzbekistan",     f2: "uz",    time: "10:30 PM", score: null },
-    { date: "JUNE 24", t1: "England",       f1: "gb-eng",t2: "Ghana",          f2: "gh",    time: "01:30 AM", score: null },
-    { date: "JUNE 24", t1: "Panama",        f1: "pa",    t2: "Croatia",        f2: "hr",    time: "04:30 AM", score: null },
-    { date: "JUNE 24", t1: "Colombia",      f1: "co",    t2: "Congo",          f2: "cd",    time: "07:30 AM", score: null },
-    { date: "JUNE 25", t1: "Switzerland",   f1: "ch",    t2: "Canada",         f2: "ca",    time: "12:30 AM", score: null },
-    { date: "JUNE 25", t1: "Bosnia & Herz.",f1: "ba",    t2: "Qatar",          f2: "qa",    time: "12:30 AM", score: null },
-    { date: "JUNE 25", t1: "Scotland",      f1: "gb-sct",t2: "Brazil",         f2: "br",    time: "03:30 AM", score: null },
-    { date: "JUNE 25", t1: "Morocco",       f1: "ma",    t2: "Haiti",          f2: "ht",    time: "03:30 AM", score: null },
-    { date: "JUNE 25", t1: "Czechia",       f1: "cz",    t2: "Mexico",         f2: "mx",    time: "06:30 AM", score: null },
-    { date: "JUNE 25", t1: "South Africa",  f1: "za",    t2: "Korea Republic", f2: "kr",    time: "06:30 AM", score: null },
-    { date: "JUNE 26", t1: "Curacao",       f1: "cw",    t2: "Ivory Coast",    f2: "ci",    time: "01:30 AM", score: null },
-    { date: "JUNE 26", t1: "Ecuador",       f1: "ec",    t2: "Germany",        f2: "de",    time: "01:30 AM", score: null },
-    { date: "JUNE 26", t1: "Japan",         f1: "jp",    t2: "Sweden",         f2: "se",    time: "04:30 AM", score: null },
-    { date: "JUNE 26", t1: "Tunisia",       f1: "tn",    t2: "Netherlands",    f2: "nl",    time: "04:30 AM", score: null },
-    { date: "JUNE 26", t1: "Turkiye",       f1: "tr",    t2: "USA",            f2: "us",    time: "07:30 AM", score: null },
-    { date: "JUNE 26", t1: "Paraguay",      f1: "py",    t2: "Australia",      f2: "au",    time: "07:30 AM", score: null },
-    { date: "JUNE 27", t1: "Norway",        f1: "no",    t2: "France",         f2: "fr",    time: "12:30 AM", score: null },
-    { date: "JUNE 27", t1: "Senegal",       f1: "sn",    t2: "Iraq",           f2: "iq",    time: "12:30 AM", score: null },
-    { date: "JUNE 27", t1: "Cabo Verde",    f1: "cv",    t2: "Saudi Arabia",   f2: "sa",    time: "05:30 AM", score: null },
-    { date: "JUNE 27", t1: "Uruguay",       f1: "uy",    t2: "Spain",          f2: "es",    time: "05:30 AM", score: null },
-    { date: "JUNE 27", t1: "Egypt",         f1: "eg",    t2: "Iran",           f2: "ir",    time: "08:30 AM", score: null },
-    { date: "JUNE 27", t1: "New Zealand",   f1: "nz",    t2: "Belgium",        f2: "be",    time: "08:30 AM", score: null },
-    { date: "JUNE 28", t1: "Panama",        f1: "pa",    t2: "England",        f2: "gb-eng",time: "02:30 AM", score: null },
-    { date: "JUNE 28", t1: "Croatia",       f1: "hr",    t2: "Ghana",          f2: "gh",    time: "02:30 AM", score: null },
-    { date: "JUNE 28", t1: "Colombia",      f1: "co",    t2: "Portugal",       f2: "pt",    time: "05:00 AM", score: null },
-    { date: "JUNE 28", t1: "Congo",         f1: "cd",    t2: "Uzbekistan",     f2: "uz",    time: "05:00 AM", score: null },
-    { date: "JUNE 28", t1: "Algeria",       f1: "dz",    t2: "Austria",        f2: "at",    time: "07:30 AM", score: null },
-    { date: "JUNE 28", t1: "Jordan",        f1: "jo",    t2: "Argentina",      f2: "ar",    time: "07:30 AM", score: null },
-];
-
-// ── HELPERS ──
-function parseMatchDate(dateStr, timeStr) {
-    const monthMap = { JUNE: 5 };
-    const parts = dateStr.split(' ');
-    const month = monthMap[parts[0]];
-    const day = parseInt(parts[1]);
-    const [timePart, ampm] = timeStr.split(' ');
-    let [hours, minutes] = timePart.split(':').map(Number);
-    if (ampm === 'PM' && hours !== 12) hours += 12;
-    if (ampm === 'AM' && hours === 12) hours = 0;
-    const utcMs = Date.UTC(2026, month, day, hours, minutes) - (5 * 60 + 30) * 60 * 1000;
-    return new Date(utcMs);
-}
-
-function getMatchStatus(m) {
-    const start = parseMatchDate(m.date, m.time);
-    const end = new Date(start.getTime() + 115 * 60 * 1000);
-    const now = new Date();
-    if (now >= start && now <= end) return 'live';
-    if (now < start) return 'upcoming';
-    return 'finished';
-}
-
-function getTodayDateStr() {
-    // Bangladesh Standard Time = UTC+6
-    const bd = new Date(Date.now() + 6 * 3600000);
-    const months = ['JANUARY','FEBRUARY','MARCH','APRIL','MAY','JUNE','JULY','AUGUST','SEPTEMBER','OCTOBER','NOVEMBER','DECEMBER'];
-    return months[bd.getUTCMonth()] + ' ' + bd.getUTCDate();
-}
-
-// ── IST -> BD TIME (BD = IST + 30 min) ──
-// All match times in the data above are stored as IST clock times.
-// This converts them to Bangladesh time for display purposes only.
-function toBDTime(timeStr) {
-    const [timePart, ampm] = timeStr.split(' ');
-    let [h, m] = timePart.split(':').map(Number);
-    let total = (h % 12) * 60 + m + (ampm === 'PM' ? 12 * 60 : 0); // minutes since 12:00 AM
-    total = (total + 30) % 1440; // BD = IST + 30 minutes
-    let hh = Math.floor(total / 60);
-    const mm = total % 60;
-    const newAmpm = hh < 12 ? 'AM' : 'PM';
-    let displayH = hh % 12;
-    if (displayH === 0) displayH = 12;
-    return `${String(displayH).padStart(2, '0')}:${String(mm).padStart(2, '0')} ${newAmpm}`;
-}
-
-// ── AUTO LIVE SCORE UPDATE (TheSportsDB — free, no signup needed) ──
-const TSDB_KEY = '3';            // public free test key
-const TSDB_LEAGUE_ID = 4429;     // FIFA World Cup
-
-// Some team names in our data differ from TheSportsDB's naming
-const teamAliasMap = {
-    'Korea Republic': 'South Korea',
-    'Czechia': 'Czech Republic',
-    'USA': 'United States',
-    'Cabo Verde': 'Cape Verde',
-    'Bosnia & Herz.': 'Bosnia and Herzegovina',
-    'Turkiye': 'Turkey',
-    'Congo': 'DR Congo',
-    'Curacao': 'Curaçao',
-};
-
-function normTeam(name) {
-    const mapped = teamAliasMap[name] || name;
-    return mapped.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z]/g, '');
-}
-
-function sameTeam(a, b) {
-    if (!a || !b) return false;
-    const na = normTeam(a), nb = normTeam(b);
-    return na === nb || na.includes(nb) || nb.includes(na);
-}
-
-// The date a match falls on in UTC (TheSportsDB stores events by UTC date)
-function utcDateStrFor(m) {
-    const d = parseMatchDate(m.date, m.time);
-    return d.toISOString().slice(0, 10); // YYYY-MM-DD
-}
-
-// Fetch & merge real scores for ALL finished or live matches from API.
-async function updateLiveScores() {
-    // fetch all matches that are finished or live (no manual score needed)
-    const needed = matches.filter(m => {
-        const st = getMatchStatus(m);
-        return st === 'live' || st === 'finished';
-    });
-    if (needed.length === 0) return;
-
-    const dates = [...new Set(needed.map(utcDateStrFor))];
-    let changed = false;
-
-    for (const d of dates) {
-        try {
-            const res = await fetch(`https://www.thesportsdb.com/api/v1/json/${TSDB_KEY}/eventsday.php?d=${d}&l=${TSDB_LEAGUE_ID}`);
-            const data = await res.json();
-            const events = (data && data.events) ? data.events : [];
-            needed.filter(m => utcDateStrFor(m) === d).forEach(m => {
-                const ev = events.find(e =>
-                    (sameTeam(e.strHomeTeam, m.t1) && sameTeam(e.strAwayTeam, m.t2)) ||
-                    (sameTeam(e.strHomeTeam, m.t2) && sameTeam(e.strAwayTeam, m.t1))
-                );
-                if (ev && ev.intHomeScore !== null && ev.intAwayScore !== null && ev.intHomeScore !== '' && ev.intAwayScore !== '') {
-                    const hs = parseInt(ev.intHomeScore, 10);
-                    const as = parseInt(ev.intAwayScore, 10);
-                    const newScore = sameTeam(ev.strHomeTeam, m.t1) ? [hs, as] : [as, hs];
-                    if (!m.score || m.score[0] !== newScore[0] || m.score[1] !== newScore[1]) {
-                        m.score = newScore;
-                        changed = true;
-                    }
-                }
-            });
-        } catch (e) {
-            // network/CORS hiccup — keep last known data, try again next cycle
-        }
-    }
-
-    if (changed) {
-        renderMatches();
-        renderTodayUpcoming();
-        renderGroups();
-    }
-}
-
-// ── TAB SWITCHING ──
-function showTab(tab, btn) {
-    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    document.getElementById('page-' + tab).classList.add('active');
-    btn.classList.add('active');
-}
-
-// ── CHANNEL SWITCH — stop other streams when switching ──
-function switchChannel(i) {
-    // Pause all iframes by blanking src first, then set active only
-    document.querySelectorAll('#videoWrap iframe').forEach((f, idx) => {
-        if (idx !== i) {
-            f.src = '';
-            f.classList.remove('active');
-        }
-    });
-    currentCh = i;
-    const activeFrame = document.getElementById('ch' + i);
-    if (!activeFrame.src || activeFrame.src === window.location.href) {
-        activeFrame.src = chSrcs[i];
-    }
-    activeFrame.classList.add('active');
-    document.querySelectorAll('.ch-btn').forEach((b, idx) => b.classList.toggle('active', idx === i));
-    document.getElementById('ch-name').textContent = chNames[i];
-    requestWakeLock();
-}
-
-// ── STREAM CONTROLS AUTO-HIDE ──
-let controlsTimer = null;
-function showStreamControls() {
-    const inner = document.getElementById('streamControlsInner');
-    inner.classList.add('show');
-    clearTimeout(controlsTimer);
-    controlsTimer = setTimeout(() => inner.classList.remove('show'), 3000);
-}
-
-// ── FULLSCREEN & ROTATE ──
-function enterFullscreen(el) {
-    if (el.requestFullscreen) return el.requestFullscreen();
-    if (el.webkitRequestFullscreen) return el.webkitRequestFullscreen();
-    if (el.webkitEnterFullscreen) return el.webkitEnterFullscreen(); // iOS video fallback
-    return Promise.reject(new Error('Fullscreen not supported'));
-}
-
-function rotateFullscreen(e) {
-    if (e) e.stopPropagation();
-    const src = document.getElementById('ch' + currentCh).src || chSrcs[currentCh];
-    const overlay = document.getElementById('fsOverlay');
-    document.getElementById('fsFrame').src = src;
-    overlay.classList.add('open');
-    requestWakeLock();
-
-    const goLandscape = () => {
-        if (screen.orientation && screen.orientation.lock) {
-            screen.orientation.lock('landscape').catch(() => overlay.classList.add('force-landscape'));
-        } else {
-            // Orientation Lock API not available (e.g. iOS Safari) — rotate via CSS instead
-            overlay.classList.add('force-landscape');
-        }
-    };
-
-    // Fullscreen must be entered first — most browsers reject orientation
-    // lock requests made outside of an active fullscreen context.
-    Promise.resolve(enterFullscreen(overlay)).then(goLandscape).catch(goLandscape);
-}
-
-function openFullscreen(e) {
-    if (e) e.stopPropagation();
-    const src = document.getElementById('ch' + currentCh).src || chSrcs[currentCh];
-    const overlay = document.getElementById('fsOverlay');
-    document.getElementById('fsFrame').src = src;
-    overlay.classList.add('open');
-    Promise.resolve(enterFullscreen(overlay)).catch(() => {});
-    requestWakeLock();
-}
-
-function closeFullscreen() {
-    const overlay = document.getElementById('fsOverlay');
-    overlay.classList.remove('open');
-    overlay.classList.remove('force-landscape');
-    document.getElementById('fsFrame').src = '';
-    if (screen.orientation && screen.orientation.unlock) screen.orientation.unlock();
-    if (document.exitFullscreen) document.exitFullscreen().catch(() => {});
-    else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
-}
-
-document.addEventListener('fullscreenchange', () => {
-    if (!document.fullscreenElement) {
-        const overlay = document.getElementById('fsOverlay');
-        overlay.classList.remove('open');
-        overlay.classList.remove('force-landscape');
-        document.getElementById('fsFrame').src = '';
-        if (screen.orientation && screen.orientation.unlock) screen.orientation.unlock();
-    }
-});
-document.addEventListener('webkitfullscreenchange', () => {
-    if (!document.webkitFullscreenElement) {
-        const overlay = document.getElementById('fsOverlay');
-        overlay.classList.remove('open');
-        overlay.classList.remove('force-landscape');
-        document.getElementById('fsFrame').src = '';
-    }
-});
-
-// ── MATCH CARD HTML ──
-function matchCardHTML(m) {
-    const status = getMatchStatus(m);
-    let badge = '';
-    let cardClass = '';
-    let centerBlock = '';
-
-    if (status === 'live') {
-        badge = `<div class="match-live-badge"><span class="match-live-dot"></span>LIVE</div>`;
-        cardClass = 'live-match';
-        if (m.score) {
-            centerBlock = `
-                <div style="display:flex; flex-direction:column; align-items:center; gap:2px;">
-                    <span class="match-score-val">${m.score[0]} - ${m.score[1]}</span>
-                    <span class="vs-badge" style="font-size:0.6rem; color:var(--red);">LIVE</span>
-                </div>`;
-        } else {
-            centerBlock = `<span class="vs-badge">VS</span>`;
-        }
-    } else if (status === 'upcoming') {
-        badge = `<div class="match-upcoming-badge">UPCOMING</div>`;
-        cardClass = 'upcoming-match';
-        centerBlock = `<span class="vs-badge">VS</span>`;
-    } else {
-        // finished
-        cardClass = 'finished-match';
-        if (m.score) {
-            centerBlock = `
-                <div style="display:flex; flex-direction:column; align-items:center; gap:2px;">
-                    <span class="match-score-val">${m.score[0]} - ${m.score[1]}</span>
-                    <span class="vs-badge" style="font-size:0.6rem;">FT</span>
-                </div>`;
-        } else {
-            centerBlock = `<span class="vs-badge">FT</span>`;
-        }
-    }
-
-    return `
-        <div class="match-card ${cardClass}">
-            ${badge}
-            <div class="match-time-col">
-                <span class="match-time-val">${toBDTime(m.time)}</span>
-                <span class="match-time-tz">BD TIME</span>
-            </div>
-            <div class="match-divider"></div>
-            <div class="match-body">
-                <div class="team">
-                    <img src="https://flagcdn.com/w80/${m.f1}.png" alt="${m.t1}" loading="lazy">
-                    <span class="team-name">${m.t1}</span>
-                </div>
-                ${centerBlock}
-                <div class="team">
-                    <img src="https://flagcdn.com/w80/${m.f2}.png" alt="${m.t2}" loading="lazy">
-                    <span class="team-name">${m.t2}</span>
-                </div>
-            </div>
-        </div>
-    `;
-}
-
-// ── DATE FILTER ──
-const dates = [...new Set(matches.map(m => m.date))];
-let activeDate = 'ALL';
-
-function buildDateFilter() {
-    const el = document.getElementById('dateFilter');
-    const todayStr = getTodayDateStr();
-    const allChip = `<div class="date-chip" onclick="filterDate('ALL',this)">All Dates</div>`;
-    const chips = dates.map(d => {
-        const short = d.replace('JUNE ', 'Jun ');
-        const isToday = d === todayStr;
-        return `<div class="date-chip${isToday?' active':''}" onclick="filterDate('${d}',this)">${short}${isToday?' TODAY':''}</div>`;
-    }).join('');
-    el.innerHTML = allChip + chips;
-    activeDate = dates.find(d => d === todayStr) || 'ALL';
-    if (activeDate === 'ALL') el.querySelector('.date-chip').classList.add('active');
-}
-
-function filterDate(date, el) {
-    activeDate = date;
-    document.querySelectorAll('.date-chip').forEach(c => c.classList.remove('active'));
-    el.classList.add('active');
-    renderMatches();
-}
-
-function renderMatches() {
-    const list = document.getElementById('matchList');
-    const filtered = activeDate === 'ALL' ? matches : matches.filter(m => m.date === activeDate);
-    if (activeDate === 'ALL') {
-        const grouped = {};
-        filtered.forEach(m => { if (!grouped[m.date]) grouped[m.date] = []; grouped[m.date].push(m); });
-        list.innerHTML = Object.entries(grouped).map(([date, ms]) =>
-            `<div class="match-date-label">${date}</div>` + ms.map(matchCardHTML).join('')
-        ).join('');
-    } else {
-        list.innerHTML = filtered.map(matchCardHTML).join('');
-    }
-}
-
-// ── TODAY (Live tab) ──
-function renderTodayUpcoming() {
-    const todayStr = getTodayDateStr();
-    const todayMatches = matches.filter(m => m.date === todayStr);
-    // Show live first, then upcoming — skip finished
-    const live = todayMatches.filter(m => getMatchStatus(m) === 'live');
-    const upcoming = todayMatches.filter(m => getMatchStatus(m) === 'upcoming');
-    const showList = [...live, ...upcoming];
-
-    const section = document.getElementById('todayUpcomingSection');
-    const list = document.getElementById('todayMatchList');
-    if (showList.length === 0) {
-        section.style.display = 'none';
-    } else {
-        section.style.display = 'block';
-        list.innerHTML = showList.map(matchCardHTML).join('');
-    }
-}
-
-// ── NOTIFICATIONS ──
-let notifEnabled = false;
-let scheduledNotifs = [];
-
-function toggleNotifBtn() {
-    const btn = document.getElementById('notifBtn');
-    if (notifEnabled) {
-        disableNotifications(btn);
-    } else {
-        enableNotifications(btn);
-    }
-}
-
-async function enableNotifications(btn) {
-    if (!('Notification' in window)) {
-        showToast('Eyi browser e push notification support nai.');
-        return;
-    }
-    let perm = Notification.permission;
-    if (perm === 'default') perm = await Notification.requestPermission();
-    if (perm !== 'granted') {
-        showToast('Notification permission deyni — settings theke allow korte hobe.');
-        return;
-    }
-    notifEnabled = true;
-    try { localStorage.setItem('xenNotif', '1'); } catch(e) {}
-    btn.classList.add('active');
-    scheduleMatchNotifications();
-    showToast('Notifications ON — match shuru hobar 5 min age alert paben.');
-}
-
-function disableNotifications(btn) {
-    notifEnabled = false;
-    try { localStorage.setItem('xenNotif', '0'); } catch(e) {}
-    btn.classList.remove('active');
-    scheduledNotifs.forEach(id => clearTimeout(id));
-    scheduledNotifs = [];
-    showToast('Notifications off kora hoyeche.');
-}
-
-function scheduleMatchNotifications() {
-    scheduledNotifs.forEach(id => clearTimeout(id));
-    scheduledNotifs = [];
-    const now = new Date();
-    matches.forEach(m => {
-        const start = parseMatchDate(m.date, m.time);
-        const delay = start - 5 * 60000 - now;
-        if (delay > 0) {
-            const tid = setTimeout(() => {
-                if (notifEnabled && Notification.permission === 'granted') {
-                    new Notification('XEN SPORTS — Match Starting Soon!', {
-                        body: `${m.t1} vs ${m.t2} — ${toBDTime(m.time)} BD`,
-                        icon: 'https://i.ibb.co.com/rGHtys1G/file-000000009fb87208b7d1ca320d4b478c.png',
-                        tag: `xen-${m.date}-${m.t1}`,
-                        vibrate: [200, 100, 200],
-                    });
-                }
-            }, delay);
-            scheduledNotifs.push(tid);
-        }
-    });
-}
-
-function showToast(msg) {
-    let t = document.getElementById('xen-toast');
-    if (!t) {
-        t = document.createElement('div');
-        t.id = 'xen-toast';
-        t.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#0f2035;border:1px solid rgba(0,229,255,0.3);color:#fff;padding:10px 18px;border-radius:10px;font-size:0.78rem;font-family:Inter,sans-serif;z-index:9998;text-align:center;max-width:85vw;box-shadow:0 4px 20px rgba(0,0,0,0.5);opacity:0;transition:opacity 0.3s;';
-        document.body.appendChild(t);
-    }
-    t.textContent = msg;
-    t.style.opacity = '1';
-    setTimeout(() => { t.style.opacity = '0'; }, 3000);
-}
-
-// ── WAKE LOCK ──
-let wakeLock = null;
-async function requestWakeLock() {
-    try { if ('wakeLock' in navigator) wakeLock = await navigator.wakeLock.request('screen'); } catch(e){}
-}
-document.addEventListener('click', requestWakeLock, { once: true });
-document.addEventListener('visibilitychange', () => {
-    if (wakeLock !== null && document.visibilityState === 'visible') requestWakeLock();
-});
-
-// ── SERVICE WORKER ──
-if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js').catch(()=>{});
-
-// ── INSTALL BANNER ──
-let deferredPrompt;
-window.addEventListener('beforeinstallprompt', e => {
-    e.preventDefault(); deferredPrompt = e;
-    document.getElementById('installBanner').style.display = 'flex';
-});
-function installApp() {
-    if (!deferredPrompt) return;
-    deferredPrompt.prompt();
-    deferredPrompt.userChoice.then(() => { deferredPrompt = null; document.getElementById('installBanner').style.display = 'none'; });
-}
-function dismissBanner() { document.getElementById('installBanner').style.display = 'none'; }
-
-// ── INIT ──
-buildDateFilter();
-renderMatches();
-renderTodayUpcoming();
-updateLiveScores();
-
-// Restore notification preference
-(function initNotif() {
-    try {
-        const saved = localStorage.getItem('xenNotif');
-        if (saved === '1' && 'Notification' in window && Notification.permission === 'granted') {
-            notifEnabled = true;
-            document.getElementById('notifBtn').classList.add('active');
-            scheduleMatchNotifications();
-        }
-    } catch(e) {}
-})();
-
-// Auto-refresh every 60s
-setInterval(() => {
-    renderMatches();
-    renderTodayUpcoming();
-    updateLiveScores();
-    if (notifEnabled) scheduleMatchNotifications();
-}, 60000);
-
-// ── GROUPS DATA (FIFA World Cup 2026) ──
-const groups = {
-    'A': [
-        { name: 'Mexico',        flag: 'mx', tsdb: 'Mexico' },
-        { name: 'South Africa',  flag: 'za', tsdb: 'South Africa' },
-        { name: 'Korea Republic',flag: 'kr', tsdb: 'South Korea' },
-        { name: 'Czechia',       flag: 'cz', tsdb: 'Czech Republic' },
-    ],
-    'B': [
-        { name: 'Canada',        flag: 'ca', tsdb: 'Canada' },
-        { name: 'Bosnia & Herz.',flag: 'ba', tsdb: 'Bosnia and Herzegovina' },
-        { name: 'Qatar',         flag: 'qa', tsdb: 'Qatar' },
-        { name: 'Switzerland',   flag: 'ch', tsdb: 'Switzerland' },
-    ],
-    'C': [
-        { name: 'USA',           flag: 'us', tsdb: 'United States' },
-        { name: 'Paraguay',      flag: 'py', tsdb: 'Paraguay' },
-        { name: 'Australia',     flag: 'au', tsdb: 'Australia' },
-        { name: 'Turkiye',       flag: 'tr', tsdb: 'Turkey' },
-    ],
-    'D': [
-        { name: 'Brazil',        flag: 'br', tsdb: 'Brazil' },
-        { name: 'Morocco',       flag: 'ma', tsdb: 'Morocco' },
-        { name: 'Scotland',      flag: 'gb-sct', tsdb: 'Scotland' },
-        { name: 'Haiti',         flag: 'ht', tsdb: 'Haiti' },
-    ],
-    'E': [
-        { name: 'Germany',       flag: 'de', tsdb: 'Germany' },
-        { name: 'Curacao',       flag: 'cw', tsdb: 'Curaçao' },
-        { name: 'Ivory Coast',   flag: 'ci', tsdb: 'Ivory Coast' },
-        { name: 'Ecuador',       flag: 'ec', tsdb: 'Ecuador' },
-    ],
-    'F': [
-        { name: 'Netherlands',   flag: 'nl', tsdb: 'Netherlands' },
-        { name: 'Japan',         flag: 'jp', tsdb: 'Japan' },
-        { name: 'Sweden',        flag: 'se', tsdb: 'Sweden' },
-        { name: 'Tunisia',       flag: 'tn', tsdb: 'Tunisia' },
-    ],
-    'G': [
-        { name: 'Spain',         flag: 'es', tsdb: 'Spain' },
-        { name: 'Cabo Verde',    flag: 'cv', tsdb: 'Cape Verde' },
-        { name: 'Saudi Arabia',  flag: 'sa', tsdb: 'Saudi Arabia' },
-        { name: 'Uruguay',       flag: 'uy', tsdb: 'Uruguay' },
-    ],
-    'H': [
-        { name: 'Belgium',       flag: 'be', tsdb: 'Belgium' },
-        { name: 'Egypt',         flag: 'eg', tsdb: 'Egypt' },
-        { name: 'Iran',          flag: 'ir', tsdb: 'Iran' },
-        { name: 'New Zealand',   flag: 'nz', tsdb: 'New Zealand' },
-    ],
-    'I': [
-        { name: 'France',        flag: 'fr', tsdb: 'France' },
-        { name: 'Senegal',       flag: 'sn', tsdb: 'Senegal' },
-        { name: 'Iraq',          flag: 'iq', tsdb: 'Iraq' },
-        { name: 'Norway',        flag: 'no', tsdb: 'Norway' },
-    ],
-    'J': [
-        { name: 'Argentina',     flag: 'ar', tsdb: 'Argentina' },
-        { name: 'Algeria',       flag: 'dz', tsdb: 'Algeria' },
-        { name: 'Austria',       flag: 'at', tsdb: 'Austria' },
-        { name: 'Jordan',        flag: 'jo', tsdb: 'Jordan' },
-    ],
-    'K': [
-        { name: 'Portugal',      flag: 'pt', tsdb: 'Portugal' },
-        { name: 'Congo',         flag: 'cd', tsdb: 'DR Congo' },
-        { name: 'Croatia',       flag: 'hr', tsdb: 'Croatia' },
-        { name: 'Ghana',         flag: 'gh', tsdb: 'Ghana' },
-    ],
-    'L': [
-        { name: 'Uzbekistan',    flag: 'uz', tsdb: 'Uzbekistan' },
-        { name: 'Colombia',      flag: 'co', tsdb: 'Colombia' },
-        { name: 'England',       flag: 'gb-eng', tsdb: 'England' },
-        { name: 'Panama',        flag: 'pa', tsdb: 'Panama' },
-    ],
-};
-
-// Map team → group letter
-const teamGroupMap = {};
-Object.entries(groups).forEach(([g, teams]) => {
-    teams.forEach(t => { teamGroupMap[t.name] = g; });
-});
-
-// Count group matches per team
-function getGroupMatches(groupLetter) {
-    const teamNames = groups[groupLetter].map(t => t.name);
-    const norm = n => n.toLowerCase().replace(/[^a-z]/g,'');
-    return matches.filter(m => {
-        const nt1 = norm(m.t1), nt2 = norm(m.t2);
-        return teamNames.some(n => norm(n) === nt1) && teamNames.some(n => norm(n) === nt2);
-    }).length;
-}
-
-// ── POINT TABLE CALCULATION ──
-function calcStandings(groupLetter) {
-    const groupTeams = groups[groupLetter];
-    const teamNames = groupTeams.map(t => t.name);
-    const norm = n => n.toLowerCase().replace(/[^a-z]/g,'');
-
-    // init stats
-    const stats = {};
-    groupTeams.forEach(t => {
-        stats[t.name] = { mp:0, w:0, d:0, l:0, gf:0, ga:0, pts:0, flag: t.flag, tsdb: t.tsdb };
-    });
-
-    // find group matches from match data
-    matches.forEach(m => {
-        if (!m.score) return; // not played yet
-        const nt1 = norm(m.t1), nt2 = norm(m.t2);
-        const team1 = groupTeams.find(t => norm(t.name) === nt1 || nt1.includes(norm(t.name)) || norm(t.name).includes(nt1));
-        const team2 = groupTeams.find(t => norm(t.name) === nt2 || nt2.includes(norm(t.name)) || norm(t.name).includes(nt2));
-        if (!team1 || !team2) return;
-
-        const [g1, g2] = m.score;
-        const s1 = stats[team1.name], s2 = stats[team2.name];
-        s1.mp++; s2.mp++;
-        s1.gf += g1; s1.ga += g2;
-        s2.gf += g2; s2.ga += g1;
-        if (g1 > g2) { s1.w++; s1.pts+=3; s2.l++; }
-        else if (g1 < g2) { s2.w++; s2.pts+=3; s1.l++; }
-        else { s1.d++; s2.d++; s1.pts++; s2.pts++; }
-    });
-
-    // sort: pts → gd → gf → name
-    return groupTeams
-        .map(t => ({ ...stats[t.name], name: t.name }))
-        .sort((a,b) => {
-            if (b.pts !== a.pts) return b.pts - a.pts;
-            const gdA = a.gf - a.ga, gdB = b.gf - b.ga;
-            if (gdB !== gdA) return gdB - gdA;
-            if (b.gf !== a.gf) return b.gf - a.gf;
-            return a.name.localeCompare(b.name);
-        });
-}
-
-function toggleGroupView(letter, mode) {
-    const card = document.getElementById(`gc-${letter}`);
-    const teamsDiv = card.querySelector('.group-teams');
-    const tableEl = card.querySelector('.point-table');
-    const btns = card.querySelectorAll('.gvt-btn');
-    if (mode === 'table') {
-        teamsDiv.classList.add('hide');
-        tableEl.classList.add('show');
-        btns[0].classList.remove('active'); btns[1].classList.add('active');
-    } else {
-        teamsDiv.classList.remove('hide');
-        tableEl.classList.remove('show');
-        btns[0].classList.add('active'); btns[1].classList.remove('active');
-    }
-}
-
-function renderGroups() {
-    const container = document.getElementById('groupsContainer');
-    container.innerHTML = Object.entries(groups).map(([letter, teams]) => {
-        const matchCount = getGroupMatches(letter);
-        const standings = calcStandings(letter);
-
-        const teamsHTML = teams.map(t => `
-            <div class="group-team-row" onclick="openSquad('${t.name}','${t.flag}','${t.tsdb}','${letter}')">
-                <img class="group-team-flag" src="https://flagcdn.com/w80/${t.flag}.png" alt="${t.name}" loading="lazy">
-                <span class="group-team-name">${t.name}</span>
-                <span class="group-team-tap">TAP FOR SQUAD</span>
-            </div>
-        `).join('');
-
-        const tableRows = standings.map((s, i) => {
-            const gd = s.gf - s.ga;
-            const gdStr = gd > 0 ? `+${gd}` : `${gd}`;
-            const qualify = i < 2;
-            return `
-            <tr class="pt-row${qualify ? ' qualify-row' : ''}">
-                <td>
-                    <div class="pt-team-cell">
-                        <span class="pt-pos${qualify ? ' qualify' : ''}">${i+1}</span>
-                        <img class="pt-flag" src="https://flagcdn.com/w80/${s.flag}.png" alt="${s.name}" loading="lazy">
-                        <span style="font-size:0.7rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:72px;">${s.name}</span>
-                    </div>
-                </td>
-                <td>${s.mp}</td>
-                <td>${s.w}</td>
-                <td>${s.d}</td>
-                <td>${s.l}</td>
-                <td>${gdStr}</td>
-                <td class="pt-pts">${s.pts}</td>
-            </tr>`;
-        }).join('');
-
-        return `
-            <div class="group-card" id="gc-${letter}">
-                <div class="group-header">
-                    <span class="group-letter">GROUP ${letter}</span>
-                    <span class="group-match-count">${matchCount} MATCHES</span>
-                    <div class="group-view-toggle">
-                        <button class="gvt-btn active" onclick="toggleGroupView('${letter}','teams')">TEAMS</button>
-                        <button class="gvt-btn" onclick="toggleGroupView('${letter}','table')">TABLE</button>
-                    </div>
-                </div>
-                <div class="group-teams">${teamsHTML}</div>
-                <table class="point-table">
-                    <thead>
-                        <tr class="pt-head">
-                            <th>TEAM</th>
-                            <th>MP</th>
-                            <th>W</th>
-                            <th>D</th>
-                            <th>L</th>
-                            <th>GD</th>
-                            <th>PTS</th>
-                        </tr>
-                    </thead>
-                    <tbody>${tableRows}</tbody>
-                </table>
-            </div>
-        `;
-    }).join('');
-}
-
-// ── WC 2026 SQUAD DATA (hardcoded, photo via Wikipedia API) ──
-const squadData = {
-'Brazil': [
-    {pos:'GK', name:'Alisson Becker', wiki:'Alisson_Becker'},
-    {pos:'GK', name:'Ederson', wiki:'Ederson_(footballer,_born_1993)'},
-    {pos:'GK', name:'Weverton', wiki:'Weverton'},
-    {pos:'DEF', name:'Danilo', wiki:'Danilo_(footballer,_born_1991)'},
-    {pos:'DEF', name:'Éder Militão', wiki:'Éder_Militão'},
-    {pos:'DEF', name:'Gabriel Magalhães', wiki:'Gabriel_Magalhães'},
-    {pos:'DEF', name:'Marquinhos', wiki:'Marquinhos_(footballer)'},
-    {pos:'DEF', name:'Alex Sandro', wiki:'Alex_Sandro'},
-    {pos:'DEF', name:'Wendell', wiki:'Wendell_(footballer,_born_1993)'},
-    {pos:'DEF', name:'Guilherme Arana', wiki:'Guilherme_Arana'},
-    {pos:'MID', name:'Casemiro', wiki:'Casemiro'},
-    {pos:'MID', name:'Bruno Guimarães', wiki:'Bruno_Guimarães'},
-    {pos:'MID', name:'Lucas Paquetá', wiki:'Lucas_Paquetá'},
-    {pos:'MID', name:'Fred', wiki:'Fred_(footballer,_born_1993)'},
-    {pos:'MID', name:'Gerson', wiki:'Gerson_(footballer,_born_1997)'},
-    {pos:'FWD', name:'Neymar', wiki:'Neymar'},
-    {pos:'FWD', name:'Vinicius Jr.', wiki:'Vinícius_Júnior'},
-    {pos:'FWD', name:'Rodrygo', wiki:'Rodrygo'},
-    {pos:'FWD', name:'Raphinha', wiki:'Raphinha'},
-    {pos:'FWD', name:'Gabriel Jesus', wiki:'Gabriel_Jesus'},
-    {pos:'FWD', name:'Richarlison', wiki:'Richarlison'},
-    {pos:'FWD', name:'Endrick', wiki:'Endrick_(footballer)'},
-],
-'Argentina': [
-    {pos:'GK', name:'Emiliano Martínez', wiki:'Emiliano_Martínez'},
-    {pos:'GK', name:'Gerónimo Rulli', wiki:'Gerónimo_Rulli'},
-    {pos:'DEF', name:'Nahuel Molina', wiki:'Nahuel_Molina'},
-    {pos:'DEF', name:'Cristian Romero', wiki:'Cristian_Romero'},
-    {pos:'DEF', name:'Lisandro Martínez', wiki:'Lisandro_Martínez'},
-    {pos:'DEF', name:'Nicolás Otamendi', wiki:'Nicolás_Otamendi'},
-    {pos:'DEF', name:'Nicolás Tagliafico', wiki:'Nicolás_Tagliafico'},
-    {pos:'DEF', name:'Marcos Acuña', wiki:'Marcos_Acuña'},
-    {pos:'MID', name:'Rodrigo De Paul', wiki:'Rodrigo_De_Paul'},
-    {pos:'MID', name:'Leandro Paredes', wiki:'Leandro_Paredes'},
-    {pos:'MID', name:'Alexis Mac Allister', wiki:'Alexis_Mac_Allister'},
-    {pos:'MID', name:'Enzo Fernández', wiki:'Enzo_Fernández'},
-    {pos:'MID', name:'Giovani Lo Celso', wiki:'Giovani_Lo_Celso'},
-    {pos:'FWD', name:'Lionel Messi', wiki:'Lionel_Messi'},
-    {pos:'FWD', name:'Julián Álvarez', wiki:'Julián_Álvarez'},
-    {pos:'FWD', name:'Ángel Di María', wiki:'Ángel_Di_María'},
-    {pos:'FWD', name:'Lautaro Martínez', wiki:'Lautaro_Martínez'},
-    {pos:'FWD', name:'Paulo Dybala', wiki:'Paulo_Dybala'},
-],
-'France': [
-    {pos:'GK', name:'Mike Maignan', wiki:'Mike_Maignan'},
-    {pos:'GK', name:'Alphonse Areola', wiki:'Alphonse_Areola'},
-    {pos:'DEF', name:'Jules Koundé', wiki:'Jules_Koundé'},
-    {pos:'DEF', name:'Raphaël Varane', wiki:'Raphaël_Varane'},
-    {pos:'DEF', name:'Ibrahima Konaté', wiki:'Ibrahima_Konaté'},
-    {pos:'DEF', name:'Dayot Upamecano', wiki:'Dayot_Upamecano'},
-    {pos:'DEF', name:'Theo Hernandez', wiki:'Theo_Hernández'},
-    {pos:'DEF', name:'Lucas Hernandez', wiki:'Lucas_Hernández'},
-    {pos:'MID', name:"N'Golo Kanté", wiki:"N'Golo_Kanté"},
-    {pos:'MID', name:'Aurélien Tchouaméni', wiki:'Aurélien_Tchouaméni'},
-    {pos:'MID', name:'Adrien Rabiot', wiki:'Adrien_Rabiot'},
-    {pos:'MID', name:'Eduardo Camavinga', wiki:'Eduardo_Camavinga'},
-    {pos:'FWD', name:'Kylian Mbappé', wiki:'Kylian_Mbappé'},
-    {pos:'FWD', name:'Antoine Griezmann', wiki:'Antoine_Griezmann'},
-    {pos:'FWD', name:'Ousmane Dembélé', wiki:'Ousmane_Dembélé'},
-    {pos:'FWD', name:'Kingsley Coman', wiki:'Kingsley_Coman'},
-    {pos:'FWD', name:'Marcus Thuram', wiki:'Marcus_Thuram'},
-    {pos:'FWD', name:'Randal Kolo Muani', wiki:'Randal_Kolo_Muani'},
-],
-'Germany': [
-    {pos:'GK', name:'Manuel Neuer', wiki:'Manuel_Neuer'},
-    {pos:'GK', name:'Marc-André ter Stegen', wiki:'Marc-André_ter_Stegen'},
-    {pos:'DEF', name:'Joshua Kimmich', wiki:'Joshua_Kimmich'},
-    {pos:'DEF', name:'Antonio Rüdiger', wiki:'Antonio_Rüdiger'},
-    {pos:'DEF', name:'Nico Schlotterbeck', wiki:'Nico_Schlotterbeck'},
-    {pos:'DEF', name:'Matthias Ginter', wiki:'Matthias_Ginter'},
-    {pos:'DEF', name:'David Raum', wiki:'David_Raum'},
-    {pos:'DEF', name:'Thilo Kehrer', wiki:'Thilo_Kehrer'},
-    {pos:'MID', name:'İlkay Gündoğan', wiki:'İlkay_Gündoğan'},
-    {pos:'MID', name:'Leon Goretzka', wiki:'Leon_Goretzka'},
-    {pos:'MID', name:'Florian Wirtz', wiki:'Florian_Wirtz'},
-    {pos:'MID', name:'Jamal Musiala', wiki:'Jamal_Musiala'},
-    {pos:'MID', name:'Toni Kroos', wiki:'Toni_Kroos'},
-    {pos:'FWD', name:'Leroy Sané', wiki:'Leroy_Sané'},
-    {pos:'FWD', name:'Thomas Müller', wiki:'Thomas_Müller'},
-    {pos:'FWD', name:'Serge Gnabry', wiki:'Serge_Gnabry'},
-    {pos:'FWD', name:'Niclas Füllkrug', wiki:'Niclas_Füllkrug'},
-    {pos:'FWD', name:'Kai Havertz', wiki:'Kai_Havertz'},
-],
-'Spain': [
-    {pos:'GK', name:'Unai Simón', wiki:'Unai_Simón'},
-    {pos:'GK', name:'David Raya', wiki:'David_Raya'},
-    {pos:'DEF', name:'Dani Carvajal', wiki:'Dani_Carvajal'},
-    {pos:'DEF', name:'Pau Cubarsí', wiki:'Pau_Cubarsí'},
-    {pos:'DEF', name:'Aymeric Laporte', wiki:'Aymeric_Laporte'},
-    {pos:'DEF', name:'Robin Le Normand', wiki:'Robin_Le_Normand'},
-    {pos:'DEF', name:'Alejandro Balde', wiki:'Alejandro_Balde'},
-    {pos:'DEF', name:'Marc Cucurella', wiki:'Marc_Cucurella'},
-    {pos:'MID', name:'Pedri', wiki:'Pedri'},
-    {pos:'MID', name:'Rodri', wiki:'Rodri_(footballer)'},
-    {pos:'MID', name:'Fabian Ruiz', wiki:'Fabián_Ruiz'},
-    {pos:'MID', name:'Dani Olmo', wiki:'Dani_Olmo'},
-    {pos:'MID', name:'Mikel Merino', wiki:'Mikel_Merino'},
-    {pos:'FWD', name:'Lamine Yamal', wiki:'Lamine_Yamal'},
-    {pos:'FWD', name:'Nico Williams', wiki:'Nico_Williams'},
-    {pos:'FWD', name:'Álvaro Morata', wiki:'Álvaro_Morata'},
-    {pos:'FWD', name:'Ferran Torres', wiki:'Ferran_Torres'},
-    {pos:'FWD', name:'Mikel Oyarzabal', wiki:'Mikel_Oyarzabal'},
-],
-'England': [
-    {pos:'GK', name:'Jordan Pickford', wiki:'Jordan_Pickford'},
-    {pos:'GK', name:'Aaron Ramsdale', wiki:'Aaron_Ramsdale'},
-    {pos:'DEF', name:'Kyle Walker', wiki:'Kyle_Walker'},
-    {pos:'DEF', name:'John Stones', wiki:'John_Stones'},
-    {pos:'DEF', name:'Harry Maguire', wiki:'Harry_Maguire'},
-    {pos:'DEF', name:'Marc Guéhi', wiki:'Marc_Guéhi'},
-    {pos:'DEF', name:'Luke Shaw', wiki:'Luke_Shaw'},
-    {pos:'DEF', name:'Kieran Trippier', wiki:'Kieran_Trippier'},
-    {pos:'MID', name:'Declan Rice', wiki:'Declan_Rice'},
-    {pos:'MID', name:'Jude Bellingham', wiki:'Jude_Bellingham'},
-    {pos:'MID', name:'Kobbie Mainoo', wiki:'Kobbie_Mainoo'},
-    {pos:'MID', name:'Conor Gallagher', wiki:'Conor_Gallagher'},
-    {pos:'FWD', name:'Harry Kane', wiki:'Harry_Kane'},
-    {pos:'FWD', name:'Bukayo Saka', wiki:'Bukayo_Saka'},
-    {pos:'FWD', name:'Phil Foden', wiki:'Phil_Foden'},
-    {pos:'FWD', name:'Raheem Sterling', wiki:'Raheem_Sterling'},
-    {pos:'FWD', name:'Cole Palmer', wiki:'Cole_Palmer'},
-    {pos:'FWD', name:'Marcus Rashford', wiki:'Marcus_Rashford'},
-],
-'Portugal': [
-    {pos:'GK', name:'Diogo Costa', wiki:'Diogo_Costa_(goalkeeper)'},
-    {pos:'GK', name:'Rui Patrício', wiki:'Rui_Patrício'},
-    {pos:'DEF', name:'João Cancelo', wiki:'João_Cancelo'},
-    {pos:'DEF', name:'Rúben Dias', wiki:'Rúben_Dias'},
-    {pos:'DEF', name:'Pepe', wiki:'Pepe_(footballer,_born_1983)'},
-    {pos:'DEF', name:'Nuno Mendes', wiki:'Nuno_Mendes'},
-    {pos:'DEF', name:'Raphaël Guerreiro', wiki:'Raphaël_Guerreiro'},
-    {pos:'MID', name:'Rúben Neves', wiki:'Rúben_Neves'},
-    {pos:'MID', name:'João Palhinha', wiki:'João_Palhinha'},
-    {pos:'MID', name:'Bernardo Silva', wiki:'Bernardo_Silva'},
-    {pos:'MID', name:'Bruno Fernandes', wiki:'Bruno_Fernandes_(footballer,_born_1994)'},
-    {pos:'MID', name:'Vitinha', wiki:'Vitinha_(midfielder)'},
-    {pos:'FWD', name:'Cristiano Ronaldo', wiki:'Cristiano_Ronaldo'},
-    {pos:'FWD', name:'Rafael Leão', wiki:'Rafael_Leão'},
-    {pos:'FWD', name:'Gonçalo Ramos', wiki:'Gonçalo_Ramos'},
-    {pos:'FWD', name:'João Félix', wiki:'João_Félix'},
-    {pos:'FWD', name:'Diogo Jota', wiki:'Diogo_Jota'},
-    {pos:'FWD', name:'Pedro Neto', wiki:'Pedro_Neto'},
-],
-'Netherlands': [
-    {pos:'GK', name:'Bart Verbruggen', wiki:'Bart_Verbruggen'},
-    {pos:'GK', name:'Mark Flekken', wiki:'Mark_Flekken'},
-    {pos:'DEF', name:'Denzel Dumfries', wiki:'Denzel_Dumfries'},
-    {pos:'DEF', name:'Virgil van Dijk', wiki:'Virgil_van_Dijk'},
-    {pos:'DEF', name:'Stefan de Vrij', wiki:'Stefan_de_Vrij'},
-    {pos:'DEF', name:'Nathan Aké', wiki:'Nathan_Aké'},
-    {pos:'DEF', name:'Matthijs de Ligt', wiki:'Matthijs_de_Ligt'},
-    {pos:'MID', name:'Frenkie de Jong', wiki:'Frenkie_de_Jong'},
-    {pos:'MID', name:'Ryan Gravenberch', wiki:'Ryan_Gravenberch'},
-    {pos:'MID', name:'Teun Koopmeiners', wiki:'Teun_Koopmeiners'},
-    {pos:'MID', name:'Tijjani Reijnders', wiki:'Tijjani_Reijnders'},
-    {pos:'FWD', name:'Memphis Depay', wiki:'Memphis_Depay'},
-    {pos:'FWD', name:'Cody Gakpo', wiki:'Cody_Gakpo'},
-    {pos:'FWD', name:'Donyell Malen', wiki:'Donyell_Malen'},
-    {pos:'FWD', name:'Xavi Simons', wiki:'Xavi_Simons'},
-    {pos:'FWD', name:'Wout Weghorst', wiki:'Wout_Weghorst'},
-],
-'Belgium': [
-    {pos:'GK', name:'Thibaut Courtois', wiki:'Thibaut_Courtois'},
-    {pos:'GK', name:'Koen Casteels', wiki:'Koen_Casteels'},
-    {pos:'DEF', name:'Thomas Meunier', wiki:'Thomas_Meunier'},
-    {pos:'DEF', name:'Jan Vertonghen', wiki:'Jan_Vertonghen'},
-    {pos:'DEF', name:'Toby Alderweireld', wiki:'Toby_Alderweireld'},
-    {pos:'DEF', name:'Arthur Theate', wiki:'Arthur_Theate'},
-    {pos:'DEF', name:'Timothy Castagne', wiki:'Timothy_Castagne'},
-    {pos:'MID', name:'Kevin De Bruyne', wiki:'Kevin_De_Bruyne'},
-    {pos:'MID', name:'Axel Witsel', wiki:'Axel_Witsel'},
-    {pos:'MID', name:'Youri Tielemans', wiki:'Youri_Tielemans'},
-    {pos:'MID', name:'Leander Dendoncker', wiki:'Leander_Dendoncker'},
-    {pos:'FWD', name:'Romelu Lukaku', wiki:'Romelu_Lukaku'},
-    {pos:'FWD', name:'Dries Mertens', wiki:'Dries_Mertens'},
-    {pos:'FWD', name:'Lois Openda', wiki:'Lois_Openda'},
-    {pos:'FWD', name:'Leandro Trossard', wiki:'Leandro_Trossard'},
-],
-'USA': [
-    {pos:'GK', name:'Matt Turner', wiki:'Matt_Turner_(soccer)'},
-    {pos:'GK', name:'Zack Steffen', wiki:'Zack_Steffen'},
-    {pos:'DEF', name:'Sergino Dest', wiki:'Sergiño_Dest'},
-    {pos:'DEF', name:'Miles Robinson', wiki:'Miles_Robinson_(soccer)'},
-    {pos:'DEF', name:'Chris Richards', wiki:'Chris_Richards_(soccer)'},
-    {pos:'DEF', name:'Antonee Robinson', wiki:'Antonee_Robinson'},
-    {pos:'DEF', name:'Joe Scally', wiki:'Joe_Scally'},
-    {pos:'MID', name:'Tyler Adams', wiki:'Tyler_Adams_(soccer)'},
-    {pos:'MID', name:'Weston McKennie', wiki:'Weston_McKennie'},
-    {pos:'MID', name:'Yunus Musah', wiki:'Yunus_Musah'},
-    {pos:'MID', name:'Brenden Aaronson', wiki:'Brenden_Aaronson'},
-    {pos:'FWD', name:'Christian Pulisic', wiki:'Christian_Pulisic'},
-    {pos:'FWD', name:'Timothy Weah', wiki:'Timothy_Weah'},
-    {pos:'FWD', name:'Folarin Balogun', wiki:'Folarin_Balogun'},
-    {pos:'FWD', name:'Josh Sargent', wiki:'Josh_Sargent'},
-    {pos:'FWD', name:'Ricardo Pepi', wiki:'Ricardo_Pepi'},
-],
-'Mexico': [
-    {pos:'GK', name:'Guillermo Ochoa', wiki:'Guillermo_Ochoa'},
-    {pos:'GK', name:'Luis Malagón', wiki:'Luis_Malagón'},
-    {pos:'DEF', name:'Néstor Araujo', wiki:'Néstor_Araujo'},
-    {pos:'DEF', name:'César Montes', wiki:'César_Montes'},
-    {pos:'DEF', name:'Jorge Sánchez', wiki:'Jorge_Sánchez_(footballer,_born_1998)'},
-    {pos:'DEF', name:'Jesús Gallardo', wiki:'Jesús_Gallardo'},
-    {pos:'MID', name:'Edson Álvarez', wiki:'Edson_Álvarez'},
-    {pos:'MID', name:'Héctor Herrera', wiki:'Héctor_Herrera'},
-    {pos:'MID', name:'Orbelin Pineda', wiki:'Orbelín_Pineda'},
-    {pos:'MID', name:'Carlos Rodríguez', wiki:'Carlos_Rodríguez_(footballer,_born_1997)'},
-    {pos:'FWD', name:'Hirving Lozano', wiki:'Hirving_Lozano'},
-    {pos:'FWD', name:'Raúl Jiménez', wiki:'Raúl_Jiménez'},
-    {pos:'FWD', name:'Henry Martín', wiki:'Henry_Martín'},
-    {pos:'FWD', name:'Alexis Vega', wiki:'Alexis_Vega'},
-],
-'Canada': [
-    {pos:'GK', name:'Milan Borjan', wiki:'Milan_Borjan'},
-    {pos:'GK', name:'Maxime Crépeau', wiki:'Maxime_Crépeau'},
-    {pos:'DEF', name:'Alistair Johnston', wiki:'Alistair_Johnston'},
-    {pos:'DEF', name:'Kamal Miller', wiki:'Kamal_Miller'},
-    {pos:'DEF', name:'Sam Adekugbe', wiki:'Sam_Adekugbe'},
-    {pos:'MID', name:'Atiba Hutchinson', wiki:'Atiba_Hutchinson'},
-    {pos:'MID', name:'Stephen Eustaquio', wiki:'Stephen_Eustáquio'},
-    {pos:'MID', name:'Jonathan Osorio', wiki:'Jonathan_Osorio'},
-    {pos:'FWD', name:'Alphonso Davies', wiki:'Alphonso_Davies'},
-    {pos:'FWD', name:'Jonathan David', wiki:'Jonathan_David_(footballer)'},
-    {pos:'FWD', name:'Tajon Buchanan', wiki:'Tajon_Buchanan'},
-    {pos:'FWD', name:'Cyle Larin', wiki:'Cyle_Larin'},
-    {pos:'FWD', name:'Richie Laryea', wiki:'Richie_Laryea'},
-],
-'Morocco': [
-    {pos:'GK', name:'Yassine Bounou', wiki:'Yassine_Bounou'},
-    {pos:'GK', name:'Munir Mohamedi', wiki:'Munir_Mohamedi'},
-    {pos:'DEF', name:'Achraf Hakimi', wiki:'Achraf_Hakimi'},
-    {pos:'DEF', name:'Romain Saïss', wiki:'Romain_Saïss'},
-    {pos:'DEF', name:'Nayef Aguerd', wiki:'Nayef_Aguerd'},
-    {pos:'DEF', name:'Noussair Mazraoui', wiki:'Noussair_Mazraoui'},
-    {pos:'MID', name:'Sofyan Amrabat', wiki:'Sofyan_Amrabat'},
-    {pos:'MID', name:'Azzedine Ounahi', wiki:'Azzedine_Ounahi'},
-    {pos:'FWD', name:'Hakim Ziyech', wiki:'Hakim_Ziyech'},
-    {pos:'FWD', name:'Youssef En-Nesyri', wiki:'Youssef_En-Nesyri'},
-    {pos:'FWD', name:'Sofiane Boufal', wiki:'Sofiane_Boufal'},
-    {pos:'FWD', name:'Abdessamad Ezzalzouli', wiki:'Abdessamad_Ezzalzouli'},
-],
-'Japan': [
-    {pos:'GK', name:'Shuichi Gonda', wiki:'Shuichi_Gonda'},
-    {pos:'GK', name:'Zion Suzuki', wiki:'Zion_Suzuki'},
-    {pos:'DEF', name:'Hiroki Sakai', wiki:'Hiroki_Sakai'},
-    {pos:'DEF', name:'Ko Itakura', wiki:'Ko_Itakura'},
-    {pos:'DEF', name:'Maya Yoshida', wiki:'Maya_Yoshida'},
-    {pos:'DEF', name:'Miki Yamane', wiki:'Miki_Yamane'},
-    {pos:'MID', name:'Wataru Endo', wiki:'Wataru_Endō'},
-    {pos:'MID', name:'Hidemasa Morita', wiki:'Hidemasa_Morita'},
-    {pos:'MID', name:'Ao Tanaka', wiki:'Ao_Tanaka'},
-    {pos:'FWD', name:'Takumi Minamino', wiki:'Takumi_Minamino'},
-    {pos:'FWD', name:'Ritsu Doan', wiki:'Ritsu_Dōan'},
-    {pos:'FWD', name:'Daichi Kamada', wiki:'Daichi_Kamada'},
-    {pos:'FWD', name:'Kaoru Mitoma', wiki:'Kaoru_Mitoma'},
-    {pos:'FWD', name:'Ayase Ueda', wiki:'Ayase_Ueda'},
-],
-'Croatia': [
-    {pos:'GK', name:'Dominik Livaković', wiki:'Dominik_Livaković'},
-    {pos:'DEF', name:'Josip Juranović', wiki:'Josip_Juranović'},
-    {pos:'DEF', name:'Joško Gvardiol', wiki:'Joško_Gvardiol'},
-    {pos:'DEF', name:'Dejan Lovren', wiki:'Dejan_Lovren'},
-    {pos:'DEF', name:'Borna Sosa', wiki:'Borna_Sosa'},
-    {pos:'MID', name:'Luka Modrić', wiki:'Luka_Modrić'},
-    {pos:'MID', name:'Mateo Kovačić', wiki:'Mateo_Kovačić'},
-    {pos:'MID', name:'Marcelo Brozović', wiki:'Marcelo_Brozović'},
-    {pos:'MID', name:'Mario Pašalić', wiki:'Mario_Pašalić'},
-    {pos:'FWD', name:'Ivan Perišić', wiki:'Ivan_Perišić'},
-    {pos:'FWD', name:'Andrej Kramarić', wiki:'Andrej_Kramarić'},
-    {pos:'FWD', name:'Bruno Petković', wiki:'Bruno_Petković'},
-    {pos:'FWD', name:'Ante Budimir', wiki:'Ante_Budimir'},
-],
-'Uruguay': [
-    {pos:'GK', name:'Sergio Rochet', wiki:'Sergio_Rochet'},
-    {pos:'GK', name:'Fernando Muslera', wiki:'Fernando_Muslera'},
-    {pos:'DEF', name:'Nahitan Nández', wiki:'Nahitan_Nández'},
-    {pos:'DEF', name:'Diego Godín', wiki:'Diego_Godín'},
-    {pos:'DEF', name:'Ronald Araújo', wiki:'Ronald_Araújo'},
-    {pos:'DEF', name:'Matías Viña', wiki:'Matías_Viña'},
-    {pos:'MID', name:'Rodrigo Bentancur', wiki:'Rodrigo_Bentancur'},
-    {pos:'MID', name:'Federico Valverde', wiki:'Federico_Valverde'},
-    {pos:'MID', name:'Manuel Ugarte', wiki:'Manuel_Ugarte_(footballer)'},
-    {pos:'FWD', name:'Luis Suárez', wiki:'Luis_Suárez'},
-    {pos:'FWD', name:'Darwin Núñez', wiki:'Darwin_Núñez'},
-    {pos:'FWD', name:'Facundo Torres', wiki:'Facundo_Torres_(footballer)'},
-    {pos:'FWD', name:'Maxi Gómez', wiki:'Maxi_Gómez'},
-],
-'Colombia': [
-    {pos:'GK', name:'Camilo Vargas', wiki:'Camilo_Vargas'},
-    {pos:'DEF', name:'Santiago Arias', wiki:'Santiago_Arias'},
-    {pos:'DEF', name:'Yerry Mina', wiki:'Yerry_Mina'},
-    {pos:'DEF', name:'Davinson Sánchez', wiki:'Davinson_Sánchez'},
-    {pos:'DEF', name:'Johan Mojica', wiki:'Johan_Mojica'},
-    {pos:'MID', name:'Wilmar Barrios', wiki:'Wilmar_Barrios'},
-    {pos:'MID', name:'Mateus Uribe', wiki:'Mateus_Uribe'},
-    {pos:'MID', name:'James Rodríguez', wiki:'James_Rodríguez'},
-    {pos:'MID', name:'Juan Cuadrado', wiki:'Juan_Cuadrado'},
-    {pos:'FWD', name:'Luis Díaz', wiki:'Luis_Díaz_(footballer,_born_1997)'},
-    {pos:'FWD', name:'Rafael Santos Borré', wiki:'Rafael_Santos_Borré'},
-    {pos:'FWD', name:'Falcao', wiki:'Radamel_Falcao'},
-    {pos:'FWD', name:'Jhon Durán', wiki:'Jhon_Durán'},
-],
-'Senegal': [
-    {pos:'GK', name:'Edouard Mendy', wiki:'Édouard_Mendy'},
-    {pos:'GK', name:'Alfred Gomis', wiki:'Alfred_Gomis'},
-    {pos:'DEF', name:'Kalidou Koulibaly', wiki:'Kalidou_Koulibaly'},
-    {pos:'DEF', name:'Abdou Diallo', wiki:'Abdou_Diallo'},
-    {pos:'DEF', name:'Youssouf Sabaly', wiki:'Youssouf_Sabaly'},
-    {pos:'MID', name:'Idrissa Gueye', wiki:'Idrissa_Gana_Gueye'},
-    {pos:'MID', name:'Cheikhou Kouyaté', wiki:'Cheikhou_Kouyaté'},
-    {pos:'MID', name:'Nampalys Mendy', wiki:'Nampalys_Mendy'},
-    {pos:'FWD', name:'Sadio Mané', wiki:'Sadio_Mané'},
-    {pos:'FWD', name:'Ismaila Sarr', wiki:'Ismaila_Sarr'},
-    {pos:'FWD', name:'Boulaye Dia', wiki:'Boulaye_Dia'},
-    {pos:'FWD', name:'Nicolas Jackson', wiki:'Nicolas_Jackson_(footballer)'},
-],
-'Switzerland': [
-    {pos:'GK', name:'Yann Sommer', wiki:'Yann_Sommer'},
-    {pos:'GK', name:'Gregor Kobel', wiki:'Gregor_Kobel'},
-    {pos:'DEF', name:'Silvan Widmer', wiki:'Silvan_Widmer'},
-    {pos:'DEF', name:'Manuel Akanji', wiki:'Manuel_Akanji'},
-    {pos:'DEF', name:'Nico Elvedi', wiki:'Nico_Elvedi'},
-    {pos:'DEF', name:'Ricardo Rodriguez', wiki:'Ricardo_Rodríguez_(footballer)'},
-    {pos:'MID', name:'Granit Xhaka', wiki:'Granit_Xhaka'},
-    {pos:'MID', name:'Remo Freuler', wiki:'Remo_Freuler'},
-    {pos:'MID', name:'Denis Zakaria', wiki:'Denis_Zakaria'},
-    {pos:'FWD', name:'Xherdan Shaqiri', wiki:'Xherdan_Shaqiri'},
-    {pos:'FWD', name:'Ruben Vargas', wiki:'Rubén_Vargas'},
-    {pos:'FWD', name:'Zeki Amdouni', wiki:'Zeki_Amdouni'},
-],
-'Australia': [
-    {pos:'GK', name:'Mat Ryan', wiki:'Mat_Ryan'},
-    {pos:'GK', name:'Joe Gauci', wiki:'Joe_Gauci'},
-    {pos:'DEF', name:'Nathaniel Atkinson', wiki:'Nathaniel_Atkinson'},
-    {pos:'DEF', name:'Harry Souttar', wiki:'Harry_Souttar'},
-    {pos:'DEF', name:'Kye Rowles', wiki:'Kye_Rowles'},
-    {pos:'DEF', name:'Aziz Behich', wiki:'Aziz_Behich'},
-    {pos:'MID', name:'Aaron Mooy', wiki:'Aaron_Mooy'},
-    {pos:'MID', name:'Riley McGree', wiki:'Riley_McGree'},
-    {pos:'MID', name:'Jackson Irvine', wiki:'Jackson_Irvine'},
-    {pos:'FWD', name:'Mathew Leckie', wiki:'Mathew_Leckie'},
-    {pos:'FWD', name:'Mitchell Duke', wiki:'Mitchell_Duke'},
-    {pos:'FWD', name:'Martin Boyle', wiki:'Martin_Boyle'},
-    {pos:'FWD', name:'Craig Goodwin', wiki:'Craig_Goodwin'},
-],
-'Iran': [
-    {pos:'GK', name:'Alireza Beiranvand', wiki:'Alireza_Beiranvand'},
-    {pos:'DEF', name:'Sadegh Moharrami', wiki:'Sadegh_Moharrami'},
-    {pos:'DEF', name:'Majid Hosseini', wiki:'Majid_Hosseini_(footballer)'},
-    {pos:'DEF', name:'Ehsan Hajsafi', wiki:'Ehsan_Hajsafi'},
-    {pos:'MID', name:'Saeid Ezatolahi', wiki:'Saeid_Ezatolahi'},
-    {pos:'MID', name:'Ahmad Nourollahi', wiki:'Ahmad_Nourollahi'},
-    {pos:'MID', name:'Ali Gholizadeh', wiki:'Ali_Gholizadeh'},
-    {pos:'FWD', name:'Sardar Azmoun', wiki:'Sardar_Azmoun'},
-    {pos:'FWD', name:'Mehdi Taremi', wiki:'Mehdi_Taremi'},
-    {pos:'FWD', name:'Allahyar Sayyadmanesh', wiki:'Allahyar_Sayyadmanesh'},
-],
-'Saudi Arabia': [
-    {pos:'GK', name:'Mohammed Al-Owais', wiki:'Mohammed_Al-Owais'},
-    {pos:'DEF', name:'Sultan Al-Ghannam', wiki:'Sultan_Al-Ghannam'},
-    {pos:'DEF', name:'Ali Al-Bulayhi', wiki:'Ali_Al-Bulayhi'},
-    {pos:'DEF', name:'Yasser Al-Shahrani', wiki:'Yasser_Al-Shahrani'},
-    {pos:'MID', name:'Abdullah Otayf', wiki:'Abdullah_Otayf'},
-    {pos:'MID', name:'Mohamed Kanno', wiki:'Mohamed_Kanno'},
-    {pos:'FWD', name:'Salem Al-Dawsari', wiki:'Salem_Al-Dawsari'},
-    {pos:'FWD', name:'Firas Al-Buraikan', wiki:'Firas_Al-Buraikan'},
-    {pos:'FWD', name:'Saleh Al-Shehri', wiki:'Saleh_Al-Shehri'},
-],
-'Ecuador': [
-    {pos:'GK', name:'Hernán Galíndez', wiki:'Hernán_Galíndez'},
-    {pos:'DEF', name:'Ángelo Preciado', wiki:'Ángelo_Preciado'},
-    {pos:'DEF', name:'Piero Hincapié', wiki:'Piero_Hincapié'},
-    {pos:'DEF', name:'Robert Arboleda', wiki:'Robert_Arboleda'},
-    {pos:'DEF', name:'Pervis Estupiñán', wiki:'Pervis_Estupiñán'},
-    {pos:'MID', name:'Carlos Gruezo', wiki:'Carlos_Gruezo'},
-    {pos:'MID', name:'Moisés Caicedo', wiki:'Moisés_Caicedo'},
-    {pos:'FWD', name:'Enner Valencia', wiki:'Enner_Valencia'},
-    {pos:'FWD', name:'Michael Estrada', wiki:'Michael_Estrada'},
-    {pos:'FWD', name:'Gonzalo Plata', wiki:'Gonzalo_Plata'},
-    {pos:'FWD', name:'Jeremy Sarmiento', wiki:'Jeremy_Sarmiento'},
-],
-'Sweden': [
-    {pos:'GK', name:'Robin Olsen', wiki:'Robin_Olsen'},
-    {pos:'DEF', name:'Victor Lindelöf', wiki:'Victor_Lindelöf'},
-    {pos:'DEF', name:'Pontus Jansson', wiki:'Pontus_Jansson'},
-    {pos:'DEF', name:'Ludwig Augustinsson', wiki:'Ludwig_Augustinsson'},
-    {pos:'MID', name:'Albin Ekdal', wiki:'Albin_Ekdal'},
-    {pos:'MID', name:'Jens Cajuste', wiki:'Jens_Cajuste'},
-    {pos:'FWD', name:'Alexander Isak', wiki:'Alexander_Isak'},
-    {pos:'FWD', name:'Dejan Kulusevski', wiki:'Dejan_Kulusevski'},
-    {pos:'FWD', name:'Viktor Gyökeres', wiki:'Viktor_Gyökeres'},
-],
-'Norway': [
-    {pos:'GK', name:'Ørjan Nyland', wiki:'Ørjan_Nyland'},
-    {pos:'DEF', name:'Omar Elabdellaoui', wiki:'Omar_Elabdellaoui'},
-    {pos:'DEF', name:'Andreas Hanche-Olsen', wiki:'Andreas_Hanche-Olsen'},
-    {pos:'DEF', name:'Leo Ostigard', wiki:'Leo_Østigård'},
-    {pos:'MID', name:'Sander Berge', wiki:'Sander_Berge'},
-    {pos:'MID', name:'Martin Ødegaard', wiki:'Martin_Ødegaard'},
-    {pos:'FWD', name:'Erling Haaland', wiki:'Erling_Haaland'},
-    {pos:'FWD', name:'Alexander Sørloth', wiki:'Alexander_Sørloth'},
-    {pos:'FWD', name:'Mohamed Elyounoussi', wiki:'Mohamed_Elyounoussi'},
-],
-'Ghana': [
-    {pos:'GK', name:'Richard Ofori', wiki:'Richard_Ofori'},
-    {pos:'DEF', name:'Andy Yiadom', wiki:'Andy_Yiadom'},
-    {pos:'DEF', name:'Daniel Amartey', wiki:'Daniel_Amartey'},
-    {pos:'DEF', name:'Alexander Djiku', wiki:'Alexander_Djiku'},
-    {pos:'DEF', name:'Abdul Rahman Baba', wiki:'Baba_Rahman'},
-    {pos:'MID', name:'Thomas Partey', wiki:'Thomas_Partey'},
-    {pos:'MID', name:'André Ayew', wiki:'André_Ayew'},
-    {pos:'FWD', name:'Jordan Ayew', wiki:'Jordan_Ayew'},
-    {pos:'FWD', name:'Inaki Williams', wiki:'Iñaki_Williams'},
-    {pos:'FWD', name:'Antoine Semenyo', wiki:'Antoine_Semenyo'},
-],
-'Korea Republic': [
-    {pos:'GK', name:'Kim Seung-gyu', wiki:'Kim_Seung-gyu'},
-    {pos:'GK', name:'Jo Hyeon-woo', wiki:'Jo_Hyeon-woo'},
-    {pos:'DEF', name:'Kim Minjae', wiki:'Kim_Min-jae'},
-    {pos:'DEF', name:'Kim Young-gwon', wiki:'Kim_Young-gwon'},
-    {pos:'MID', name:'Jung Woo-young', wiki:'Jung_Woo-young'},
-    {pos:'MID', name:'Lee Jae-sung', wiki:'Lee_Jae-sung'},
-    {pos:'MID', name:'Hwang In-beom', wiki:'Hwang_In-beom'},
-    {pos:'FWD', name:'Son Heung-min', wiki:'Son_Heung-min'},
-    {pos:'FWD', name:'Hwang Hee-chan', wiki:'Hwang_Hee-chan'},
-    {pos:'FWD', name:'Lee Kang-in', wiki:'Lee_Kang-in'},
-    {pos:'FWD', name:'Cho Gue-sung', wiki:'Cho_Gue-sung'},
-],
-};
-
-// ── SQUAD MODAL ──
-const wikiPhotoCache = {};
-
-function openSquad(teamName, flag, tsdbName, groupLetter) {
-    const modal = document.getElementById('squadModal');
-    const content = document.getElementById('modalContent');
-    document.getElementById('modalFlag').src = `https://flagcdn.com/w80/${flag}.png`;
-    document.getElementById('modalTeamName').textContent = teamName;
-    document.getElementById('modalGroupLabel').textContent = `GROUP ${groupLetter} · FIFA WORLD CUP 2026`;
-    modal.style.display = 'block';
-    document.body.style.overflow = 'hidden';
-
-    const players = squadData[teamName] || squadData[tsdbName] || null;
-    if (players) {
-        content.innerHTML = '<div class="squad-loading"> LOADING PHOTOS...</div>';
-        renderSquadWithPhotos(players, teamName, content);
-    } else {
-        content.innerHTML = '<div class="squad-error"><div style="font-size:2rem;margin-bottom:8px;"></div><div style="color:var(--text);font-weight:600;margin-bottom:6px;">Squad list coming soon</div><div style="font-size:0.75rem;">Confirmed WC 2026 squad not yet available for ' + teamName + '.</div></div>';
-    }
-}
-
-async function renderSquadWithPhotos(players, teamName, container) {
-    const posOrder = ['GK','DEF','MID','FWD'];
-    const posLabel = {GK:'Goalkeepers', DEF:'Defenders', MID:'Midfielders', FWD:'Forwards'};
-    const grouped = {GK:[], DEF:[], MID:[], FWD:[]};
-    players.forEach(p => { if(grouped[p.pos]) grouped[p.pos].push(p); });
-
-    // Batch fetch Wikipedia thumbnails
-    const needWiki = players.filter(p => p.wiki && !wikiPhotoCache[p.wiki]);
-    if (needWiki.length > 0) {
-        const chunks = [];
-        for (let i = 0; i < needWiki.length; i += 20) chunks.push(needWiki.slice(i, i+20));
-        for (const chunk of chunks) {
-            const titles = chunk.map(p => p.wiki.replace(/_/g,' ')).join('|');
-            try {
-                const res = await fetch(`https://en.wikipedia.org/w/api.php?action=query&titles=${encodeURIComponent(titles)}&prop=pageimages&pithumbsize=200&format=json&origin=*`);
-                const data = await res.json();
-                const pages = data.query?.pages || {};
-                Object.values(pages).forEach(page => {
-                    if (page.thumbnail?.source) {
-                        chunk.forEach(p => {
-                            if (p.wiki.replace(/_/g,' ') === page.title) {
-                                wikiPhotoCache[p.wiki] = page.thumbnail.source;
-                            }
-                        });
-                    }
-                });
-            } catch(e) {}
-        }
-    }
-
-    let html = '';
-    posOrder.forEach(pos => {
-        const list = grouped[pos];
-        if (!list.length) return;
-        html += `<div class="squad-position-header">${posLabel[pos]} (${list.length})</div><div class="squad-grid">`;
-        list.forEach(p => {
-            const photo = p.wiki ? wikiPhotoCache[p.wiki] : null;
-            html += `<div class="squad-player-card">
-                ${photo ? `<img class="squad-player-img" src="${photo}" alt="${p.name}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">` : ''}
-                <div class="squad-player-img-placeholder" style="${photo ? 'display:none' : 'display:flex'}"></div>
-                <div class="squad-player-info">
-                    <div class="squad-player-name">${p.name}</div>
-                    <div class="squad-player-pos">${posLabel[pos]}</div>
-                </div>
-            </div>`;
-        });
-        html += '</div>';
-    });
-    container.innerHTML = html;
-}
-
-function closeSquadModal() {
-    document.getElementById('squadModal').style.display = 'none';
-    document.body.style.overflow = '';
-}
-
-// Close modal on backdrop click
-document.getElementById('squadModal').addEventListener('click', function(e) {
-    if (e.target === this) closeSquadModal();
-});
-
-renderGroups();
+  const END = new Date(Date.now() + 2 * 24 * 60 * 60 * 1000);
+  function pad(n) { return String(n).padStart(2,'0'); }
+  function tick() {
+    const diff = Math.max(0, END - Date.now());
+    document.getElementById('cd-d').textContent = pad(Math.floor(diff / 86400000));
+    document.getElementById('cd-h').textContent = pad(Math.floor((diff % 86400000) / 3600000));
+    document.getElementById('cd-m').textContent = pad(Math.floor((diff % 3600000) / 60000));
+    document.getElementById('cd-s').textContent = pad(Math.floor((diff % 60000) / 1000));
+  }
+  tick();
+  setInterval(tick, 1000);
 </script>
 </body>
-</html>
+                                </html>
