@@ -11,6 +11,19 @@
     <meta name="apple-mobile-web-app-title" content="XEN SPORTS">
     <meta name="theme-color" content="#050d18">
     <link rel="apple-touch-icon" href="https://i.ibb.co.com/rGHtys1G/file-000000009fb87208b7d1ca320d4b478c.png">
+    <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+<script>
+  window.OneSignalDeferred = window.OneSignalDeferred || [];
+  OneSignalDeferred.push(async function(OneSignal) {
+    await OneSignal.init({
+      appId: "8d2f50d4-cba0-4751-ad8c-a75c509418a3",
+      safari_web_id: "web.onesignal.auto.5f83a190-684a-4c4c-a875-2ee8aa7bf929",
+      notifyButton: {
+        enable: true,
+      },
+    });
+  });
+</script>
     <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
         :root {
