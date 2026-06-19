@@ -514,7 +514,6 @@ footer {
             text-align: center; padding: 30px 14px; color: var(--muted); font-size: 0.8rem;
         }
     </style>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/hls.js/1.5.13/hls.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.7.11/shaka-player.compiled.js"></script>
 </head>
 <body>
@@ -591,7 +590,7 @@ footer {
 
     <!-- FIFA LIVE 3 SUB-CHANNEL PICKER -->
     <div id="hlsPicker" style="display:none; padding:10px 12px 4px;">
-        <div style="font-size:0.7rem; color:var(--cyan); letter-spacing:0.08em; margin-bottom:8px; font-weight:600;">SELECT STREAM</div>
+        <div style="font-size:0.7rem; color:var(--accent); letter-spacing:0.08em; margin-bottom:8px; font-weight:600;">SELECT STREAM</div>
         <div id="hlsPickerGrid" style="display:grid; grid-template-columns:repeat(2,1fr); gap:8px;"></div>
     </div>
 
@@ -947,12 +946,16 @@ let hlsInstance = null;
 let shakaInstance = null;
 
 function stopAllStreams() {
-    document.querySelectorAll('#videoWrap iframe').forEach(f => {
-        f.src = ''; f.classList.remove('active'); f.style.display = 'none';
-    });
+    const ch0 = document.getElementById('ch0');
+    ch0.classList.remove('active');
+    ch0.style.display = 'none';
+    const ch1 = document.getElementById('ch1');
+    ch1.src = '';
+    ch1.classList.remove('active');
+    ch1.style.display = 'none';
     const videoEl = document.getElementById('ch2');
     videoEl.style.display = 'none';
-    videoEl.pause();
+    if (videoEl.pause) videoEl.pause();
     if (hlsInstance) { hlsInstance.destroy(); hlsInstance = null; }
     if (shakaInstance) { shakaInstance.destroy(); shakaInstance = null; }
 }
@@ -1001,8 +1004,8 @@ function switchHlsChannel(i) {
     currentHlsCh = i;
     document.querySelectorAll('[id^="hlsBtn"]').forEach((b, idx) => {
         b.style.background = idx === i ? 'rgba(0,229,255,0.22)' : 'rgba(0,229,255,0.07)';
-        b.style.borderColor = idx === i ? 'var(--cyan)' : 'rgba(0,229,255,0.2)';
-        b.style.color = idx === i ? 'var(--cyan)' : '#e0f7ff';
+        b.style.borderColor = idx === i ? 'var(--accent)' : 'rgba(0,229,255,0.2)';
+        b.style.color = idx === i ? 'var(--accent)' : '#e0f7ff';
     });
     playStream(hlsChannels[i].url, hlsChannels[i].dash === true);
     document.getElementById('ch-name').textContent = 'FIFA LIVE 3 — ' + hlsChannels[i].name;
@@ -2031,4 +2034,84 @@ const wikiPhotoCache = {};
 
 function openSquad(teamName, flag, tsdbName, groupLetter) {
     const modal = document.getElementById('squadModal');
-    const content = document.getEl
+    const content = document.getElementById('modalContent');
+    document.getElementById('modalFlag').src = `https://flagcdn.com/w80/${flag}.png`;
+    document.getElementById('modalTeamName').textContent = teamName;
+    document.getElementById('modalGroupLabel').textContent = `GROUP ${groupLetter} · FIFA WORLD CUP 2026`;
+    modal.style.display = 'block';
+    document.body.style.overflow = 'hidden';
+
+    const players = squadData[teamName] || squadData[tsdbName] || null;
+    if (players) {
+        content.innerHTML = '<div class="squad-loading"> LOADING PHOTOS...</div>';
+        renderSquadWithPhotos(players, teamName, content);
+    } else {
+        content.innerHTML = '<div class="squad-error"><div style="font-size:2rem;margin-bottom:8px;"></div><div style="color:var(--text);font-weight:600;margin-bottom:6px;">Squad list coming soon</div><div style="font-size:0.75rem;">Confirmed WC 2026 squad not yet available for ' + teamName + '.</div></div>';
+    }
+}
+
+async function renderSquadWithPhotos(players, teamName, container) {
+    const posOrder = ['GK','DEF','MID','FWD'];
+    const posLabel = {GK:'Goalkeepers', DEF:'Defenders', MID:'Midfielders', FWD:'Forwards'};
+    const grouped = {GK:[], DEF:[], MID:[], FWD:[]};
+    players.forEach(p => { if(grouped[p.pos]) grouped[p.pos].push(p); });
+
+    // Batch fetch Wikipedia thumbnails
+    const needWiki = players.filter(p => p.wiki && !wikiPhotoCache[p.wiki]);
+    if (needWiki.length > 0) {
+        const chunks = [];
+        for (let i = 0; i < needWiki.length; i += 20) chunks.push(needWiki.slice(i, i+20));
+        for (const chunk of chunks) {
+            const titles = chunk.map(p => p.wiki.replace(/_/g,' ')).join('|');
+            try {
+                const res = await fetch(`https://en.wikipedia.org/w/api.php?action=query&titles=${encodeURIComponent(titles)}&prop=pageimages&pithumbsize=200&format=json&origin=*`);
+                const data = await res.json();
+                const pages = data.query?.pages || {};
+                Object.values(pages).forEach(page => {
+                    if (page.thumbnail?.source) {
+                        chunk.forEach(p => {
+                            if (p.wiki.replace(/_/g,' ') === page.title) {
+                                wikiPhotoCache[p.wiki] = page.thumbnail.source;
+                            }
+                        });
+                    }
+                });
+            } catch(e) {}
+        }
+    }
+
+    let html = '';
+    posOrder.forEach(pos => {
+        const list = grouped[pos];
+        if (!list.length) return;
+        html += `<div class="squad-position-header">${posLabel[pos]} (${list.length})</div><div class="squad-grid">`;
+        list.forEach(p => {
+            const photo = p.wiki ? wikiPhotoCache[p.wiki] : null;
+            html += `<div class="squad-player-card">
+                ${photo ? `<img class="squad-player-img" src="${photo}" alt="${p.name}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">` : ''}
+                <div class="squad-player-img-placeholder" style="${photo ? 'display:none' : 'display:flex'}"></div>
+                <div class="squad-player-info">
+                    <div class="squad-player-name">${p.name}</div>
+                    <div class="squad-player-pos">${posLabel[pos]}</div>
+                </div>
+            </div>`;
+        });
+        html += '</div>';
+    });
+    container.innerHTML = html;
+}
+
+function closeSquadModal() {
+    document.getElementById('squadModal').style.display = 'none';
+    document.body.style.overflow = '';
+}
+
+// Close modal on backdrop click
+document.getElementById('squadModal').addEventListener('click', function(e) {
+    if (e.target === this) closeSquadModal();
+});
+
+renderGroups();
+</script>
+</body>
+</html>
