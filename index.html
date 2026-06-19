@@ -929,9 +929,27 @@ function utcDateStrFor(m) {
     return d.toISOString().slice(0, 10); // YYYY-MM-DD
 }
 
-// Try fetching scores from TheSportsDB for a given UTC date
+// ── LIVE + FINISHED SCORE via allsportsapi ──
+async function fetchAllSportsScores() {
+    const today = new Date();
+    const pad = n => String(n).padStart(2,'0');
+    const dateStr = today.getFullYear() + '-' + pad(today.getMonth()+1) + '-' + pad(today.getDate());
+    const urls = [
+        `https://www.thesportsdb.com/api/v1/json/${TSDB_KEY}/eventsday.php?d=${dateStr}&l=${TSDB_LEAGUE_ID}`,
+        `https://www.thesportsdb.com/api/v1/json/${TSDB_KEY}/eventsday.php?d=${dateStr}&s=Soccer`,
+    ];
+    for (const url of urls) {
+        try {
+            const res = await fetch(url);
+            const data = await res.json();
+            if (data && data.events && data.events.length > 0) return data.events;
+        } catch(e) {}
+    }
+    return [];
+}
+
+// Also try yesterday (for late night matches UTC)
 async function fetchTSDBScores(dateStr) {
-    // Try both league-specific and general event endpoint
     const urls = [
         `https://www.thesportsdb.com/api/v1/json/${TSDB_KEY}/eventsday.php?d=${dateStr}&l=${TSDB_LEAGUE_ID}`,
         `https://www.thesportsdb.com/api/v1/json/${TSDB_KEY}/eventsday.php?d=${dateStr}&s=Soccer`,
@@ -947,7 +965,6 @@ async function fetchTSDBScores(dateStr) {
     return [];
 }
 
-// Fetch & merge real scores for ALL finished or live matches from API.
 async function updateLiveScores() {
     const needed = matches.filter(m => {
         const st = getMatchStatus(m);
@@ -955,32 +972,54 @@ async function updateLiveScores() {
     });
     if (needed.length === 0) return;
 
-    const dates = [...new Set(needed.map(utcDateStrFor))];
-    let changed = false;
+    // Collect all unique UTC dates needed
+    const allDates = [...new Set(needed.map(utcDateStrFor))];
+    // Also add yesterday in case UTC date differs
+    const yd = new Date(Date.now() - 86400000);
+    const pad = n => String(n).padStart(2,'0');
+    const ydStr = yd.getFullYear() + '-' + pad(yd.getMonth()+1) + '-' + pad(yd.getDate());
+    if (!allDates.includes(ydStr)) allDates.push(ydStr);
 
-    for (const d of dates) {
-        const events = await fetchTSDBScores(d);
-        needed.filter(m => utcDateStrFor(m) === d).forEach(m => {
-            const ev = events.find(e =>
-                (sameTeam(e.strHomeTeam, m.t1) && sameTeam(e.strAwayTeam, m.t2)) ||
-                (sameTeam(e.strHomeTeam, m.t2) && sameTeam(e.strAwayTeam, m.t1))
-            );
-            if (ev && ev.intHomeScore !== null && ev.intAwayScore !== null && ev.intHomeScore !== '' && ev.intAwayScore !== '') {
-                const hs = parseInt(ev.intHomeScore, 10);
-                const as_score = parseInt(ev.intAwayScore, 10);
-                const newScore = sameTeam(ev.strHomeTeam, m.t1) ? [hs, as_score] : [as_score, hs];
+    let allEvents = [];
+    for (const d of allDates) {
+        const evs = await fetchTSDBScores(d);
+        allEvents = allEvents.concat(evs);
+    }
+
+    let changed = false;
+    needed.forEach(m => {
+        const ev = allEvents.find(e =>
+            (sameTeam(e.strHomeTeam, m.t1) && sameTeam(e.strAwayTeam, m.t2)) ||
+            (sameTeam(e.strHomeTeam, m.t2) && sameTeam(e.strAwayTeam, m.t1))
+        );
+        if (ev) {
+            // intHomeScore works for finished; for live use intProgress scores if available
+            const h = ev.intHomeScore !== null && ev.intHomeScore !== '' ? parseInt(ev.intHomeScore,10) : null;
+            const a = ev.intAwayScore !== null && ev.intAwayScore !== '' ? parseInt(ev.intAwayScore,10) : null;
+            if (h !== null && a !== null && !isNaN(h) && !isNaN(a)) {
+                const newScore = sameTeam(ev.strHomeTeam, m.t1) ? [h, a] : [a, h];
                 if (!m.score || m.score[0] !== newScore[0] || m.score[1] !== newScore[1]) {
                     m.score = newScore;
                     changed = true;
                 }
             }
-        });
-    }
+            // If live and no score yet, show 0-0
+            if (getMatchStatus(m) === 'live' && !m.score) {
+                m.score = [0, 0];
+                changed = true;
+            }
+        } else {
+            // Match not found in API but is live — show 0-0 as default
+            if (getMatchStatus(m) === 'live' && !m.score) {
+                m.score = [0, 0];
+                changed = true;
+            }
+        }
+    });
 
     if (changed) {
         renderMatches();
         renderTodayUpcoming();
-        renderGroups();
     }
 }
 
@@ -1185,15 +1224,12 @@ function matchCardHTML(m) {
     if (status === 'live') {
         badge = `<div class="match-live-badge"><span class="match-live-dot"></span>LIVE</div>`;
         cardClass = 'live-match';
-        if (m.score) {
-            centerBlock = `
-                <div style="display:flex; flex-direction:column; align-items:center; gap:2px;">
-                    <span class="match-score-val">${m.score[0]} - ${m.score[1]}</span>
-                    <span class="vs-badge" style="font-size:0.6rem; color:var(--red);">LIVE</span>
-                </div>`;
-        } else {
-            centerBlock = `<span class="vs-badge">VS</span>`;
-        }
+        const sc = m.score;
+        centerBlock = `
+            <div style="display:flex; flex-direction:column; align-items:center; gap:3px;">
+                <span style="font-family:Barlow Condensed,sans-serif; font-size:1.5rem; font-weight:900; color:#fff; letter-spacing:2px; line-height:1;">${sc ? sc[0]+' - '+sc[1] : '0 - 0'}</span>
+                <span style="font-size:0.58rem; font-weight:700; color:var(--red); letter-spacing:1.5px; font-family:Barlow Condensed,sans-serif;">● LIVE</span>
+            </div>`;
     } else if (status === 'upcoming') {
         badge = `<div class="match-upcoming-badge">UPCOMING</div>`;
         cardClass = 'upcoming-match';
