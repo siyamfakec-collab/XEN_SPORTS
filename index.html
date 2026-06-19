@@ -549,10 +549,10 @@ footer {
             position: relative;
         }
         .ticker-track {
-            display: flex;
+            display: inline-flex;
             align-items: center;
             white-space: nowrap;
-            animation: ticker-scroll 18s linear infinite;
+            animation: ticker-scroll 35s linear infinite;
             will-change: transform;
         }
         .ticker-track:hover { animation-play-state: paused; }
@@ -561,12 +561,12 @@ footer {
             font-size: 0.72rem;
             font-weight: 500;
             color: #d0e8ff;
-            padding-right: 80px;
+            padding-right: 120px;
             letter-spacing: 0.3px;
         }
         @keyframes ticker-scroll {
-            0%   { transform: translateX(100vw); }
-            100% { transform: translateX(-100%); }
+            0%   { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
         }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.7.11/shaka-player.compiled.js"></script>
