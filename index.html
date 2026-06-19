@@ -11,6 +11,7 @@
     <meta name="apple-mobile-web-app-title" content="XEN SPORTS">
     <meta name="theme-color" content="#050d18">
     <link rel="apple-touch-icon" href="https://i.ibb.co.com/rGHtys1G/file-000000009fb87208b7d1ca320d4b478c.png">
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest/dist/hls.min.js"></script>
     <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
 <script>
   window.OneSignalDeferred = window.OneSignalDeferred || [];
@@ -513,6 +514,8 @@ footer {
             text-align: center; padding: 30px 14px; color: var(--muted); font-size: 0.8rem;
         }
     </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/hls.js/1.5.13/hls.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.7.11/shaka-player.compiled.js"></script>
 </head>
 <body>
 
@@ -559,9 +562,9 @@ footer {
 <div class="page active" id="page-live">
     <div class="player-section">
         <div class="video-container" id="videoWrap">
-            <iframe id="ch0" class="active" src="https://fifa-world-cup-live.pages.dev/tsn" allowfullscreen allow="autoplay; encrypted-media"></iframe>
-            <iframe id="ch1" src="" allowfullscreen allow="autoplay; encrypted-media"></iframe>
-            <iframe id="ch2" src="" allowfullscreen allow="autoplay; encrypted-media"></iframe>
+            <iframe id="ch0" class="active" src="https://fifa-world-cup-live.pages.dev/tsn" allowfullscreen allow="autoplay; encrypted-media" style="position:absolute; inset:0; width:100%; height:100%; border:none; display:block;"></iframe>
+            <iframe id="ch1" src="" allowfullscreen allow="autoplay; encrypted-media" style="position:absolute; inset:0; width:100%; height:100%; border:none; display:none;"></iframe>
+            <video id="ch2" playsinline controls style="display:none; position:absolute; inset:0; width:100%; height:100%; background:#000; object-fit:contain;"></video>
 
             <!-- Controls overlay -->
             <div class="stream-controls" id="streamControlsArea" onclick="showStreamControls()">
@@ -584,6 +587,12 @@ footer {
         <button class="ch-btn active" onclick="switchChannel(0)">FIFA Live 1</button>
         <button class="ch-btn" onclick="switchChannel(1)">FIFA Live 2</button>
         <button class="ch-btn" onclick="switchChannel(2)">FIFA Live 3</button>
+    </div>
+
+    <!-- FIFA LIVE 3 SUB-CHANNEL PICKER -->
+    <div id="hlsPicker" style="display:none; padding:10px 12px 4px;">
+        <div style="font-size:0.7rem; color:var(--cyan); letter-spacing:0.08em; margin-bottom:8px; font-weight:600;">SELECT STREAM</div>
+        <div id="hlsPickerGrid" style="display:grid; grid-template-columns:repeat(2,1fr); gap:8px;"></div>
     </div>
 
     <!-- NOW PLAYING -->
@@ -692,10 +701,26 @@ footer {
 const chSrcs = [
     "https://fifa-world-cup-live.pages.dev/tsn",
     "https://fifa-world-cup-live.pages.dev/dsports.html",
-    "https://fifa-world-cup-live.pages.dev/english.html"
+    null // FIFA LIVE 3 uses sub-channel picker
 ];
 const chNames = ["FIFA LIVE 1", "FIFA LIVE 2", "FIFA LIVE 3"];
 let currentCh = 0;
+
+// FIFA LIVE 3 — HLS sub-channels
+const hlsChannels = [
+    { name: "BEIN SPORTS",    url: "http://starhub.pro/live/farhat-3379/67897-913379/744517.ts" },
+    { name: "BIOSCOPE PLUS",  url: "https://streamsportixa.ajmainearafat.workers.dev/live.m3u8" },
+    { name: "SKY SPORTS",     url: "https://d1211whpimeups.cloudfront.net/smil:rtbgo/chunklist.m3u8" },
+    { name: "FOX SPORTS",     url: "https://otte-tim.live.pv-cdn.net/pdx-nitro/live/clients/dash/enc/ajfoeddkbz/out/v1/b78800b9b2304879b15843f455836829/cenc.mpd", dash: true },
+    { name: "WC 2026 1",      url: "http://202.70.146.135:8000/play/a06s/index.m3u8" },
+    { name: "4K STREAM",      url: "http://ytoxw6un.ottclub.xyz/iptv/KCUHA6DGYYVA8ZZFUPQV3KZH/6408/index.m3u8" },
+    { name: "4K STREAM 2",    url: "http://starhub.pro/live/farhat-3379/67897-913379/745269.ts" },
+    { name: "4K STREAM 3",    url: "http://starhub.pro/live/farhat-3379/67897-913379/745270.ts" },
+    { name: "HINDI",          url: "http://starhub.pro/live/farhat-3379/67897-913379/741567.ts" },
+    { name: "FIFA WC",        url: "https://owrcovcrpy.gpcdn.net/bpk-tv/1702/output/1702-audio_113322_eng=113200-video=2202800.m3u8" },
+    { name: "FIFA WC 2",      url: "http://66.102.126.10:8000/play/a022/index.m3u8" },
+];
+let currentHlsCh = -1; // none selected yet
 
 // ── MATCH DATA  (date, teams, time IST, score: null = not played yet, [g1,g2] = finished/live) ──
 const matches = [
@@ -916,23 +941,96 @@ function showTab(tab, btn) {
     btn.classList.add('active');
 }
 
-// ── CHANNEL SWITCH — stop other streams when switching ──
-function switchChannel(i) {
-    // Pause all iframes by blanking src first, then set active only
-    document.querySelectorAll('#videoWrap iframe').forEach((f, idx) => {
-        if (idx !== i) {
-            f.src = '';
-            f.classList.remove('active');
-        }
+// ── CHANNEL SWITCH ──
+let hlsInstance = null;
+
+let shakaInstance = null;
+
+function stopAllStreams() {
+    document.querySelectorAll('#videoWrap iframe').forEach(f => {
+        f.src = ''; f.classList.remove('active'); f.style.display = 'none';
     });
-    currentCh = i;
-    const activeFrame = document.getElementById('ch' + i);
-    if (!activeFrame.src || activeFrame.src === window.location.href) {
-        activeFrame.src = chSrcs[i];
+    const videoEl = document.getElementById('ch2');
+    videoEl.style.display = 'none';
+    videoEl.pause();
+    if (hlsInstance) { hlsInstance.destroy(); hlsInstance = null; }
+    if (shakaInstance) { shakaInstance.destroy(); shakaInstance = null; }
+}
+
+async function playStream(url, isDash) {
+    const videoEl = document.getElementById('ch2');
+    videoEl.style.display = 'block';
+    if (hlsInstance) { hlsInstance.destroy(); hlsInstance = null; }
+    if (shakaInstance) { shakaInstance.destroy(); shakaInstance = null; }
+
+    if (isDash) {
+        // MPEG-DASH via Shaka Player
+        shaka.polyfill.installAll();
+        shakaInstance = new shaka.Player(videoEl);
+        shakaInstance.configure({ streaming: { lowLatencyMode: true } });
+        try {
+            await shakaInstance.load(url);
+            videoEl.play().catch(() => {});
+        } catch(e) {
+            console.warn('Shaka load error:', e);
+        }
+    } else if (Hls.isSupported()) {
+        hlsInstance = new Hls({ enableWorker: true, lowLatencyMode: true });
+        hlsInstance.loadSource(url);
+        hlsInstance.attachMedia(videoEl);
+        hlsInstance.on(Hls.Events.MANIFEST_PARSED, () => videoEl.play().catch(() => {}));
+    } else if (videoEl.canPlayType('application/vnd.apple.mpegurl')) {
+        videoEl.src = url;
+        videoEl.play().catch(() => {});
     }
-    activeFrame.classList.add('active');
+}
+
+function buildHlsPicker() {
+    const grid = document.getElementById('hlsPickerGrid');
+    grid.innerHTML = hlsChannels.map((ch, i) => `
+        <button id="hlsBtn${i}" onclick="switchHlsChannel(${i})"
+            style="background:rgba(0,229,255,0.07); border:1px solid rgba(0,229,255,0.2); color:#e0f7ff;
+                   border-radius:10px; padding:10px 8px; font-size:0.72rem; font-family:Inter,sans-serif;
+                   cursor:pointer; text-align:center; line-height:1.3; transition:all 0.2s;">
+            ${ch.name}
+        </button>
+    `).join('');
+}
+
+function switchHlsChannel(i) {
+    currentHlsCh = i;
+    document.querySelectorAll('[id^="hlsBtn"]').forEach((b, idx) => {
+        b.style.background = idx === i ? 'rgba(0,229,255,0.22)' : 'rgba(0,229,255,0.07)';
+        b.style.borderColor = idx === i ? 'var(--cyan)' : 'rgba(0,229,255,0.2)';
+        b.style.color = idx === i ? 'var(--cyan)' : '#e0f7ff';
+    });
+    playStream(hlsChannels[i].url, hlsChannels[i].dash === true);
+    document.getElementById('ch-name').textContent = 'FIFA LIVE 3 — ' + hlsChannels[i].name;
+    requestWakeLock();
+}
+
+function switchChannel(i) {
+    stopAllStreams();
+    currentCh = i;
+
+    // Show/hide HLS picker
+    document.getElementById('hlsPicker').style.display = i === 2 ? 'block' : 'none';
+
+    if (i === 2) {
+        // Show picker — auto-select first if none picked yet
+        if (currentHlsCh === -1) switchHlsChannel(0);
+        else switchHlsChannel(currentHlsCh);
+    } else {
+        const frame = document.getElementById('ch' + i);
+        frame.style.display = 'block';
+        frame.classList.add('active');
+        if (!frame.src || frame.src === window.location.href || frame.src === '') {
+            frame.src = chSrcs[i];
+        }
+    }
+
     document.querySelectorAll('.ch-btn').forEach((b, idx) => b.classList.toggle('active', idx === i));
-    document.getElementById('ch-name').textContent = chNames[i];
+    if (i !== 2) document.getElementById('ch-name').textContent = chNames[i];
     requestWakeLock();
 }
 
@@ -955,6 +1053,17 @@ function enterFullscreen(el) {
 
 function rotateFullscreen(e) {
     if (e) e.stopPropagation();
+    if (currentCh === 2) {
+        // For HLS video, fullscreen the video element directly
+        const videoEl = document.getElementById('ch2');
+        const goLandscape = () => {
+            if (screen.orientation && screen.orientation.lock) {
+                screen.orientation.lock('landscape').catch(() => {});
+            }
+        };
+        Promise.resolve(enterFullscreen(videoEl)).then(goLandscape).catch(goLandscape);
+        return;
+    }
     const src = document.getElementById('ch' + currentCh).src || chSrcs[currentCh];
     const overlay = document.getElementById('fsOverlay');
     document.getElementById('fsFrame').src = src;
@@ -965,18 +1074,20 @@ function rotateFullscreen(e) {
         if (screen.orientation && screen.orientation.lock) {
             screen.orientation.lock('landscape').catch(() => overlay.classList.add('force-landscape'));
         } else {
-            // Orientation Lock API not available (e.g. iOS Safari) — rotate via CSS instead
             overlay.classList.add('force-landscape');
         }
     };
-
-    // Fullscreen must be entered first — most browsers reject orientation
-    // lock requests made outside of an active fullscreen context.
     Promise.resolve(enterFullscreen(overlay)).then(goLandscape).catch(goLandscape);
 }
 
 function openFullscreen(e) {
     if (e) e.stopPropagation();
+    if (currentCh === 2) {
+        const videoEl = document.getElementById('ch2');
+        Promise.resolve(enterFullscreen(videoEl)).catch(() => {});
+        requestWakeLock();
+        return;
+    }
     const src = document.getElementById('ch' + currentCh).src || chSrcs[currentCh];
     const overlay = document.getElementById('fsOverlay');
     document.getElementById('fsFrame').src = src;
@@ -1239,6 +1350,7 @@ buildDateFilter();
 renderMatches();
 renderTodayUpcoming();
 updateLiveScores();
+buildHlsPicker();
 
 // Restore notification preference
 (function initNotif() {
@@ -1919,84 +2031,4 @@ const wikiPhotoCache = {};
 
 function openSquad(teamName, flag, tsdbName, groupLetter) {
     const modal = document.getElementById('squadModal');
-    const content = document.getElementById('modalContent');
-    document.getElementById('modalFlag').src = `https://flagcdn.com/w80/${flag}.png`;
-    document.getElementById('modalTeamName').textContent = teamName;
-    document.getElementById('modalGroupLabel').textContent = `GROUP ${groupLetter} · FIFA WORLD CUP 2026`;
-    modal.style.display = 'block';
-    document.body.style.overflow = 'hidden';
-
-    const players = squadData[teamName] || squadData[tsdbName] || null;
-    if (players) {
-        content.innerHTML = '<div class="squad-loading"> LOADING PHOTOS...</div>';
-        renderSquadWithPhotos(players, teamName, content);
-    } else {
-        content.innerHTML = '<div class="squad-error"><div style="font-size:2rem;margin-bottom:8px;"></div><div style="color:var(--text);font-weight:600;margin-bottom:6px;">Squad list coming soon</div><div style="font-size:0.75rem;">Confirmed WC 2026 squad not yet available for ' + teamName + '.</div></div>';
-    }
-}
-
-async function renderSquadWithPhotos(players, teamName, container) {
-    const posOrder = ['GK','DEF','MID','FWD'];
-    const posLabel = {GK:'Goalkeepers', DEF:'Defenders', MID:'Midfielders', FWD:'Forwards'};
-    const grouped = {GK:[], DEF:[], MID:[], FWD:[]};
-    players.forEach(p => { if(grouped[p.pos]) grouped[p.pos].push(p); });
-
-    // Batch fetch Wikipedia thumbnails
-    const needWiki = players.filter(p => p.wiki && !wikiPhotoCache[p.wiki]);
-    if (needWiki.length > 0) {
-        const chunks = [];
-        for (let i = 0; i < needWiki.length; i += 20) chunks.push(needWiki.slice(i, i+20));
-        for (const chunk of chunks) {
-            const titles = chunk.map(p => p.wiki.replace(/_/g,' ')).join('|');
-            try {
-                const res = await fetch(`https://en.wikipedia.org/w/api.php?action=query&titles=${encodeURIComponent(titles)}&prop=pageimages&pithumbsize=200&format=json&origin=*`);
-                const data = await res.json();
-                const pages = data.query?.pages || {};
-                Object.values(pages).forEach(page => {
-                    if (page.thumbnail?.source) {
-                        chunk.forEach(p => {
-                            if (p.wiki.replace(/_/g,' ') === page.title) {
-                                wikiPhotoCache[p.wiki] = page.thumbnail.source;
-                            }
-                        });
-                    }
-                });
-            } catch(e) {}
-        }
-    }
-
-    let html = '';
-    posOrder.forEach(pos => {
-        const list = grouped[pos];
-        if (!list.length) return;
-        html += `<div class="squad-position-header">${posLabel[pos]} (${list.length})</div><div class="squad-grid">`;
-        list.forEach(p => {
-            const photo = p.wiki ? wikiPhotoCache[p.wiki] : null;
-            html += `<div class="squad-player-card">
-                ${photo ? `<img class="squad-player-img" src="${photo}" alt="${p.name}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">` : ''}
-                <div class="squad-player-img-placeholder" style="${photo ? 'display:none' : 'display:flex'}"></div>
-                <div class="squad-player-info">
-                    <div class="squad-player-name">${p.name}</div>
-                    <div class="squad-player-pos">${posLabel[pos]}</div>
-                </div>
-            </div>`;
-        });
-        html += '</div>';
-    });
-    container.innerHTML = html;
-}
-
-function closeSquadModal() {
-    document.getElementById('squadModal').style.display = 'none';
-    document.body.style.overflow = '';
-}
-
-// Close modal on backdrop click
-document.getElementById('squadModal').addEventListener('click', function(e) {
-    if (e.target === this) closeSquadModal();
-});
-
-renderGroups();
-</script>
-</body>
-</html>
+    const content = document.getEl
