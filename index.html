@@ -513,6 +513,61 @@ footer {
         .squad-error {
             text-align: center; padding: 30px 14px; color: var(--muted); font-size: 0.8rem;
         }
+
+        /* NEWS TICKER */
+        .news-ticker {
+            width: 100%;
+            background: linear-gradient(90deg, #0a0f1a 0%, #0b1828 100%);
+            border-bottom: 1px solid rgba(255, 45, 45, 0.3);
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            height: 34px;
+            position: sticky;
+            top: 61px;
+            z-index: 99;
+        }
+        .ticker-label {
+            flex-shrink: 0;
+            background: var(--red);
+            color: #fff;
+            font-family: "Barlow Condensed", sans-serif;
+            font-size: 0.7rem;
+            font-weight: 900;
+            letter-spacing: 2px;
+            padding: 0 12px;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            text-transform: uppercase;
+            white-space: nowrap;
+            z-index: 2;
+        }
+        .ticker-track-wrap {
+            flex: 1;
+            overflow: hidden;
+            position: relative;
+        }
+        .ticker-track {
+            display: flex;
+            align-items: center;
+            white-space: nowrap;
+            animation: ticker-scroll 18s linear infinite;
+            will-change: transform;
+        }
+        .ticker-track:hover { animation-play-state: paused; }
+        .ticker-text {
+            font-family: "Inter", sans-serif;
+            font-size: 0.72rem;
+            font-weight: 500;
+            color: #d0e8ff;
+            padding-right: 80px;
+            letter-spacing: 0.3px;
+        }
+        @keyframes ticker-scroll {
+            0%   { transform: translateX(100vw); }
+            100% { transform: translateX(-100%); }
+        }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.7.11/shaka-player.compiled.js"></script>
 </head>
@@ -550,6 +605,17 @@ footer {
     </div>
 </div>
 
+
+<!-- NEWS TICKER -->
+<div class=news-ticker>
+    <div class=ticker-label>NOTICE</div>
+    <div class=ticker-track-wrap>
+        <div class=ticker-track>
+            <span class=ticker-text>সকল দর্শকদের সদয় অবগতির জন্য জানানো যাচ্ছে যে, FIFA LIVE 1 এবং FIFA LIVE 2 চ্যানেল দুটি বর্তমানে সাময়িক সময়ের জন্য বন্ধ রাখা হয়েছে। এই অসুবিধার জন্য আমরা আন্তরিকভাবে দুঃখিত। সম্মানিত দর্শকদের FIFA LIVE 3-এর মাধ্যমে সরাসরি সম্প্রচার উপভোগ করার জন্য বিনীতভাবে অনুরোধ করা হলো। আপনাদের সহযোগিতা ও ধৈর্যের জন্য আন্তরিক ধন্যবাদ। — XEN SPORTS কর্তৃপক্ষ</span>
+            <span class=ticker-text>সকল দর্শকদের সদয় অবগতির জন্য জানানো যাচ্ছে যে, FIFA LIVE 1 এবং FIFA LIVE 2 চ্যানেল দুটি বর্তমানে সাময়িক সময়ের জন্য বন্ধ রাখা হয়েছে। এই অসুবিধার জন্য আমরা আন্তরিকভাবে দুঃখিত। সম্মানিত দর্শকদের FIFA LIVE 3-এর মাধ্যমে সরাসরি সম্প্রচার উপভোগ করার জন্য বিনীতভাবে অনুরোধ করা হলো। আপনাদের সহযোগিতা ও ধৈর্যের জন্য আন্তরিক ধন্যবাদ। — XEN SPORTS কর্তৃপক্ষ</span>
+        </div>
+    </div>
+</div>
 <!-- TAB NAV -->
 <div class="tab-nav">
     <button class="tab-btn active" id="tabLive" onclick="showTab('live',this)">LIVE</button>
@@ -588,11 +654,7 @@ footer {
         <button class="ch-btn" onclick="switchChannel(2)">FIFA Live 3</button>
     </div>
 
-    <!-- FIFA LIVE 3 SUB-CHANNEL PICKER -->
-    <div id="hlsPicker" style="display:none; padding:10px 12px 4px;">
-        <div style="font-size:0.7rem; color:var(--accent); letter-spacing:0.08em; margin-bottom:8px; font-weight:600;">SELECT STREAM</div>
-        <div id="hlsPickerGrid" style="display:grid; grid-template-columns:repeat(2,1fr); gap:8px;"></div>
-    </div>
+    <!-- FIFA LIVE 3 — direct play, no picker -->
 
     <!-- NOW PLAYING -->
     <div class="now-playing">
@@ -707,17 +769,7 @@ let currentCh = 0;
 
 // FIFA LIVE 3 — HLS sub-channels
 const hlsChannels = [
-    { name: "BEIN SPORTS",    url: "http://starhub.pro/live/farhat-3379/67897-913379/744517.ts" },
-    { name: "BIOSCOPE PLUS",  url: "https://streamsportixa.ajmainearafat.workers.dev/live.m3u8" },
-    { name: "SKY SPORTS",     url: "https://d1211whpimeups.cloudfront.net/smil:rtbgo/chunklist.m3u8" },
-    { name: "FOX SPORTS",     url: "https://otte-tim.live.pv-cdn.net/pdx-nitro/live/clients/dash/enc/ajfoeddkbz/out/v1/b78800b9b2304879b15843f455836829/cenc.mpd", dash: true },
-    { name: "WC 2026 1",      url: "http://202.70.146.135:8000/play/a06s/index.m3u8" },
-    { name: "4K STREAM",      url: "http://ytoxw6un.ottclub.xyz/iptv/KCUHA6DGYYVA8ZZFUPQV3KZH/6408/index.m3u8" },
-    { name: "4K STREAM 2",    url: "http://starhub.pro/live/farhat-3379/67897-913379/745269.ts" },
-    { name: "4K STREAM 3",    url: "http://starhub.pro/live/farhat-3379/67897-913379/745270.ts" },
-    { name: "HINDI",          url: "http://starhub.pro/live/farhat-3379/67897-913379/741567.ts" },
-    { name: "FIFA WC",        url: "https://owrcovcrpy.gpcdn.net/bpk-tv/1702/output/1702-audio_113322_eng=113200-video=2202800.m3u8" },
-    { name: "FIFA WC 2",      url: "http://66.102.126.10:8000/play/a022/index.m3u8" },
+    { name: "FIFA LIVE",      url: "https://backup.alarafatofficial.workers.dev/?url=https%3A%2F%2Fd1211whpimeups.cloudfront.net%2Fsmil%3Artbgo%2Fchunklist_b4096000_slENG.m3u8&ua=Mozilla%2F5.0%20(Windows%20NT%2010.0%3B%20Win64%3B%20x64)%20AppleWebKit%2F537.36%20(KHTML%2C%20like%20Gecko)%20Chrome%2F124.0.0.0%20Safari%2F537.36&ekey=SPORTIX_SECURE_KEY_2026" },
 ];
 let currentHlsCh = -1; // none selected yet
 
@@ -1008,7 +1060,7 @@ function switchHlsChannel(i) {
         b.style.color = idx === i ? 'var(--accent)' : '#e0f7ff';
     });
     playStream(hlsChannels[i].url, hlsChannels[i].dash === true);
-    document.getElementById('ch-name').textContent = 'FIFA LIVE 3 — ' + hlsChannels[i].name;
+    document.getElementById('ch-name').textContent = 'FIFA LIVE 3';
     requestWakeLock();
 }
 
@@ -1016,13 +1068,9 @@ function switchChannel(i) {
     stopAllStreams();
     currentCh = i;
 
-    // Show/hide HLS picker
-    document.getElementById('hlsPicker').style.display = i === 2 ? 'block' : 'none';
-
     if (i === 2) {
-        // Show picker — auto-select first if none picked yet
-        if (currentHlsCh === -1) switchHlsChannel(0);
-        else switchHlsChannel(currentHlsCh);
+        // Direct play, no picker
+        switchHlsChannel(0);
     } else {
         const frame = document.getElementById('ch' + i);
         frame.style.display = 'block';
@@ -1030,10 +1078,10 @@ function switchChannel(i) {
         if (!frame.src || frame.src === window.location.href || frame.src === '') {
             frame.src = chSrcs[i];
         }
+        document.getElementById('ch-name').textContent = chNames[i];
     }
 
     document.querySelectorAll('.ch-btn').forEach((b, idx) => b.classList.toggle('active', idx === i));
-    if (i !== 2) document.getElementById('ch-name').textContent = chNames[i];
     requestWakeLock();
 }
 
@@ -1353,7 +1401,7 @@ buildDateFilter();
 renderMatches();
 renderTodayUpcoming();
 updateLiveScores();
-buildHlsPicker();
+// buildHlsPicker(); // removed
 
 // Restore notification preference
 (function initNotif() {
