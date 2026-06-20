@@ -1003,18 +1003,13 @@ async function updateLiveScores() {
                     changed = true;
                 }
             }
-            // If live and no score yet, show 0-0
-            if (getMatchStatus(m) === 'live' && !m.score) {
-                m.score = [0, 0];
-                changed = true;
-            }
-        } else {
-            // Match not found in API but is live — show 0-0 as default
-            if (getMatchStatus(m) === 'live' && !m.score) {
-                m.score = [0, 0];
-                changed = true;
-            }
+            // No valid score from API yet — leave m.score as-is (null) rather
+            // than faking 0-0. The UI will show "VS / LIVE" without a score
+            // until a real score arrives.
         }
+        // Match not found in API, or API gave no score: do nothing here.
+        // We intentionally do NOT force [0,0] — that was causing the score
+        // shown on the site to freeze/mismatch the real live score.
     });
 
     if (changed) {
