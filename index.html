@@ -627,7 +627,7 @@ footer {
 <div class="page active" id="page-live">
     <div class="player-section">
         <div class="video-container" id="videoWrap">
-            <iframe id="ch0" class="active" src="https://ua103.online24.pm:8443/1101/video.m3u8?token=350B326FB34F4B8" allowfullscreen allow="autoplay; encrypted-media" style="position:absolute; inset:0; width:100%; height:100%; border:none; display:block;"></iframe>
+            <iframe id="ch0" class="active" src="https://binge.tahmid-tvos.workers.dev/" allowfullscreen allow="autoplay; encrypted-media" style="position:absolute; inset:0; width:100%; height:100%; border:none; display:block;"></iframe>
             <iframe id="ch1" src="" allowfullscreen allow="autoplay; encrypted-media" style="position:absolute; inset:0; width:100%; height:100%; border:none; display:none;"></iframe>
             <video id="ch2" playsinline controls style="display:none; position:absolute; inset:0; width:100%; height:100%; background:#000; object-fit:contain;"></video>
 
@@ -760,7 +760,7 @@ footer {
 <script>
 // ── CHANNEL SOURCES ──
 const chSrcs = [
-    "https://ua103.online24.pm:8443/1101/video.m3u8?token=350B326FB34F4B8",
+    "https://binge.tahmid-tvos.workers.dev/",
     "https://fifa-world-cup-live.pages.dev/caze-tv",
     null // FIFA LIVE 3 uses sub-channel picker
 ];
@@ -769,7 +769,7 @@ let currentCh = 0;
 
 // FIFA LIVE 3 — HLS sub-channels
 const hlsChannels = [
-    { name: "FIFA LIVE",      url: "https://gffgfhhf.fgg-4le.pages.dev/1781995138/2dc2724ee30a4067aff4baa711ed33da/KBtSC6exZGkbGDKfxUnBBNZ-wd80Ee5ljq34e7DSmpI/fox-usa.m3u8" },
+    { name: "FIFA LIVE",      url: "https://prod-cdn01-live.toffeelive.com/live/FIFA-2026/0/master_2000.m3u8?hdntl=Expires=1782153650~_GO=Generated~URLPrefix=aHR0cHM6Ly9wcm9kLWNkbjAxLWxpdmUudG9mZmVlbGl2ZS5jb20~Signature=AduQTZ-O3Gmf3X2X38od1dTLPKsxbTFfJuw-cNrECQNTCDvKMpP05Onbd3BeFSKyxP3wwaUu9NtPGXrCuHgcjpFmWnYI" },
 ];
 let currentHlsCh = -1; // none selected yet
 
