@@ -125,26 +125,6 @@
         }
         .video-container iframe.active { display: block; }
 
-        /* STREAM CONTROLS OVERLAY */
-        .stream-controls {
-            position: absolute; inset: 0; z-index: 5; pointer-events: none;
-        }
-        .stream-controls-inner {
-            position: absolute; bottom: 0; left: 0; right: 0;
-            padding: 10px 12px; display: flex; align-items: center; gap: 8px; justify-content: flex-end;
-            background: linear-gradient(to top, rgba(0,0,0,0.75) 0%, transparent 100%);
-            opacity: 0; transition: opacity 0.25s ease; pointer-events: all;
-        }
-        .stream-controls-inner.show { opacity: 1; }
-        .ctrl-btn {
-            background: rgba(0,0,0,0.65); border: 1px solid rgba(255,255,255,0.2); color: #fff;
-            border-radius: 8px; padding: 7px 10px; cursor: pointer;
-            font-size: 0.75rem; font-family: 'Barlow Condensed', sans-serif;
-            font-weight: 700; letter-spacing: 1px; display: flex; align-items: center; gap: 5px;
-            backdrop-filter: blur(4px); transition: background 0.2s;
-        }
-        .ctrl-btn:active { background: rgba(0,200,255,0.3); border-color: var(--accent); }
-
         /* CHANNEL BAR */
         .channel-bar {
             display: flex; gap: 8px; padding: 12px 12px 8px;
@@ -281,28 +261,6 @@
         .today-section-title::before {
             content: ''; width: 3px; height: 14px;
             background: var(--accent); border-radius: 2px; display: inline-block;
-        }
-
-        /* FULLSCREEN OVERLAY */
-        .fs-overlay { display: none; position: fixed; inset: 0; background: #000; z-index: 9999; }
-        .fs-overlay.open { display: block; }
-        .fs-overlay iframe { width: 100%; height: 100%; border: none; }
-        .fs-close {
-            position: absolute; top: env(safe-area-inset-top, 12px); right: 14px;
-            background: rgba(0,0,0,0.7); border: 1px solid rgba(255,255,255,0.2);
-            color: #fff; padding: 8px 14px; border-radius: 8px;
-            font-family: 'Barlow Condensed', sans-serif; font-size: 0.8rem;
-            font-weight: 700; cursor: pointer; z-index: 10; letter-spacing: 1px;
-        }
-
-        /* Fallback: rotate the overlay itself into landscape when the
-           Screen Orientation Lock API isn't available (e.g. iOS Safari) */
-        @media (orientation: portrait) {
-            .fs-overlay.force-landscape {
-                width: 100vh; height: 100vw;
-                top: 50%; left: 50%;
-                transform: translate(-50%, -50%) rotate(90deg);
-            }
         }
 
         @media (orientation: landscape) {
@@ -627,11 +585,10 @@ footer {
 <div class="page active" id="page-live">
     <div class="player-section">
         <div class="video-container" id="videoWrap">
-            <iframe id="ch0" class="active" src="https://1nyaler.streamhostingcdn.top/stream/106/index.m3u8" allowfullscreen allow="autoplay; encrypted-media" style="position:absolute; inset:0; width:100%; height:100%; border:none; display:block;"></iframe>
             <iframe id="ch1" src="" allowfullscreen allow="autoplay; encrypted-media" style="position:absolute; inset:0; width:100%; height:100%; border:none; display:none;"></iframe>
             <video id="ch2" playsinline controls style="display:none; position:absolute; inset:0; width:100%; height:100%; background:#000; object-fit:contain;"></video>
-
-            
+        </div>
+    </div>
 
     <!-- CHANNEL TABS -->
     <div class="channel-bar">
@@ -735,12 +692,6 @@ footer {
             Building premium sports platforms, modern websites and digital experiences with a focus on clean design, performance and innovation.
         </p>
     </div>
-</div>
-
-<!-- FULLSCREEN OVERLAY -->
-<div class="fs-overlay" id="fsOverlay">
-    <button class="fs-close" onclick="closeFullscreen()">X  Close</button>
-    <iframe id="fsFrame" src="" allowfullscreen allow="autoplay; encrypted-media"></iframe>
 </div>
 
 <script>
@@ -1018,9 +969,6 @@ let hlsInstance = null;
 let shakaInstance = null;
 
 function stopAllStreams() {
-    const ch0 = document.getElementById('ch0');
-    ch0.classList.remove('active');
-    ch0.style.display = 'none';
     const ch1 = document.getElementById('ch1');
     ch1.src = '';
     ch1.classList.remove('active');
@@ -1088,7 +1036,11 @@ function switchChannel(i) {
     stopAllStreams();
     currentCh = i;
 
-    if (i === 2) {
+    if (i === 0) {
+        // FIFA LIVE 1 — HLS via video player (same as FIFA LIVE 3)
+        playStream(chSrcs[0]);
+        document.getElementById('ch-name').textContent = chNames[0];
+    } else if (i === 2) {
         // Direct play, no picker
         switchHlsChannel(0);
     } else {
@@ -1105,95 +1057,6 @@ function switchChannel(i) {
     requestWakeLock();
 }
 
-// ── STREAM CONTROLS AUTO-HIDE ──
-let controlsTimer = null;
-function showStreamControls() {
-    const inner = document.getElementById('streamControlsInner');
-    inner.classList.add('show');
-    clearTimeout(controlsTimer);
-    controlsTimer = setTimeout(() => inner.classList.remove('show'), 3000);
-}
-
-// ── FULLSCREEN & ROTATE ──
-function enterFullscreen(el) {
-    if (el.requestFullscreen) return el.requestFullscreen();
-    if (el.webkitRequestFullscreen) return el.webkitRequestFullscreen();
-    if (el.webkitEnterFullscreen) return el.webkitEnterFullscreen(); // iOS video fallback
-    return Promise.reject(new Error('Fullscreen not supported'));
-}
-
-function rotateFullscreen(e) {
-    if (e) e.stopPropagation();
-    if (currentCh === 2) {
-        // For HLS video, fullscreen the video element directly
-        const videoEl = document.getElementById('ch2');
-        const goLandscape = () => {
-            if (screen.orientation && screen.orientation.lock) {
-                screen.orientation.lock('landscape').catch(() => {});
-            }
-        };
-        Promise.resolve(enterFullscreen(videoEl)).then(goLandscape).catch(goLandscape);
-        return;
-    }
-    const src = document.getElementById('ch' + currentCh).src || chSrcs[currentCh];
-    const overlay = document.getElementById('fsOverlay');
-    document.getElementById('fsFrame').src = src;
-    overlay.classList.add('open');
-    requestWakeLock();
-
-    const goLandscape = () => {
-        if (screen.orientation && screen.orientation.lock) {
-            screen.orientation.lock('landscape').catch(() => overlay.classList.add('force-landscape'));
-        } else {
-            overlay.classList.add('force-landscape');
-        }
-    };
-    Promise.resolve(enterFullscreen(overlay)).then(goLandscape).catch(goLandscape);
-}
-
-function openFullscreen(e) {
-    if (e) e.stopPropagation();
-    if (currentCh === 2) {
-        const videoEl = document.getElementById('ch2');
-        Promise.resolve(enterFullscreen(videoEl)).catch(() => {});
-        requestWakeLock();
-        return;
-    }
-    const src = document.getElementById('ch' + currentCh).src || chSrcs[currentCh];
-    const overlay = document.getElementById('fsOverlay');
-    document.getElementById('fsFrame').src = src;
-    overlay.classList.add('open');
-    Promise.resolve(enterFullscreen(overlay)).catch(() => {});
-    requestWakeLock();
-}
-
-function closeFullscreen() {
-    const overlay = document.getElementById('fsOverlay');
-    overlay.classList.remove('open');
-    overlay.classList.remove('force-landscape');
-    document.getElementById('fsFrame').src = '';
-    if (screen.orientation && screen.orientation.unlock) screen.orientation.unlock();
-    if (document.exitFullscreen) document.exitFullscreen().catch(() => {});
-    else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
-}
-
-document.addEventListener('fullscreenchange', () => {
-    if (!document.fullscreenElement) {
-        const overlay = document.getElementById('fsOverlay');
-        overlay.classList.remove('open');
-        overlay.classList.remove('force-landscape');
-        document.getElementById('fsFrame').src = '';
-        if (screen.orientation && screen.orientation.unlock) screen.orientation.unlock();
-    }
-});
-document.addEventListener('webkitfullscreenchange', () => {
-    if (!document.webkitFullscreenElement) {
-        const overlay = document.getElementById('fsOverlay');
-        overlay.classList.remove('open');
-        overlay.classList.remove('force-landscape');
-        document.getElementById('fsFrame').src = '';
-    }
-});
 
 // ── MATCH CARD HTML ──
 function matchCardHTML(m) {
@@ -1418,6 +1281,7 @@ buildDateFilter();
 renderMatches();
 renderTodayUpcoming();
 updateLiveScores();
+switchChannel(0); // auto-start FIFA LIVE 1 on load
 // buildHlsPicker(); // removed
 
 // Restore notification preference
