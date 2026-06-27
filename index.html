@@ -155,6 +155,58 @@
             font-family: 'Barlow Condensed', sans-serif; font-size: 1.1rem;
             font-weight: 900; letter-spacing: 1px; color: var(--text);
         }
+        .fifa-channel-btn {
+            margin-left: auto; background: rgba(0,229,255,0.1); border: 1px solid var(--accent);
+            color: var(--accent); border-radius: 8px; padding: 7px 12px; cursor: pointer;
+            font-family: 'Barlow Condensed', sans-serif; font-size: 0.72rem; font-weight: 700;
+            letter-spacing: 1.5px; white-space: nowrap; flex-shrink: 0;
+        }
+        .fifa-channel-btn:active { background: rgba(0,229,255,0.25); }
+
+        /* ALL CHANNELS MODAL */
+        .channel-modal {
+            display: none; position: fixed; inset: 0; z-index: 999; background: rgba(0,0,0,0.7);
+            align-items: flex-end; justify-content: center;
+        }
+        .channel-modal.open { display: flex; }
+        .channel-modal-inner {
+            background: var(--surface); width: 100%; max-width: 720px; height: 78vh;
+            border-radius: 16px 16px 0 0; display: flex; flex-direction: column;
+            border-top: 1px solid var(--border); overflow: hidden;
+        }
+        .channel-modal-header {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 14px 16px; border-bottom: 1px solid var(--border);
+            font-family: 'Barlow Condensed', sans-serif; font-weight: 800; letter-spacing: 1px;
+            font-size: 1rem; color: var(--text);
+        }
+        .channel-modal-close {
+            background: none; border: none; color: var(--muted); font-size: 1.1rem; cursor: pointer; padding: 4px 8px;
+        }
+        .channel-search-input {
+            margin: 10px 14px; padding: 10px 12px; border-radius: 10px; border: 1px solid var(--border);
+            background: rgba(255,255,255,0.04); color: var(--text); font-size: 0.9rem; font-family: 'Inter', sans-serif;
+        }
+        .channel-search-input:focus { outline: none; border-color: var(--accent); }
+        .channel-list { flex: 1; overflow-y: auto; padding: 4px 14px 16px; }
+        .channel-item-btn {
+            display: block; width: 100%; text-align: left; background: rgba(255,255,255,0.03);
+            border: 1px solid var(--border); color: var(--text); border-radius: 10px;
+            padding: 11px 14px; margin-bottom: 7px; font-size: 0.9rem; font-family: 'Inter', sans-serif;
+            cursor: pointer;
+        }
+        .channel-item-btn:active { background: rgba(0,229,255,0.12); border-color: var(--accent); }
+        .channel-list-empty { text-align: center; color: var(--muted); padding: 30px 0; font-size: 0.85rem; }
+        .channel-cat-title {
+            display: flex; align-items: center; gap: 8px; margin: 14px 0 8px; padding-top: 4px;
+            font-family: 'Barlow Condensed', sans-serif; font-size: 0.78rem; font-weight: 800;
+            letter-spacing: 1.5px; text-transform: uppercase; color: var(--accent);
+        }
+        .channel-cat-title:first-child { margin-top: 0; }
+        .channel-cat-count {
+            background: rgba(0,229,255,0.12); color: var(--accent); border-radius: 20px;
+            padding: 1px 8px; font-size: 0.68rem; font-weight: 700;
+        }
 
         /* SCHEDULE HEADER */
         .section-header { display: flex; align-items: center; gap: 8px; padding: 16px 14px 10px; }
@@ -604,6 +656,20 @@ footer {
         <span class="now-playing-label">Now Playing</span>
         <span style="color:var(--muted)">·</span>
         <span class="now-playing-name" id="ch-name">FIFA LIVE 1</span>
+        <button class="fifa-channel-btn" onclick="openChannelModal()">FIFA CHANNEL</button>
+    </div>
+
+    <!-- ALL CHANNELS MODAL -->
+    <div class="channel-modal" id="channelModal">
+        <div class="channel-modal-inner">
+            <div class="channel-modal-header">
+                <span>All Channels</span>
+                <button class="channel-modal-close" onclick="closeChannelModal()">✕</button>
+            </div>
+            <input type="text" class="channel-search-input" id="channelSearchInput"
+                   placeholder="Search channel..." oninput="filterChannelList()">
+            <div class="channel-list" id="channelListContainer"></div>
+        </div>
     </div>
 
     <!-- TODAY MATCHES ON LIVE TAB -->
@@ -709,6 +775,901 @@ const hlsChannels = [
     { name: "FIFA LIVE",      url: "https://edge22.776740.ir.cdn.ir/hls2/sport.m3u8" },
 ];
 let currentHlsCh = -1; // none selected yet
+
+// ── FULL TV CHANNEL DIRECTORY (from M3U playlist) ──
+const tvChannelCategories = [
+    {
+        "category": "Sports",
+        "channels": [
+            {
+                "name": "Live Sports-4",
+                "url": "https://andro.226503.xyz/checklist/androstreamliveexn2.m3u8"
+            },
+            {
+                "name": "Live Sports-5",
+                "url": "https://ranapkbd.site/JOIN@RANAPK33/XT/play.m3u8"
+            },
+            {
+                "name": "Live Sports-6",
+                "url": "https://linear-493.frequency.stream/dist/glewedtv/493/hls/master/playlist.m3u8"
+            },
+            {
+                "name": "Live Sports-7",
+                "url": "http://198.195.239.50:8095/ptv/tracks-v1a1/mono.m3u8"
+            },
+            {
+                "name": "Live Sports-8",
+                "url": "http://ua.online24.pm/play/1101/350B326FB34F4B8/video.m3u8"
+            },
+            {
+                "name": "Live Sports-9",
+                "url": "http://198.195.239.50:8095/unt-s/video.m3u8"
+            },
+            {
+                "name": "Live Sports-10",
+                "url": "http://198.195.239.50:8095/Fifa-1/video.m3u8"
+            },
+            {
+                "name": "Live Sports-12",
+                "url": "http://sm-monirul.top/tof/live/toffee1/index.m3u8"
+            },
+            {
+                "name": "Live Sports-13",
+                "url": "https://sm-monirul.top/tof/live/toffee6/index.m3u8"
+            },
+            {
+                "name": "T-Sports [2]",
+                "url": "http://198.195.239.50:8095/tsports/tracks-v1a1/mono.m3u8"
+            },
+            {
+                "name": "Star Sports-1 Hindi",
+                "url": "https://starsportshindiii.pages.dev/index.m3u8"
+            },
+            {
+                "name": "Sony Sports-1 HD",
+                "url": "https://server.itcnbd.live/stream/sony_sports_1_hd.m3u8"
+            },
+            {
+                "name": "Sony Sports-2 HD",
+                "url": "https://server.itcnbd.live/stream/sony_sports_2_hd.m3u8"
+            },
+            {
+                "name": "Sony Sports-5 HD",
+                "url": "https://server.itcnbd.live/stream/sony_sports_5_hd.m3u8"
+            },
+            {
+                "name": "FOX Cricket 501",
+                "url": "http://y3fqd48g.megatv.fun/iptv/NRLXRWSBWBPLN4/19146/index.m3u8"
+            },
+            {
+                "name": "Sky Sports Cricket",
+                "url": "http://tv-premium-pro.com/live/wezqqszfr2/i7481xvrdf/579823.m3u8"
+            },
+            {
+                "name": "Sky Sports Cricket [2]",
+                "url": "http://tv-premium-pro.com/live/wezqqszfr2/i7481xvrdf/579821.m3u8"
+            },
+            {
+                "name": "BeIN Sports Extra",
+                "url": "https://bein-esp-xumo.amagi.tv/playlistR1080p.m3u8"
+            },
+            {
+                "name": "DD Sports",
+                "url": "https://d3qs3d2rkhfqrt.cloudfront.net/out/v1/b17adfe543354fdd8d189b110617cddd/index.m3u8"
+            },
+            {
+                "name": "MTR Sports-1",
+                "url": "https://cdn-uw2-prod.tsv2.amagi.tv/linear/amg02873-kravemedia-mtrspt1-distrotv/playlist.m3u8"
+            },
+            {
+                "name": "HUB Sports-2",
+                "url": "http://tv-premium-pro.com/live/wezqqszfr2/i7481xvrdf/280823.m3u8"
+            },
+            {
+                "name": "REAL MADRID TV",
+                "url": "https://rmtv.akamaized.net/hls/live/2043153/rmtv-es-web/bitrate_3.m3u8"
+            },
+            {
+                "name": "BEIN SPORT EXTRA Ñ 🇪🇸",
+                "url": "https://bein-esp-xumo.amagi.tv/playlistR720P.m3u8"
+            },
+            {
+                "name": "IDMANTV 🇹🇷",
+                "url": "https://str2.yodacdn.net/idman_300_to_small/tracks-v1a1/mono.m3u8"
+            },
+            {
+                "name": "SKY SPORTS ACTION",
+                "url": "http://sewv654wfcsdwfi87fwvgbngh.siauliairsavlt.pw/iptv/VCQ4ADX96VH4G8PY7URBWRQU/9155/index.m3u8"
+            },
+            {
+                "name": "SKY SPORT LALIGA 🇲🇽",
+                "url": "http://179.60.224.196:8000/play/a0i7/index.m3u8"
+            },
+            {
+                "name": "2TV Sport 🇳🇴",
+                "url": "https://tv.cdn.xsg.ge/gpb-2tv/index.m3u8"
+            },
+            {
+                "name": "L`Equipe 🇫🇷",
+                "url": "https://jmp2.uk/stvp-FR200016Y5"
+            },
+            {
+                "name": "Turkmenistan Sport 🇹🇲",
+                "url": "http://217.174.225.146/legacyhls/ch004_720/index.m3u8"
+            },
+            {
+                "name": "Turkmenistan Sport 🇹🇲",
+                "url": "https://alpha.tv.online.tm/legacyhls/ch004_720/index.m3u8"
+            },
+            {
+                "name": "TR Sport (480p) 🇮🇹",
+                "url": "https://livetr.teleromagna.it/mia/live/playlist.m3u8"
+            },
+            {
+                "name": "SPORTS FIRST TV",
+                "url": "https://d4ddgdmj1cvnm.cloudfront.net/scheduler/scheduleMaster/409.m3u8"
+            },
+            {
+                "name": "Sports Legends",
+                "url": "https://nomawnoijl.gpcdn.net/akash/sportslegends/playlist.m3u8"
+            },
+            {
+                "name": "Sports Range",
+                "url": "https://nomawnoijl.gpcdn.net/akash/sportrange/playlist.m3u8"
+            },
+            {
+                "name": "Thunder Er",
+                "url": "https://nomawnoijl.gpcdn.net/akash/thunder/playlist.m3u8"
+            },
+            {
+                "name": "Fighters",
+                "url": "https://nomawnoijl.gpcdn.net/akash/fighter/playlist.m3u8"
+            },
+            {
+                "name": "Euro Sports",
+                "url": "https://stream.ottplus.bd/live/euro_sports_hd_abr/live/euro_sports_hd/chunks.m3u8"
+            },
+            {
+                "name": "WWE Smackdown (ROXIE)",
+                "url": "https://601.formaturamaxi.com.br/wwe.m3u8"
+            },
+            {
+                "name": "DAZN COMBAT",
+                "url": "https://dazn-combat-rakuten.amagi.tv/hls/amagi_hls_data_rakutenAA-dazn-combat-rakuten/CDN/master.m3u8"
+            },
+            {
+                "name": "Trace Sport",
+                "url": "https://lightning-tracesport-samsungau.amagi.tv/playlist.m3u8"
+            },
+            {
+                "name": "Sport Digital 🇩🇪",
+                "url": "https://jmp2.uk/stvp-ATAJ0500433A"
+            },
+            {
+                "name": "WOF 1",
+                "url": "https://mainstreammedia-worldoffreesportsintl-rakuten.amagi.tv/hls/amagi_hls_data_rakutenAA-mainstreammediafreesportsintl-rakuten/CDN/master.m3u8"
+            },
+            {
+                "name": "STAR SPORTS KHEL",
+                "url": "http://103.175.73.12:8080/live/151/151_0.m3u8"
+            }
+        ]
+    },
+    {
+        "category": "News",
+        "channels": [
+            {
+                "name": "SOMOY TV",
+                "url": "http://198.195.239.50:8095/somoyTv/tracks-v1a1/mono.m3u8"
+            },
+            {
+                "name": "Ekattor TV",
+                "url": "https://owrcovcrpy.gpcdn.net/bpk-tv/1705/output/index.m3u8"
+            },
+            {
+                "name": "Channel 24",
+                "url": "https://owrcovcrpy.gpcdn.net/bpk-tv/1703/output/index.m3u8"
+            },
+            {
+                "name": "INDEPENDENT TV",
+                "url": "https://owrcovcrpy.gpcdn.net/bpk-tv/1704/output/index.m3u8"
+            },
+            {
+                "name": "JAMUNA TV",
+                "url": "https://owrcovcrpy.gpcdn.net/bpk-tv/1701/output/index.m3u8"
+            },
+            {
+                "name": "Star News",
+                "url": "https://owrcovcrpy.gpcdn.net/bpk-tv/1710/output/1710-audio_113402_eng=113200-video=3224800.m3u8"
+            },
+            {
+                "name": "NEWS 24 HD",
+                "url": "https://owrcovcrpy.gpcdn.net/bpk-tv/1708/output/index.m3u8"
+            },
+            {
+                "name": "DBC News",
+                "url": "https://owrcovcrpy.gpcdn.net/bpk-tv/1728/output/index.m3u8"
+            },
+            {
+                "name": "ATN NEWS [BD]",
+                "url": "https://owrcovcrpy.gpcdn.net/bpk-tv/1706/output/index.m3u8"
+            },
+            {
+                "name": "Al Jazeera",
+                "url": "https://owrcovcrpy.gpcdn.net/bpk-tv/1721/output/index.m3u8"
+            },
+            {
+                "name": "CNN",
+                "url": "https://amg01448-samsungin-cnnnow-samsungin-4npqg.amagi.tv/playlist/amg01448-samsungin-cnnnow-samsungin/playlist.m3u8"
+            },
+            {
+                "name": "DW",
+                "url": "https://dwamdstream102.akamaized.net/hls/live/2015525/dwstream102/index.m3u8"
+            },
+            {
+                "name": "Republic Bangla",
+                "url": "https://vg-republictvlive.akamaized.net/v1/manifest/611d79b11b77e2f571934fd80ca1413453772ac7/vglive-sk-456368/06e5afc2-a022-4e51-9131-4e33a6207c5c/1.m3u8"
+            },
+            {
+                "name": "News18 Bangla News",
+                "url": "https://amg01448-samsungin-news18bangla-samsungin-ad-qy.amagi.tv/playlist/amg01448-samsungin-news18bangla-samsungin/playlist.m3u8"
+            },
+            {
+                "name": "TV9 Bangla",
+                "url": "https://amg01448-samsungin-tv9bangla-samsungin-9lgnh.amagi.tv/playlist/amg01448-samsungin-tv9bangla-samsungin/playlist.m3u8"
+            },
+            {
+                "name": "Somoy TV",
+                "url": "https://owrcovcrpy.gpcdn.net/bpk-tv/1702/output/1702-audio_113322_eng=113200-video=2202800.m3u8"
+            },
+            {
+                "name": "Star News",
+                "url": "https://owrcovcrpy.gpcdn.net/bpk-tv/1710/output/index.m3u8"
+            },
+            {
+                "name": "DW News",
+                "url": "https://dwamdstream102.akamaized.net/hls/live/2015525/dwstream102/master.m3u8"
+            },
+            {
+                "name": "Wion",
+                "url": "https://d7x8z4yuq42qn.cloudfront.net/index_7.m3u8"
+            },
+            {
+                "name": "News Nation",
+                "url": "https://d3qs3d2rkhfqrt.cloudfront.net/out/v1/6cd2f649739a45ca9de1daf81cc7d0f2/index.m3u8"
+            },
+            {
+                "name": "TNP News (1080p)",
+                "url": "https://server.thelegitpro.in/tnpnews/tnpnews/index.m3u8"
+            },
+            {
+                "name": "Awaaz India",
+                "url": "http://awaazindia.livebox.co.in/AwaazIndaTVhls/Live.m3u8"
+            }
+        ]
+    },
+    {
+        "category": "Movies",
+        "channels": [
+            {
+                "name": "Movie Bangla TV",
+                "url": "http://alvetv.com/moviebanglatv/8080/index.m3u8"
+            },
+            {
+                "name": "Zee Bangla Cinema",
+                "url": "https://d1g8wgjurz8via.cloudfront.net/bpk-tv/ColorsHD/default/ColorsHD.m3u8"
+            },
+            {
+                "name": "Bflix Movies",
+                "url": "https://cdn-2.pishow.tv/live/1459/master.m3u8"
+            },
+            {
+                "name": "&PICTURES",
+                "url": "https://d1g8wgjurz8via.cloudfront.net/bpk-tv/Andpictureshd/default/index.mpd"
+            },
+            {
+                "name": "Zee Cinema HD",
+                "url": "https://d1g8wgjurz8via.cloudfront.net/bpk-tv/Zeecinemahd/default/manifest.mpd"
+            },
+            {
+                "name": "South Station",
+                "url": "https://jmp2.uk/stvp-IN3800008CX"
+            },
+            {
+                "name": "B4U Movies",
+                "url": "https://amg00877-b4unew-amg00877c2-xiaomi-in-5489.playouts.now.amagi.tv/playlist.m3u8"
+            },
+            {
+                "name": "Box Cinama",
+                "url": "https://d1b5mlajbmvkjv.cloudfront.net/v1/master/9d062541f2ff39b5c0f48b743c6411d25f62fc25/UDU-DistroTV/145.m3u8"
+            },
+            {
+                "name": "Star Movies HD",
+                "url": "https://d20xuwbyc4yoag.cloudfront.net/v1/master/9d062541f2ff39b5c0f48b743c6411d25f62fc25/DistroTV-MuxIP-CINDIE/387.m3u8"
+            },
+            {
+                "name": "Sci-fi",
+                "url": "https://nomawnoijl.gpcdn.net/akash/partyuniverse/playlist.m3u8"
+            },
+            {
+                "name": "My Cinema",
+                "url": "https://nomawnoijl.gpcdn.net/akash/superrix/playlist.m3u8"
+            },
+            {
+                "name": "MovieSphere",
+                "url": "https://moviesphereuk-samsunguk.amagi.tv/playlist.m3u8"
+            },
+            {
+                "name": "Rakuten Movies",
+                "url": "https://0145451975a64b35866170fd2e8fa486.mediatailor.eu-west-1.amazonaws.com/v1/master/0547f18649bd788bec7b67b746e47670f558b6b2/production-LiveChannel-5987/master.m3u8"
+            },
+            {
+                "name": "Action Hollywood Movies",
+                "url": "https://cdn-apse1-prod.tsv2.amagi.tv/linear/amg01076-lightningintern-actionhollywood-samsungnz/playlist.m3u8"
+            },
+            {
+                "name": "Sheemaroo Bollywood",
+                "url": "https://cdn-uw2-prod.tsv2.amagi.tv/linear/amg00864-shemarooenterta-shemabollywood-ono/playlist.m3u8"
+            },
+            {
+                "name": "ETV Cinema HD (1080p)",
+                "url": "https://d27zlkxhgwrfgo.cloudfront.net/v1/master/9d43eacaed199f8d5883927e7aef514a8a08e108/ETV_CINEMA_H264_cloud_in/index.m3u8"
+            },
+            {
+                "name": "Pitaara (720p)",
+                "url": "https://vg-pitaaratvlive.akamaized.net/v1/master/611d79b11b77e2f571934fd80ca1413453772ac7/vglive-sk-583798/playlist.m3u8"
+            },
+            {
+                "name": "Roja Movies (1080p)",
+                "url": "https://stream.rojatv.cloud/rojatv/rojatv/index.m3u8"
+            },
+            {
+                "name": "Shubh Cinema TV (720p)",
+                "url": "https://d393sxaxig6bax.cloudfront.net/out/v1/589cf2cf44bf42bb941e817a2240d62e/index.m3u8"
+            },
+            {
+                "name": "South Station (1080p)",
+                "url": "https://cc-yw7ztecy8do3q.akamaized.net/v1/master/3722c60a815c199d9c0ef36c5b73da68a62b09d1/cc-yw7ztecy8do3q/SS_IN.m3u8"
+            },
+            {
+                "name": "Suriyan TV (576p)",
+                "url": "https://stream.sscloud7.com/live/suriyantv/index.m3u8"
+            }
+        ]
+    },
+    {
+        "category": "Music",
+        "channels": [
+            {
+                "name": "Sangeet Bangla",
+                "url": "https://cdn-4.pishow.tv/live/1143/master.m3u8"
+            },
+            {
+                "name": "Zoom",
+                "url": "https://pubads.g.doubleclick.net/ssai/event/JCAm25qkRXiKcK1AJMlvKQ/master.m3u8"
+            },
+            {
+                "name": "Music India",
+                "url": "https://cdn-2.pishow.tv/live/226/master.m3u8"
+            },
+            {
+                "name": "8X music",
+                "url": "https://ml-pull-dvc-myco.io:2096/8XM_MUSIC/index.m3u8"
+            },
+            {
+                "name": "ICC_9XM",
+                "url": "https://wiselp.wiseplayout.com/9XM/HD1080/HD1080.m3u8"
+            },
+            {
+                "name": "B4U Music",
+                "url": "https://cdn-2.pishow.tv/live/415/master.m3u8"
+            },
+            {
+                "name": "Music Mastii",
+                "url": "https://live20.bozztv.com/giatvplayout7/giatv-209592/tracks-v1a1/mono.ts.m3u8"
+            },
+            {
+                "name": "Hindi Hits HD",
+                "url": "http://146.59.253.52:8080/hindihitshd/index.m3u8"
+            },
+            {
+                "name": "Music India",
+                "url": "http://103.175.73.12:8080/live/158/158_0.m3u8"
+            }
+        ]
+    },
+    {
+        "category": "Kids",
+        "channels": [
+            {
+                "name": "Minimax",
+                "url": "https://vodzong.mjunoon.tv:8087/streamtest/disckids-157-1/playlist.m3u8"
+            },
+            {
+                "name": "Dios Te Ve Kids",
+                "url": "https://s.emisoras.tv:8081/diostevekids/index.m3u8"
+            },
+            {
+                "name": "BuddyStar HD",
+                "url": "https://nomawnoijl.gpcdn.net/akash/buddystar/playlist.m3u8"
+            },
+            {
+                "name": "Funny Junior HD",
+                "url": "https://nomawnoijl.gpcdn.net/akash/funnyjunior/playlist.m3u8"
+            },
+            {
+                "name": "Smarty",
+                "url": "https://nomawnoijl.gpcdn.net/akash/smarty/playlist.m3u8"
+            },
+            {
+                "name": "Lucky Family",
+                "url": "https://nomawnoijl.gpcdn.net/akash/luckyfamily/playlist.m3u8"
+            },
+            {
+                "name": "Kids Stars",
+                "url": "https://nomawnoijl.gpcdn.net/akash/kidsstars/playlist.m3u8"
+            },
+            {
+                "name": "Jungle Book",
+                "url": "https://cc-4bhi5osabejc9.akamaized.net/v1/master/3722c60a815c199d9c0ef36c5b73da68a62b09d1/cc-4bhi5osabejc9/junglebook.m3u8"
+            },
+            {
+                "name": "Zoo Moo",
+                "url": "https://amg01553-blueantmediaasi-zoomoonz-samsungnz-rdufn.amagi.tv/playlist/amg01553-blueantmediaasi-zoomoonz-samsungnz/playlist.m3u8"
+            },
+            {
+                "name": "PBS Kids",
+                "url": "https://2-fss-2.streamhoster.com/pl_140/amlst:200914-1298290/playlist.m3u8"
+            }
+        ]
+    },
+    {
+        "category": "Documentary",
+        "channels": [
+            {
+                "name": "Discovery Bangla",
+                "url": "http://103.180.212.191:3500/live/573.m3u8"
+            },
+            {
+                "name": "Discovery Engliah HD",
+                "url": "http://103.180.212.191:3500/live/242.m3u8"
+            },
+            {
+                "name": "NAT GEO HD",
+                "url": "http://202.70.146.135:8000/play/a05o/index.m3u8"
+            },
+            {
+                "name": "Travel xp",
+                "url": "https://travelxp-travelxp-1-eu.rakuten.wurl.tv/playlist.m3u8"
+            },
+            {
+                "name": "Love nature",
+                "url": "https://cdn1.logichost.in/ajmantv/live/playlist.m3u8"
+            },
+            {
+                "name": "Animal Planet HD",
+                "url": "https://tiger-hub.vercel.app@vodzong.mjunoon.tv:8087/streamtest/Animal-Planet-158-3/playlist.m3u8"
+            },
+            {
+                "name": "Travel XP",
+                "url": "https://27c980761ff9437d929e64647afe183a.mediatailor.us-east-1.amazonaws.com/v1/master/44f73ba4d03e9607dcd9bebdcb8494d86964f1d8/RakutenTV-eu_TravelXP/playlist.m3u8"
+            },
+            {
+                "name": "Wild TV",
+                "url": "https://dfhsahpa45kk2.cloudfront.net/scheduler/scheduleMaster/476.m3u8"
+            },
+            {
+                "name": "World War TV",
+                "url": "https://aenetworks-worldwartv-rakuten.amagi.tv/playlist.m3u8"
+            },
+            {
+                "name": "CMAC TV",
+                "url": "https://reflect-vod-cmac.cablecast.tv/live-11/live/stream-2/live.m3u8"
+            },
+            {
+                "name": "Court TV",
+                "url": "https://cdn-uw2-prod.tsv2.amagi.tv/linear/amg01438-ewscrippscompan-courttv-tablo/playlist.m3u8"
+            },
+            {
+                "name": "ACCU WEATHER",
+                "url": "https://cdn-ue1-prod.tsv2.amagi.tv/linear/amg00684-accuweather-accuweather-plex/playlist.m3u8"
+            },
+            {
+                "name": "Discover Pakistan TV",
+                "url": "https://app.ncare.live/c3VydmVyX8RpbEU9Mi8xNy8yMDE0GIDU6RgzQ6NTAgdEoaeFzbF92YWxIZTO0U0ezN1IzMyfvcGVMZEJCTEFWeVN3PTOmdFsaWRtaW51aiPhnPTI2/discoverpakistan.stream/playlist.m3u8"
+            },
+            {
+                "name": "Crimes",
+                "url": "https://nomawnoijl.gpcdn.net/akash/crimes/playlist.m3u8"
+            },
+            {
+                "name": "True Stories",
+                "url": "https://nomawnoijl.gpcdn.net/akash/truestories/playlist.m3u8"
+            },
+            {
+                "name": "Intelligence",
+                "url": "https://nomawnoijl.gpcdn.net/akash/intelligence/playlist.m3u8"
+            }
+        ]
+    },
+    {
+        "category": "Religious",
+        "channels": [
+            {
+                "name": "Saudi Quran",
+                "url": "https://owrcovcrpy.gpcdn.net/bpk-tv/1713/output/index.m3u8"
+            },
+            {
+                "name": "Madina live",
+                "url": "https://cdn-globecast.akamaized.net/live/eds/saudi_sunnah/hls_roku/index.m3u8"
+            },
+            {
+                "name": "Peace tv Bangla",
+                "url": "https://dzkyvlfyge.erbvr.com/PeaceTvBangla/tracks-v3a1/mono.m3u8"
+            },
+            {
+                "name": "Islamic tv",
+                "url": "https://owrcovcrpy.gpcdn.net/bpk-tv/1724/output/index.m3u8"
+            }
+        ]
+    },
+    {
+        "category": "Radio",
+        "channels": [
+            {
+                "name": "Radio Bangla Net",
+                "url": "https://playerservices.streamtheworld.com/api/livestream-redirect/SP_R3563475_SC"
+            },
+            {
+                "name": "Radio GoonGoon",
+                "url": "https://audio.streamcast.xyz/radio/8000/radio.mp3"
+            },
+            {
+                "name": "Bangladesh Betar",
+                "url": "https://as1.digitalsynapsebd.com/proxy/bbrajmw/stream/1/"
+            },
+            {
+                "name": "Spice FM",
+                "url": "https://stream.spicefmbd.com/stream.m3u8"
+            },
+            {
+                "name": "Radio Amar",
+                "url": "https://amorfm_192.streampartner.nl/stream"
+            },
+            {
+                "name": "Big FM",
+                "url": "https://stream-155.zeno.fm/dbstwo3dvhhtv"
+            },
+            {
+                "name": "Radio City",
+                "url": "https://n0b.radiojar.com/gmwyu8xdrxquv"
+            }
+        ]
+    },
+    {
+        "category": "General",
+        "channels": [
+            {
+                "name": "BTV",
+                "url": "http://198.195.239.50:8095/btv/tracks-v1a1/mono.m3u8"
+            },
+            {
+                "name": "Sangshod tv",
+                "url": "https://owrcovcrpy.gpcdn.net/bpk-tv/1709/output/index.m3u8"
+            },
+            {
+                "name": "Channel-1",
+                "url": "https://owrcovcrpy.gpcdn.net/bpk-tv/1702/output/index.m3u8"
+            },
+            {
+                "name": "NTV",
+                "url": "https://owrcovcrpy.gpcdn.net/bpk-tv/1716/output/index.m3u8"
+            },
+            {
+                "name": "RTV",
+                "url": "https://app24.jagobd.com.bd/c3VydmVyX8RpbEU9Mi8xNy8yMFDEEHGcfRgzQ6NTAgdEoaeFzbF92YWxIZTO0U0ezN1IzMyfvcEdsEfeDeKiNkVN3PTOmdFseWRtaW51aiPhnPTI2/rtv-sg.stream/tracks-v1a1/mono.m3u8"
+            },
+            {
+                "name": "Banglavision",
+                "url": "https://owrcovcrpy.gpcdn.net/bpk-tv/1715/output/index.m3u8"
+            },
+            {
+                "name": "SATV",
+                "url": "https://owrcovcrpy.gpcdn.net/bpk-tv/1720/output/index.m3u8"
+            },
+            {
+                "name": "BOISHAKHI TV",
+                "url": "https://boishakhi.sonarbanglatv.com/boishakhi/boishakhitv/index.m3u8"
+            },
+            {
+                "name": "Ekushey TV",
+                "url": "http://210.4.72.204/hls-live/livepkgr/_definst_/liveevent/livestream3.m3u8"
+            },
+            {
+                "name": "Channel I",
+                "url": "https://owrcovcrpy.gpcdn.net/bpk-tv/1723/output/index.m3u8"
+            },
+            {
+                "name": "Deepto TV",
+                "url": "https://owrcovcrpy.gpcdn.net/bpk-tv/1711/output/index.m3u8"
+            },
+            {
+                "name": "Maasranga Tv",
+                "url": "https://owrcovcrpy.gpcdn.net/bpk-tv/1722/output/index.m3u8"
+            },
+            {
+                "name": "Channel 9",
+                "url": "https://owrcovcrpy.gpcdn.net/bpk-tv/1729/output/index.m3u8"
+            },
+            {
+                "name": "GAZI TV",
+                "url": "https://app24.jagobd.com.bd/c3VydmVyX8RpbEU9Mi8xNy8yMFDEEHGcfRgzQ6NTAgdEoaeFzbF92YWxIZTO0U0ezN1IzMyfvcEdsEfeDeKiNkVN3PTOmdFseWRtaW51aiPhnPTI2/gazibdz.stream/tracks-v1a1/mono.m3u8"
+            },
+            {
+                "name": "Desh TV",
+                "url": "https://app24.jagobd.com.bd/c3VydmVyX8RpbEU9Mi8xNy8yMFDEEHGcfRgzQ6NTAgdEoaeFzbF92YWxIZTO0U0ezN1IzMyfvcEdsEfeDeKiNkVN3PTOmdFseWRtaW51aiPhnPTI2/deshtv.stream/tracks-v1/mono.m3u8"
+            },
+            {
+                "name": "MY TV HD",
+                "url": "https://app24.jagobd.com.bd/c3VydmVyX8RpbEU9Mi8xNy8yMFDEEHGcfRgzQ6NTAgdEoaeFzbF92YWxIZTO0U0ezN1IzMyfvcEdsEfeDeKiNkVN3PTOmdFseWRtaW51aiPhnPTI2/mytv-up-off.stream/tracks-v1a1/mono.m3u8"
+            },
+            {
+                "name": "Green tv",
+                "url": "https://app.ncare.live/c3VydmVyX8RpbEU9Mi8xNy8yMDE0GIDU6RgzQ6NTAgdEoaeFzbF92YWxIZTO0U0ezN1IzMyfvcGVMZEJCTEFWeVN3PTOmdFsaWRtaW51aiPhnPTI2/greentv.stream/live-orgin/greentv.stream/chunks.m3u8"
+            },
+            {
+                "name": "G-Serise",
+                "url": "https://vods2.aynaott.com/gseriesDrama/tracks-v1a1/mono.ts.m3u8"
+            },
+            {
+                "name": "Iran International",
+                "url": "https://dev-live.livetvstream.co.uk/LS-63503-4/chunklist_b1196000.m3u8"
+            },
+            {
+                "name": "SRK TV",
+                "url": "https://srknowapp.ncare.live/srktvhlswodrm/srktv.stream/tracks-v1a1/mono.m3u8"
+            },
+            {
+                "name": "Star Jalsha HD",
+                "url": "https://yupptvcatchupire.yuppcdn.net/preview/starjalsha/1800.m3u8"
+            },
+            {
+                "name": "Zee Bangla HD",
+                "url": "https://yupptvcatchupire.yuppcdn.net/preview/zeebangla/2500.m3u8"
+            },
+            {
+                "name": "BANGLA+ HD",
+                "url": "https://live-stream.utkalbongo.com/hls/livebanglatvstream.m3u8"
+            },
+            {
+                "name": "Colors Bangla",
+                "url": "https://yupptvcatchupire.yuppcdn.net/preview/colorsbanglahd/800.m3u8"
+            },
+            {
+                "name": "DD Bangla",
+                "url": "https://d3qs3d2rkhfqrt.cloudfront.net/out/v1/7ff57cc9046b4c188b51a0d506f36e7f/index_3.m3u8"
+            },
+            {
+                "name": "Enter 10 Bangla",
+                "url": "https://amg01448-samsungin-enterr10bangla-samsungin-ad-gg.amagi.tv/playlist/amg01448-samsungin-enterr10bangla-samsungin/playlist.m3u8"
+            },
+            {
+                "name": "Orange Bangla",
+                "url": "https://cdn-4.pishow.tv/live/1499/1499_2.m3u8"
+            },
+            {
+                "name": "R Plus",
+                "url": "https://thelegitpro.in/pntv/rplusnews24x7/tracks-v1a1/mono.m3u8"
+            },
+            {
+                "name": "R Plus Gould",
+                "url": "https://cdn-4.pishow.tv/live/1231/1231_2.m3u8"
+            },
+            {
+                "name": "Channel-16",
+                "url": "https://app24.jagobd.com.bd/c3VydmVyX8RpbEU9Mi8xNy8yMFDEEHGcfRgzQ6NTAgdEoaeFzbF92YWxIZTO0U0ezN1IzMyfvcEdsEfeDeKiNkVN3PTOmdFseWRtaW51aiPhnPTI2/channel16bd.stream/tracks-v1a1/mono.m3u8"
+            },
+            {
+                "name": "Baallee",
+                "url": "https://mcncdndigital.com/balleballetv/tracks-v1a1/mono.ts.m3u8"
+            },
+            {
+                "name": "Colors Cineplex HD",
+                "url": "https://vods2.aynaott.com/hindimovies/index.m3u8"
+            },
+            {
+                "name": "Colors",
+                "url": "https://cdn-2.pishow.tv/live/1461/master.m3u8"
+            },
+            {
+                "name": "MK Six",
+                "url": "https://cdn-3.pishow.tv/live/1253/master.m3u8"
+            },
+            {
+                "name": "MBC tv",
+                "url": "http://93.184.10.248/MBCBollywood/index.m3u8"
+            },
+            {
+                "name": "HBO",
+                "url": "http://103.213.31.111/HBOHD/index.m3u8"
+            },
+            {
+                "name": "MNX-HD",
+                "url": "https://nomawnoijl.gpcdn.net/akash/screem/playlist.m3u8"
+            },
+            {
+                "name": "Cowboy tv",
+                "url": "https://amg17292-amg17292c1-distrotv-us-4170.playouts.now.amagi.tv/playlist/amg17292-tetonridgellc-tetonridgefast-distrotvus/playlist.m3u8"
+            },
+            {
+                "name": "BBC Bangla",
+                "url": "https://a.files.bbci.co.uk/ms6/live/3441A116-B12E-4D2F-ACA8-C1984642FA4B/audio/simulcast/dash/nonuk/cellular_main_sd_abr_v2/cfs/bbc_world_service.mpd"
+            },
+            {
+                "name": "NRB TV",
+                "url": "https://app.ncare.live/live-orgin/nrb-eu.stream/playlist.m3u8"
+            },
+            {
+                "name": "BTV NATIONAL HD",
+                "url": "https://owrcovcrpy.gpcdn.net/bpk-tv/1709/output/1709.m3u8"
+            },
+            {
+                "name": "Deshe Bideshe",
+                "url": "https://dbcanada.sonarbanglatv.com/deshebideshe/dbtv/index.m3u8"
+            },
+            {
+                "name": "Channel S",
+                "url": "https://app.ncare.live/c3VydmVyX8RpbEU9Mi8xNy8yMDE0GIDU6RgzQ6NTAgdEoaeFzbF92YWxIZTO0U0ezN1IzMyfvcGVMZEJCTEFWeVN3PTOmdFsaWRtaW51aiPhnPTI/chsukoff.stream/playlist.m3u8"
+            },
+            {
+                "name": "Green TV",
+                "url": "https://app.ncare.live/c3VydmVyX8RpbEU9Mi8xNy8yMDE0GIDU6RgzQ6NTAgdEoaeFzbF92YWxIZTO0U0ezN1IzMyfvcGVMZEJCTEFWeVN3PTOmdFsaWRtaW51aiPhnPTI2/greentv.stream/live-orgin/greentv.stream/playlist.m3u8"
+            },
+            {
+                "name": "Deshi TV",
+                "url": "https://deshitv.deshitv24.net/live/myStream/playlist.m3u8"
+            },
+            {
+                "name": "ME TV",
+                "url": "https://iptvbd.live/metv1080/1080.m3u8"
+            },
+            {
+                "name": "Enterr 10 Bangla",
+                "url": "https://live-bangla.akamaized.net/liveabr/pub-iobanglakp3sff/live_720p/chunks.m3u8"
+            },
+            {
+                "name": "Rongeen TV",
+                "url": "https://server.thelegitpro.in/rongeentv/rongeentv/tracks-v1a1/mono.m3u8"
+            },
+            {
+                "name": "ABP Ananda",
+                "url": "https://amg01448-samsungin-abpananda-samsungin-ad-pw.amagi.tv/playlist/amg01448-samsungin-abpananda-samsungin/playlist.m3u8"
+            },
+            {
+                "name": "R Plus",
+                "url": "https://thelegitpro.in/pntv/rplusnews24x7/index.m3u8"
+            },
+            {
+                "name": "Enter 10 Bangla",
+                "url": "https://live-bangla.akamaized.net/liveabr/playlist.m3u8"
+            },
+            {
+                "name": "Amar Bangla",
+                "url": "https://app.ncare.live/c3VydmVyX8RpbEU9Mi8xNy8yMDE0GIDU6RgzQ6NTAgdEoaeFzbF92YWxIZTO0U0ezN1IzMyfvcGVMZEJCTEFWeVN3PTOmdFsaWRtaW51aiPhnPTI/amarbanglatv.stream/playlist.m3u8"
+            },
+            {
+                "name": "Flash Guys HD",
+                "url": "https://nomawnoijl.gpcdn.net/akash/flashguys/playlist.m3u8"
+            },
+            {
+                "name": "Crazy Ex",
+                "url": "https://nomawnoijl.gpcdn.net/akash/crazy_ex/playlist.m3u8"
+            },
+            {
+                "name": "Суспільне Kiev Спорт HD 🇺🇦",
+                "url": "https://tva.in.ua/live/susp-sport.m3u8"
+            },
+            {
+                "name": "TBS",
+                "url": "https://cdntv.tbs.seoul.kr/tbs/tbs_tv_web.smil/playlist.m3u8"
+            },
+            {
+                "name": "FASHION ONE",
+                "url": "https://b01c02nl.mediatriple.net/videoonlylive/mtkgeuihrlfwlive/u_stream_5c9e2ee6997cb_1/playlist.m3u8"
+            },
+            {
+                "name": "FASHION ONE",
+                "url": "https://b01c02nl.mediatriple.net/videoonlylive/mtkgeuihrlfwlive/broadcast_5c9e2ee690051.smil/playlist.m3u8"
+            },
+            {
+                "name": "Zee Anmol TV",
+                "url": "http://103.175.73.12:8080/live/256/256_0.m3u8"
+            },
+            {
+                "name": "Joy",
+                "url": "https://nomawnoijl.gpcdn.net/akash/joy/playlist.m3u8"
+            },
+            {
+                "name": "Nikki",
+                "url": "https://nomawnoijl.gpcdn.net/akash/nikky/playlist.m3u8"
+            },
+            {
+                "name": "Luxel HD",
+                "url": "https://nomawnoijl.gpcdn.net/akash/luxell/playlist.m3u8"
+            },
+            {
+                "name": "Delicious",
+                "url": "https://nomawnoijl.gpcdn.net/akash/delicious/playlist.m3u8"
+            },
+            {
+                "name": "TELECOSTA GUATEMALA 🇬🇹",
+                "url": "https://tv91.hostingnuclear.com:19360/telecosta/telecosta.m3u8"
+            },
+            {
+                "name": "TELEMUNDO 🇲🇽",
+                "url": "https://nbculocallive.akamaized.net/hls/live/2037499/puertorico/stream1/master.m3u8"
+            },
+            {
+                "name": "Cineedge HD",
+                "url": "https://nomawnoijl.gpcdn.net/akash/cineedge/playlist.m3u8"
+            },
+            {
+                "name": "Uniques HD",
+                "url": "https://nomawnoijl.gpcdn.net/akash/uniques/playlist.m3u8"
+            },
+            {
+                "name": "Originals",
+                "url": "https://nomawnoijl.gpcdn.net/akash/originals/playlist.m3u8"
+            }
+        ]
+    }
+];
+
+// Flatten with a stable global id for lookups regardless of grouped/search view
+let allChannelsFlat = [];
+tvChannelCategories.forEach(cat => cat.channels.forEach(ch => {
+    ch.gid = allChannelsFlat.length;
+    allChannelsFlat.push(ch);
+}));
+function openChannelModal() {
+    document.getElementById('channelSearchInput').value = '';
+    renderGroupedChannelList();
+    document.getElementById('channelModal').classList.add('open');
+}
+function closeChannelModal() {
+    document.getElementById('channelModal').classList.remove('open');
+}
+function renderGroupedChannelList() {
+    const container = document.getElementById('channelListContainer');
+    container.innerHTML = tvChannelCategories.map(cat => `
+        <div class="channel-cat-title">${cat.category} <span class="channel-cat-count">${cat.channels.length}</span></div>
+        ${cat.channels.map(ch => `<button class="channel-item-btn" onclick="playTvChannel(${ch.gid})">${ch.name}</button>`).join('')}
+    `).join('');
+}
+function filterChannelList() {
+    const q = document.getElementById('channelSearchInput').value.toLowerCase().trim();
+    const container = document.getElementById('channelListContainer');
+    if (!q) { renderGroupedChannelList(); return; }
+    const matches = allChannelsFlat.filter(ch => ch.name.toLowerCase().includes(q));
+    if (matches.length === 0) {
+        container.innerHTML = `<div class="channel-list-empty">No channel found</div>`;
+        return;
+    }
+    container.innerHTML = matches.map(ch => `<button class="channel-item-btn" onclick="playTvChannel(${ch.gid})">${ch.name}</button>`).join('');
+}
+function playTvChannel(gid) {
+    const ch = allChannelsFlat[gid];
+    if (!ch) return;
+    stopAllStreams();
+    currentCh = -1; // custom channel from directory, not one of the 3 main tabs
+    document.querySelectorAll('.ch-btn').forEach(b => b.classList.remove('active'));
+    playStream(ch.url);
+    document.getElementById('ch-name').textContent = ch.name;
+    closeChannelModal();
+    requestWakeLock();
+}
+
+
 
 // ── MATCH DATA  (date, teams, time IST, score: null = not played yet, [g1,g2] = finished/live) ──
 const matches = [
